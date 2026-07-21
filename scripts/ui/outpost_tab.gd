@@ -1,11 +1,20 @@
 # ═══════════════════════════════════════════════════════════════
 #  OUTPOST TAB CONTROLLER (outpost_tab.gd)
-#  Quản lý danh sách 8 phòng tiền đồn trong Tab 1
+#  Quản lý danh sách 8 phòng tiền đồn & kết nối Modal view
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 @export var grid_container: GridContainer
 var room_card_scene = preload("res://scenes/shared/RoomCard.tscn")
+
+var room_scenes := {
+	Constants.RoomType.BUNKER: preload("res://scenes/outpost/BunkerRoom.tscn"),
+	Constants.RoomType.RADIO_TOWER: preload("res://scenes/outpost/RadioTowerRoom.tscn"),
+	Constants.RoomType.WORKSHOP: preload("res://scenes/outpost/WorkshopRoom.tscn"),
+	Constants.RoomType.BEAST_PEN: preload("res://scenes/outpost/BeastPenRoom.tscn"),
+	Constants.RoomType.MECHA_HANGAR: preload("res://scenes/outpost/MechaHangarRoom.tscn"),
+	Constants.RoomType.COMMAND_CENTER: preload("res://scenes/outpost/CommandCenterRoom.tscn"),
+}
 
 func _ready() -> void:
 	EventBus.room_opened.connect(_on_room_opened)
@@ -15,11 +24,9 @@ func populate_rooms() -> void:
 	if not grid_container:
 		return
 		
-	# Clear existing children
 	for child in grid_container.get_children():
 		child.queue_free()
 		
-	# Spawn 8 room cards
 	for r_type in [
 		Constants.RoomType.BUNKER,
 		Constants.RoomType.RADIO_TOWER,
@@ -35,5 +42,7 @@ func populate_rooms() -> void:
 		card.setup(r_type)
 
 func _on_room_opened(room_type: int) -> void:
-	var room_name: String = Constants.ROOM_NAMES.get(room_type, "Phòng")
-	print("[OutpostTab] Room opened: ", room_name)
+	if room_scenes.has(room_type):
+		var modal = room_scenes[room_type].instantiate()
+		add_child(modal)
+		modal.show()

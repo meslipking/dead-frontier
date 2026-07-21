@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/radio_tower_room.gd" id="1_script"]
+
+[node name="RadioTowerRoom" type="Control" node_paths=PackedStringArray("btn_scan", "btn_close", "lbl_status")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+btn_scan = NodePath("Center/Panel/Margin/VBox/HBox/BtnScan")
+btn_close = NodePath("Center/Panel/Margin/VBox/HBox/BtnClose")
+lbl_status = NodePath("Center/Panel/Margin/VBox/LblStatus")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(320, 200)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "📻 ĐÀI PHÁT SÓNG (RADIO TOWER)"
+horizontal_alignment = 1
+
+[node name="LblStatus" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Nhấn quét tín hiệu để tìm kiếm đồng đội mới."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="BtnScan" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Quét tín hiệu (50 Vàng)"
+
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
+layout_mode = 2
+text = "Đóng"
