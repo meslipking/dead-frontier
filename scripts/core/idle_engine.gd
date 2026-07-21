@@ -1,15 +1,22 @@
 # ═══════════════════════════════════════════════════════════════
 #  IDLE ENGINE (idle_engine.gd) — Autoload Singleton
-#  Manages idle tick, offline progress calculation
+#  Manages idle tick, offline progress calculation & optimized unit power cache
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
 var _tick_timer: float = 0.0
 const TICK_INTERVAL := 1.0  # 1 giây mỗi tick
+var _unit_power_cache := {}
+var _cache_dirty := true
 
 func _ready() -> void:
-	# Khi game loaded → check offline progress
 	EventBus.game_loaded.connect(_on_game_loaded)
+	EventBus.unit_leveled_up.connect(func(_t, _id, _l): mark_cache_dirty())
+	EventBus.item_equipped.connect(func(_u, _i, _s): mark_cache_dirty())
+	EventBus.item_unequipped.connect(func(_u, _s): mark_cache_dirty())
+
+func mark_cache_dirty() -> void:
+	_cache_dirty = true
 
 func _process(delta: float) -> void:
 	if not GameManager.is_loaded:
@@ -20,8 +27,10 @@ func _process(delta: float) -> void:
 		_tick_timer -= TICK_INTERVAL
 		_idle_tick()
 
-# ─── Idle Tick (1/giây khi online) ─────────────────────────
 func _idle_tick() -> void:
+	if _cache_dirty:
+		_rebuild_unit_power_cache()
+		
 	var zone_teams: Dictionary = GameManager.game_data.get("zone_teams", {})
 	var zone_progress: Dictionary = GameManager.game_data.get("zone_progress", {})
 	
@@ -30,15 +39,11 @@ func _idle_tick() -> void:
 		if team.is_empty():
 			continue
 		
-		# Tính team power
-		var team_power := _calculate_team_power(team)
-		
-		# Tăng progress
+		var team_power := _calculate_cached_team_power(team)
 		var current: float = zone_progress.get(zone_id, 0.0)
-		var gain: float = team_power * 0.01  # base rate
+		var gain: float = team_power * 0.01
 		current += gain
 		
-		# Check sector clear (mỗi 100 progress = 1 sector)
 		var sectors_before := int(current - gain) / 100
 		var sectors_after := int(current) / 100
 		if sectors_after > sectors_before:
@@ -50,67 +55,62 @@ func _idle_tick() -> void:
 	
 	GameManager.game_data["zone_progress"] = zone_progress
 	
-	# Update playtime
 	var stats: Dictionary = GameManager.game_data.get("lifetime_stats", {})
 	stats["playtime_seconds"] = stats.get("playtime_seconds", 0) + 1
 	GameManager.game_data["lifetime_stats"] = stats
 
-# ─── Team Power Calculation ─────────────────────────────────
-func _calculate_team_power(team_ids: Array) -> float:
-	var total_power := 0.0
+func _rebuild_unit_power_cache() -> void:
+	_unit_power_cache.clear()
 	var survivors: Array = GameManager.game_data.get("survivors", [])
+	for s in survivors:
+		var stats: Dictionary = s.get("stats", {})
+		var eq_stats := EquipmentSystem.get_total_equipment_stats(s.get("id", ""))
+		var atk: float = stats.get("atk", 10) + eq_stats.get("atk", 0)
+		var def: float = stats.get("def", 5) + eq_stats.get("def", 0)
+		var hp: float = stats.get("hp", 50) + eq_stats.get("hp", 0)
+		_unit_power_cache[s.get("id")] = atk + def + hp * 0.1
+		
 	var monsters: Array = GameManager.game_data.get("monsters", [])
+	for m in monsters:
+		var stats: Dictionary = m.get("stats", {})
+		_unit_power_cache[m.get("id")] = stats.get("atk", 10) + stats.get("def", 5) + stats.get("hp", 50) * 0.1
+		
 	var mechas: Array = GameManager.game_data.get("mechas", [])
-	
-	for unit_id in team_ids:
-		for s in survivors:
-			if s.get("id") == unit_id:
-				var stats: Dictionary = s.get("stats", {})
-				total_power += stats.get("atk", 10) + stats.get("def", 5) + stats.get("hp", 50) * 0.1
-				break
-		for m in monsters:
-			if m.get("id") == unit_id:
-				var stats: Dictionary = m.get("stats", {})
-				total_power += stats.get("atk", 10) + stats.get("def", 5) + stats.get("hp", 50) * 0.1
-				break
-		for mc in mechas:
-			if mc.get("id") == unit_id:
-				total_power += mc.get("power_level", 50)
-				break
-	
-	return max(total_power, 1.0)
+	for mc in mechas:
+		_unit_power_cache[mc.get("id")] = mc.get("power_level", 50)
+		
+	_cache_dirty = false
 
-# ─── Sector Loot Generation ────────────────────────────────
+func _calculate_cached_team_power(team_ids: Array) -> float:
+	var total := 0.0
+	for uid in team_ids:
+		total += _unit_power_cache.get(uid, 10.0)
+	return max(total, 1.0)
+
 func _generate_sector_loot(zone_id: String, sector: int) -> void:
-	# TODO: Use zone_database loot tables + seeded PRNG
-	var loot := []
-	# Placeholder: give some gold per sector
 	GameManager.add_currency(Constants.Currency.GOLD, 5 + sector)
-	EventBus.loot_acquired.emit(loot)
+	EventBus.loot_acquired.emit([])
 
-# ─── Offline Progress ──────────────────────────────────────
 func _on_game_loaded() -> void:
+	_cache_dirty = true
 	var last_time: int = GameManager.game_data.get("last_online_timestamp", 0)
 	if last_time <= 0:
 		return
 	
 	var now := int(Time.get_unix_time_from_system())
 	var offline_seconds := now - last_time
-	
 	if offline_seconds < 60:
-		return  # Quá ngắn, bỏ qua
-	
-	# Cap offline at 8 hours
+		return
+		
 	offline_seconds = min(offline_seconds, 8 * 3600)
-	
 	print("[IdleEngine] Offline for ", offline_seconds, " seconds. Simulating...")
 	
 	var report := _simulate_offline(offline_seconds)
-	
-	if report.get("total_gold", 0) > 0 or report.get("sectors_cleared", 0) > 0:
+	if report.get("gold_earned", 0) > 0 or report.get("sectors_cleared", 0) > 0:
 		EventBus.offline_report_ready.emit(report)
 
 func _simulate_offline(seconds: int) -> Dictionary:
+	_rebuild_unit_power_cache()
 	var report := {
 		"duration_seconds": seconds,
 		"sectors_cleared": 0,
@@ -123,14 +123,13 @@ func _simulate_offline(seconds: int) -> Dictionary:
 	var zone_teams: Dictionary = GameManager.game_data.get("zone_teams", {})
 	var zone_progress: Dictionary = GameManager.game_data.get("zone_progress", {})
 	
-	# Simulate ticks
-	var ticks := seconds  # 1 tick/giây
+	var ticks := seconds
 	for zone_id in zone_teams:
 		var team: Array = zone_teams[zone_id]
 		if team.is_empty():
 			continue
 		
-		var team_power := _calculate_team_power(team)
+		var team_power := _calculate_cached_team_power(team)
 		var total_gain: float = team_power * 0.01 * ticks
 		var current: float = zone_progress.get(zone_id, 0.0)
 		
@@ -146,8 +145,6 @@ func _simulate_offline(seconds: int) -> Dictionary:
 		
 		zone_progress[zone_id] = current
 	
-	# Apply rewards
 	GameManager.game_data["zone_progress"] = zone_progress
 	GameManager.add_currency(Constants.Currency.GOLD, report["gold_earned"])
-	
 	return report
