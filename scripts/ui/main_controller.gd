@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════
-#  MAIN CONTROLLER (main_controller.gd)
+#  MAIN CONTROLLER (main_controller.gd) — Premium Edition
 #  Điều khiển Root Scene, TopBar currencies, và Tab Scene switching
 # ═══════════════════════════════════════════════════════════════
 extends Control
@@ -31,10 +31,10 @@ func _on_tab_changed(index: int) -> void:
 			tabs[i].visible = (i == index)
 
 func _update_all_currencies() -> void:
-	if label_gold: label_gold.text = "🪙 " + _format_num(GameManager.get_currency(Constants.Currency.GOLD))
-	if label_alloys: label_alloys.text = "⚙️ " + _format_num(GameManager.get_currency(Constants.Currency.ALLOYS))
-	if label_energy: label_energy.text = "⚡ " + _format_num(GameManager.get_currency(Constants.Currency.ENERGY))
-	if label_crystals: label_crystals.text = "💎 " + _format_num(GameManager.get_currency(Constants.Currency.CRYSTALS))
+	if label_gold: label_gold.text = _format_num(GameManager.get_currency(Constants.Currency.GOLD))
+	if label_alloys: label_alloys.text = _format_num(GameManager.get_currency(Constants.Currency.ALLOYS))
+	if label_energy: label_energy.text = _format_num(GameManager.get_currency(Constants.Currency.ENERGY))
+	if label_crystals: label_crystals.text = _format_num(GameManager.get_currency(Constants.Currency.CRYSTALS))
 
 func _on_currency_changed(_type: int, _new_val: int) -> void:
 	_update_all_currencies()

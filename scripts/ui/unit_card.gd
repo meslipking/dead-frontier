@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  UNIT CARD CONTROLLER (unit_card.gd) — Premium Visual Edition
-#  Hiển thị thông tin Unit với Texture Pixel Art 16-bit & Micro-Animations
+#  UNIT CARD CONTROLLER (unit_card.gd) — Premium Edition
+#  Hiển thị thông tin Unit với Full Card Click & Micro-Animations
 # ═══════════════════════════════════════════════════════════════
 extends PanelContainer
 
@@ -21,14 +21,13 @@ var unit_type: int = Constants.UnitType.SURVIVOR
 
 func _ready() -> void:
 	pivot_offset = size / 2.0
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	gui_input.connect(_on_gui_input)
+	mouse_entered.connect(func(): AnimEng.animate_button_click(self))
 
-func _on_mouse_entered() -> void:
-	AnimEng.animate_button_click(self)
-
-func _on_mouse_exited() -> void:
-	scale = Vector2(1.0, 1.0)
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_select_unit()
 
 func setup(p_data: Dictionary, p_unit_type: int = Constants.UnitType.SURVIVOR) -> void:
 	unit_data = p_data
@@ -53,17 +52,18 @@ func setup(p_data: Dictionary, p_unit_type: int = Constants.UnitType.SURVIVOR) -
 			if class_label: class_label.text = "Robot Mecha"
 			theme_color = Color(0.2, 0.9, 0.5)
 
-	# Generate & render custom 16-bit Pixel Art texture
 	var tex := PixelGen.create_unit_texture(unit_type, theme_color, 48, 48)
 	if icon_texture:
 		icon_texture.texture = tex
 		icon_texture.visible = true
 		if icon_label: icon_label.visible = false
-	elif icon_label:
-		icon_label.text = "🛡️"
 
 	if btn_select:
-		btn_select.pressed.connect(func():
-			AnimEng.animate_button_click(self)
-			EventBus.unit_selected.emit(unit_type, unit_data.get("id", ""))
-		)
+		btn_select.mouse_filter = Control.MOUSE_FILTER_PASS
+		btn_select.pressed.connect(_select_unit)
+
+func _select_unit() -> void:
+	AnimEng.animate_button_click(self)
+	AudioManager.play_sfx("ui_click")
+	print("[UnitCard] Unit card clicked! Selected unit ID: ", unit_data.get("id", ""))
+	EventBus.unit_selected.emit(unit_type, unit_data.get("id", ""))

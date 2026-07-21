@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  ROOM CARD CONTROLLER (room_card.gd) — Premium Visual Edition
-#  Hiển thị phòng Tiền đồn với Texture Pixel Art 16-bit & Micro-Animations
+#  ROOM CARD CONTROLLER (room_card.gd) — Premium Edition
+#  Hiển thị phòng Tiền đồn với Texture Pixel Art 16-bit & Full Card Click
 # ═══════════════════════════════════════════════════════════════
 extends PanelContainer
 
@@ -18,7 +18,13 @@ var room_type: int = 0
 
 func _ready() -> void:
 	pivot_offset = size / 2.0
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	gui_input.connect(_on_gui_input)
 	mouse_entered.connect(func(): AnimEng.animate_button_click(self))
+
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_open_room()
 
 func setup(p_room_type: int) -> void:
 	room_type = p_room_type
@@ -35,18 +41,16 @@ func setup(p_room_type: int) -> void:
 		icon_texture.texture = PixelGen.create_room_icon(room_type)
 		icon_texture.visible = true
 		if icon_label: icon_label.visible = false
-	elif icon_label:
-		icon_label.text = _get_room_icon()
 	
 	if btn_select:
-		btn_select.pressed.connect(func():
-			AnimEng.animate_button_click(btn_select)
-			AudioManager.play_sfx("ui_click")
-			EventBus.room_opened.emit(room_type)
-		)
+		btn_select.mouse_filter = Control.MOUSE_FILTER_PASS
+		btn_select.pressed.connect(_open_room)
 
-func _get_room_icon() -> String:
-	return "🏠"
+func _open_room() -> void:
+	AnimEng.animate_button_click(self)
+	AudioManager.play_sfx("ui_click")
+	print("[RoomCard] Room card clicked! Opening room modal type: ", room_type)
+	EventBus.room_opened.emit(room_type)
 
 func _room_type_key() -> String:
 	match room_type:
