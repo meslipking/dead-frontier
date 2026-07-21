@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  SYSTEM VERIFICATION TESTS (run_tests.gd) — Commercial FlipFight Quality
-#  Kiểm tra tự động 10 hệ thống cốt lõi: Skill Library, Equipment Forge, Audio Synth
+#  SYSTEM VERIFICATION TESTS (run_tests.gd) — Pure C Engine Grade
+#  Kiểm tra tự động 13 hệ thống cốt lõi với Động cơ Vẽ C Software Rasterizer
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
@@ -9,9 +9,10 @@ const FrameBuilder = preload("res://scripts/utils/sprite_frames_builder.gd")
 const SkillLib = preload("res://scripts/combat/skill_library.gd")
 const EquipForge = preload("res://scripts/systems/equipment_forge.gd")
 const Synth = preload("res://scripts/core/audio_synth.gd")
+const CBridge = preload("res://scripts/utils/c_pixel_engine_bridge.gd")
 
 func _ready() -> void:
-	print("🧪 BẮT ĐẦU KIỂM TRA TỰ ĐỘNG TOÀN BỘ HỆ THỐNG GAME (COMMERCIAL FLIPFIGHT GRADE)...")
+	print("🧪 BẮT ĐẦU KIỂM TRA TỰ ĐỘNG TOÀN BỘ HỆ THỐNG GAME (PURE C ENGINE GRADE)...")
 	test_save_encryption()
 	test_combat_simulation()
 	test_crafting_system()
@@ -24,7 +25,8 @@ func _ready() -> void:
 	test_skill_library()
 	test_equipment_forge()
 	test_audio_synth()
-	print("🎉 TẤT CẢ 12 HỆ THỐNG FLIPFIGHT COMMERCIAL GRADE ĐÃ QUA KIỂM TRA THÀNH CÔNG 100%!")
+	test_c_pixel_engine_bridge()
+	print("🎉 TẤT CẢ 13 HỆ THỐNG PURE C ENGINE ĐÃ QUA KIỂM TRA THÀNH CÔNG 100%!")
 
 func test_save_encryption() -> void:
 	var test_data := { "gold": 9999, "name": "Survivor_Test" }
@@ -103,3 +105,8 @@ func test_audio_synth() -> void:
 	var stream := Synth.generate_laser_sfx(880.0, 0.1)
 	assert(stream != null, "Audio Synth Test Failed!")
 	print("  [Pass] Procedural GDScript 16-bit Audio Synthesizer Engine OK")
+
+func test_c_pixel_engine_bridge() -> void:
+	var tex := CBridge.render_c_survivor_texture(Color(0.3, 0.7, 1.0), 48, 48)
+	assert(tex != null and tex.get_width() == 48, "CPixelEngineBridge Test Failed!")
+	print("  [Pass] Pure C Software Rasterizer & Byte Buffer Memory Engine OK")
