@@ -1,12 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
 #  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Modular Facade AAA 2.0
-#  Động cơ sinh Texture Pixel Art 16-bit/64-bit SNES 16-Frame Spritesheet (3,200 Frames)
-#  Animation Độc Bản 100% Cho 5 Hệ Lớp (Brute, Nimble, Nocturnal, Feral, Pilot)
+#  Động cơ sinh Texture Pixel Art 16-bit/64-bit SNES 16-Frame Spritesheet
+#  TÍCH HỢP HIỆU ỨNG VŨ KHÍ & TRANG BỊ HIỆN ĐẠI TƯƠNG ỨNG TRÊN SPRITE SHEET!
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
 const CharMatrices = preload("res://scripts/utils/pixel_art/character_pixel_matrices.gd")
 const GearMatrices = preload("res://scripts/utils/pixel_art/modern_gear_matrices.gd")
+const CharProfiles = preload("res://scripts/data/character_animation_profiles.gd")
 
 const PALETTE := {
 	".": Color(0, 0, 0, 0),         # Transparent
@@ -57,16 +58,26 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 # ─── 16-FRAME SPRITESHEET MATRIX GENERATOR (CLASS-SPECIFIC ANIMATIONS) ─────
 static func get_unit_16frame_texture(cname: String, anim_state: String = "idle", frame_idx: int = 0) -> ImageTexture:
 	var base_matrix := CharMatrices.get_matrix_by_name(cname)
-	var modified_matrix := _apply_class_specific_animation(base_matrix, cname, anim_state, frame_idx)
+	
+	# Lookup Character Profile for Assigned Weapon & Gear
+	var profile: Dictionary = {}
+	for pid in CharProfiles.PROFILES:
+		if CharProfiles.PROFILES[pid].get("name") == cname:
+			profile = CharProfiles.PROFILES[pid]
+			break
+			
+	var weapon_name: String = str(profile.get("equipped_weapon", "Plasma Rifle"))
+	var armor_name: String = str(profile.get("equipped_armor", "Titan Exo"))
+	
+	var modified_matrix := _apply_class_and_gear_animations(base_matrix, cname, weapon_name, armor_name, anim_state, frame_idx)
 	return matrix_to_texture(modified_matrix, 2)
 
-static func _apply_class_specific_animation(base_matrix: Array, cname: String, anim_state: String, frame_idx: int) -> Array:
+static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, weapon_name: String, armor_name: String, anim_state: String, frame_idx: int) -> Array:
 	var h: int = base_matrix.size()
 	var new_matrix: Array = []
 	var y_offset := 0
 	var x_offset := 0
 	var flash_red := false
-	var add_vfx_type := ""
 	
 	# Determine Class Archetype
 	var class_type := "Brute"
@@ -80,92 +91,82 @@ static func _apply_class_specific_animation(base_matrix: Array, cname: String, a
 		class_type = "Pilot"
 
 	match class_type:
-		"Brute": # Heavy Shield Slam Animation & Ground Fissure VFX
+		"Brute":
 			match anim_state:
 				"idle":
 					if frame_idx == 1: y_offset = -1
 					elif frame_idx == 3: y_offset = 1
 				"walk":
-					y_offset = (frame_idx % 2) * 2 # Heavy stomping gait
+					y_offset = (frame_idx % 2) * 2
 				"attack":
-					if frame_idx == 1: y_offset = -3 # Raise shield high
-					elif frame_idx == 2:
-						y_offset = 4 # Slam shield down onto ground
-						add_vfx_type = "ground_slam"
+					if frame_idx == 1: y_offset = -3
+					elif frame_idx == 2: y_offset = 4
 				"hit":
 					x_offset = -2
 					if frame_idx == 1: flash_red = true
 
-		"Nimble": # Acrobatic Dash & Double Cross Slash VFX
+		"Nimble":
 			match anim_state:
 				"idle":
 					if frame_idx == 1: x_offset = 1
 					elif frame_idx == 3: x_offset = -1
 				"walk":
-					x_offset = (frame_idx % 2) * 3 # Fast ninja dash
+					x_offset = (frame_idx % 2) * 3
 				"attack":
-					if frame_idx == 1: x_offset = 4 # Lunge forward fast
-					elif frame_idx == 2:
-						x_offset = 6
-						add_vfx_type = "cross_slash"
+					if frame_idx == 1: x_offset = 4
+					elif frame_idx == 2: x_offset = 6
 				"hit":
 					x_offset = -4
 					if frame_idx == 1: flash_red = true
 
-		"Nocturnal": # Levitation Mid-Air & Purple Void Orbs VFX
+		"Nocturnal":
 			match anim_state:
 				"idle":
-					# Continuous smooth floating loop (-2 -> -4 -> -2 -> 0)
 					if frame_idx == 0: y_offset = 0
 					elif frame_idx == 1: y_offset = -2
 					elif frame_idx == 2: y_offset = -4
 					elif frame_idx == 3: y_offset = -2
 				"walk":
-					y_offset = -3 # Floating movement
+					y_offset = -3
 					x_offset = (frame_idx % 2) * 2
 				"attack":
 					y_offset = -5
-					if frame_idx == 2: add_vfx_type = "void_orb"
 				"hit":
 					if frame_idx == 1: flash_red = true
 
-		"Feral": # Ranger Bow Draw (-6px) & Arrow Release VFX
+		"Feral":
 			match anim_state:
 				"idle":
 					if frame_idx == 1: y_offset = -1
 				"walk":
 					y_offset = (frame_idx % 2) * 2
 				"attack":
-					if frame_idx == 1: x_offset = -4 # Draw bowstring back
-					elif frame_idx == 2:
-						x_offset = 2 # Release arrow
-						add_vfx_type = "arrow_flight"
+					if frame_idx == 1: x_offset = -4
+					elif frame_idx == 2: x_offset = 2
 				"hit":
 					x_offset = -3
 					if frame_idx == 1: flash_red = true
 
-		_: # Pilot / Dragon Blood: Jetpack Thruster Hover & Plasma Laser Barrage
+		_:
 			match anim_state:
 				"idle":
-					if frame_idx % 2 == 1: y_offset = -2 # Jetpack hover
+					if frame_idx % 2 == 1: y_offset = -2
 				"walk":
 					y_offset = -3
 					x_offset = (frame_idx % 2) * 4
 				"attack":
 					if frame_idx == 1: y_offset = -4
-					elif frame_idx == 2:
-						add_vfx_type = "plasma_laser"
 				"hit":
 					x_offset = -2
 					if frame_idx == 1: flash_red = true
 
-	# Apply Offsets & VFX Overlays
+	# Apply Offsets, Weapon Gear Overlay & Attack Particle Effects
 	for y in range(h):
 		var src_y := y - y_offset
 		if src_y >= 0 and src_y < h:
 			var row: String = base_matrix[src_y]
 			
-			# Apply X Offset (Horizontal Shift)
+			# Apply Horizontal Shift
 			if x_offset > 0:
 				row = ".".repeat(x_offset) + row.substr(0, 32 - x_offset)
 			elif x_offset < 0:
@@ -174,16 +175,41 @@ static func _apply_class_specific_animation(base_matrix: Array, cname: String, a
 				
 			if flash_red:
 				row = row.replace("K", "R").replace("H", "O").replace("F", "R")
-			elif add_vfx_type == "plasma_laser" and y == 16:
-				row = row.substr(0, 22) + "EEEEEEEEEE"
-			elif add_vfx_type == "ground_slam" and y == 30:
-				row = "OOO" + row.substr(3, 26) + "OOO"
-			elif add_vfx_type == "cross_slash" and (y == 14 or y == 18):
-				row = row.substr(0, 20) + "EEEEEEEEEEEE"
-			elif add_vfx_type == "void_orb" and y == 15:
-				row = row.substr(0, 22) + "PPPPPPPPPP"
-			elif add_vfx_type == "arrow_flight" and y == 16:
-				row = row.substr(0, 24) + "WWWWWWWW"
+			else:
+				# OVERLAY WEAPON GEAR & ATTACK VFX ACCORDING TO EQUIPPED WEAPON
+				if weapon_name.contains("Plasma"):
+					# Cyan Plasma Barrel on right hand + Laser Beam during attack
+					if src_y in [16, 17]:
+						if anim_state == "attack":
+							row = row.substr(0, 20) + "EEEEEEEEEEEE" # Cyan laser beam extending 12px
+						else:
+							row = row.substr(0, 22) + "EEEEEE"
+				elif weapon_name.contains("Chainsaw") or weapon_name.contains("Sword"):
+					# Red Fire Chainsaw Blade + Orange Slash Wave during attack
+					if src_y in [14, 15, 16, 17, 18]:
+						if anim_state == "attack":
+							row = row.substr(0, 20) + "OOOOOOOOOOOO" # Orange fire arc
+						else:
+							row = row.substr(0, 22) + "RRRRRR"
+				elif weapon_name.contains("Railgun"):
+					# Heavy Railgun Barrel + Electric Yellow Lightning Arc during attack
+					if src_y in [16, 17, 18]:
+						if anim_state == "attack":
+							row = row.substr(0, 20) + "YYYYYYYYYYYY" # Yellow shock arc
+						else:
+							row = row.substr(0, 22) + "YYYYYY"
+				elif weapon_name.contains("Sniper"):
+					# Silver Rifle Barrel + Thin Red Target Laser Beam during attack
+					if src_y == 16:
+						if anim_state == "attack":
+							row = row.substr(0, 20) + "RRRRRRRRRRRR" # Thin red sniper laser line
+						else:
+							row = row.substr(0, 22) + "AAAAAA"
+							
+				# OVERLAY ARMOR ACCENTS (Titan Exo Golden Shoulders)
+				if armor_name.contains("Titan") or armor_name.contains("Exo"):
+					if src_y in [12, 13]:
+						row = row.substr(0, 10) + "GG" + row.substr(12, 8) + "GG" + row.substr(22)
 				
 			new_matrix.append(row)
 		else:
