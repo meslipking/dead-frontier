@@ -1,64 +1,36 @@
-# 📋 TASK LIST — Dead Frontier: Mecha & Monsters
-# Engine: Godot 4 + GDScript | Art: SNES 16-bit | Lang: Tiếng Việt | Model: Premium
+# 📋 TASK LIST — Dead Frontier: Mecha & Monsters (Premium Edition)
 
 ---
 
-# ═══════════════════════════════════════════════════════════════
-# PHASE 1 — FOUNDATION & MVP (HOÀN THÀNH 100%)
-# ═══════════════════════════════════════════════════════════════
+## Component 1: Visual 2D Combat Arena & Animation Engine
+- [x] 1.1 Create `scripts/combat/visual_combat.gd` (2D combat visual controller, team slots, HP/Action bars, floating damage numbers)
+- [x] 1.2 Update `scenes/wastelands/CombatScene.tscn` (2D battlefield layout, character slots, speed controls 1x/2x/4x)
+- [x] 1.3 Update `scripts/ui/combat_ui.gd` (Connect visual battle loop, victory summary screen with loot showcase)
 
-## 1.1 Project Setup & Config
-- [x] Cài đặt Godot 4.4+ config
-- [x] Tạo Godot project tại `d:\New game\DeadFrontier\`
-- [x] Cấu hình `project.godot`: resolution 360x640, stretch canvas_items, GL Compatibility
-- [x] Tạo cấu trúc thư mục 39 subdirectories
-- [x] Tạo `.gitignore` & init git repository push lên GitHub
+## Component 2: Complete Outpost Room Modals (8/8 Rooms Interactive)
+- [x] 2.1 Create `scenes/outpost/ArmoryRoom.tscn` & `scripts/ui/armory_room.gd` (Inventory grid, item inspector, equip/sell)
+- [x] 2.2 Create `scenes/outpost/TradingPostRoom.tscn` & `scripts/ui/trading_post_room.gd` (Daily merchant deals, buy/sell)
+- [x] 2.3 Enhance `scenes/outpost/WorkshopRoom.tscn` & `scripts/ui/workshop_room.gd` (Crafting progress bar, ingredient inspector)
+- [x] 2.4 Enhance `scenes/outpost/BeastPenRoom.tscn` & `scripts/ui/beast_pen_room.gd` (Monster roster, feeding UI, evolution & breeding)
+- [x] 2.5 Enhance `scenes/outpost/MechaHangarRoom.tscn` & `scripts/ui/mecha_hangar_room.gd` (4-part picker, stats preview, refuel)
+- [x] 2.6 Enhance `scenes/outpost/CommandCenterRoom.tscn` & `scripts/ui/command_center_room.gd` (Achievements grid, Prestige shop, language toggle)
+- [x] 2.7 Update `scripts/ui/outpost_tab.gd` (Register all 8 room modal scenes)
 
-## 1.2 Autoload Singletons
-- [x] `scripts/core/constants.gd` — 15 Enums & data tables
-- [x] `scripts/core/event_bus.gd` — 30+ Signals
-- [x] `scripts/core/game_manager.gd` — State & 4 Currencies
-- [x] `scripts/core/save_manager.gd` — FNV-1a Checksum + XOR encryption
-- [x] `scripts/core/idle_engine.gd` — Offline simulation & tick engine
+## Component 3: Deep Game Mechanics & Systems
+- [x] 3.1 Equipment Set Bonuses (`scripts/systems/equipment_system.gd` — 2p/4p set bonuses & slot validation)
+- [x] 3.2 Monster Evolution & Breeding (`scripts/systems/monster_system.gd` — Evolution transformations & breeding fusion)
+- [x] 3.3 Mecha Fuel & Inventory Validation (`scripts/systems/mecha_system.gd` — Fuel consumption & refuel mechanics)
+- [x] 3.4 Production Save Security (`scripts/core/save_manager.gd` — Enable encryption `DISABLE_ENCRYPTION = false`)
 
-## 1.3 - 1.11 Navigation, UI & Scenes
-- [x] `scenes/main/Main.tscn` & `main_controller.gd`
-- [x] `scenes/shared/BottomNavBar.tscn` & `bottom_nav.gd`
-- [x] `scenes/outpost/OutpostTab.tscn` & `room_card.gd` (8 Outpost rooms)
-- [x] `scenes/squad/SquadTab.tscn` & `unit_card.gd` (Survivors, Monsters, Mechas)
-- [x] `scenes/wastelands/WastelandsTab.tscn` & `zone_card.gd` (7 Zones)
-- [x] `scenes/sieges/SiegesTab.tscn` & `sieges_tab.gd` (Daily boss raids)
-- [x] `scenes/wastelands/ExplorationReport.tscn` & `exploration_report.gd`
+## Component 4: Content Expansion (100+ Items, 15+ Monsters, 35+ Achievements)
+- [x] 4.1 Expand `scripts/data/item_database.gd` (40+ Weapons, 20+ Armors, 15+ Accessories, 15+ Materials)
+- [x] 4.2 Expand `scripts/data/monster_database.gd` (15+ Monster Species across 5 Elements with 5-stage evolutions)
+- [x] 4.3 Expand `scripts/data/mecha_database.gd` (16 Mecha Parts across Head, Torso, Arms, Legs)
+- [x] 4.4 Expand `scripts/data/crafting_database.gd` (20+ Recipes)
+- [x] 4.5 Expand `scripts/data/achievement_database.gd` (35+ Achievements)
+- [x] 4.6 Expand Localization `locale/vi.csv` & `locale/en.csv` (100% string coverage)
 
----
-
-# ═══════════════════════════════════════════════════════════════
-# PHASE 2 — CORE COMBAT & SYSTEMS (HOÀN THÀNH 100%)
-# ═══════════════════════════════════════════════════════════════
-- [x] 2.1 Item Database (`item_database.gd`) & Inventory System (`inventory_system.gd`)
-- [x] 2.2 Equipment System (`equipment_system.gd`) - equip/unequip & stat bonuses
-- [x] 2.3 Turn-Based Combat Engine (`damage_calculator.gd`, `turn_system.gd`, `combat_ai.gd`, `combat_manager.gd`)
-- [x] 2.4 Combat UI & Visuals (`CombatScene.tscn`, `combat_ui.gd`)
-- [x] 2.5 Monster Capture System (`capture_system.gd`, `monster_database.gd`)
-- [x] 2.6 Crafting System (`crafting_system.gd`, `crafting_database.gd`)
-
----
-
-# ═══════════════════════════════════════════════════════════════
-# PHASE 3 — ADVANCED FEATURES (HOÀN THÀNH 100%)
-# ═══════════════════════════════════════════════════════════════
-- [x] 3.1 Mecha System (`mecha_system.gd`, `mecha_database.gd`) - 4-part robot assembly
-- [x] 3.2 Monster Evolution & Breeding (`monster_system.gd`) - 5 evolution stages
-- [x] 3.3 Siege System (`siege_database.gd`) - 4 daily boss challenges
-- [x] 3.4 Outpost Room Upgrades & Progression (`progression_system.gd`)
-- [x] 3.5 Achievement System (`achievement_system.gd`, `achievement_database.gd`) - 50+ achievements
-- [x] 3.6 Localization i18n (`vi.csv`, `en.csv`)
-
----
-
-# ═══════════════════════════════════════════════════════════════
-# PHASE 4 — POLISH & DISTRIBUTION (READY FOR DEPLOY)
-# ═══════════════════════════════════════════════════════════════
-- [x] Save file anti-cheat encryption verified
-- [x] Godot project structure verified
-- [x] GitHub sync complete (100% code pushed)
+## Component 5: Sound & Visual Polish
+- [x] 5.1 Create `scripts/core/audio_manager.gd` (BGM & SFX audio bus manager with pitch variance)
+- [x] 5.2 Create `scripts/ui/toast_manager.gd` (Floating notification toasts for items, level-ups, achievements)
+- [x] 5.3 Update `scripts/tests/run_tests.gd` (Verify all new premium systems — 100% PASS)
