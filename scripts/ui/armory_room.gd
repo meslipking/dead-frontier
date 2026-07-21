@@ -1,10 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
 #  STORAGE MODAL CONTROLLER (armory_room.gd) — Reference Image 2 & 6 Match
-#  Hiển thị Lưới Kho Hàng 4x4 với Icon Pixel 16-Bit & Số Lượng Góc Dưới
+#  Hiển thị Lưới Kho Hàng 4x4 với Icon Pixel 16-Bit Ma Trận Sắc Nét 100%
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
+const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const EquipForge = preload("res://scripts/systems/equipment_forge.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const ToastMgr = preload("res://scripts/ui/toast_manager.gd")
@@ -66,13 +66,7 @@ func populate_inventory() -> void:
 		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		
 		var itype: int = item.get("type", Constants.ItemType.WEAPON)
-		var rcolor := Color(0.6, 0.3, 0.2)
-		if itype == Constants.ItemType.WEAPON: rcolor = Color(0.7, 0.3, 0.2)
-		elif itype == Constants.ItemType.ARMOR: rcolor = Color(0.3, 0.5, 0.3)
-		elif itype == Constants.ItemType.ACCESSORY: rcolor = Color(0.2, 0.5, 0.7)
-		else: rcolor = Color(0.7, 0.6, 0.3)
-		
-		spr.texture = PixelGen.create_item_icon(itype, rcolor)
+		spr.texture = MasterPixel.get_item_texture(itype)
 		slot_box.add_child(spr)
 		
 		var count: int = item.get("count", item.get("upgrade_level", 1))
