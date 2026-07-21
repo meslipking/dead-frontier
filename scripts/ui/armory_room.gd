@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  ARMORY ROOM CONTROLLER (armory_room.gd) — FlipFight Blacksmith
-#  Lưới Trang bị 4x4, Cường hóa +1..+10 & Tháo rỡ phế liệu
+#  STORAGE MODAL CONTROLLER (armory_room.gd) — Reference Image 2 & 6 Match
+#  Hiển thị Lưới Kho Hàng 4x4 với Icon Pixel 16-Bit & Số Lượng Góc Dưới
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -30,15 +30,14 @@ func _ready() -> void:
 		btn_upgrade.pressed.connect(func():
 			AnimEng.animate_button_click(btn_upgrade)
 			AudioManager.play_sfx("ui_click")
-			if not selected_item.is_empty():
-				var res := EquipForge.upgrade_equipment(selected_item)
-				if res.get("success", false):
-					ToastMgr.show_toast("🔨 Cường hóa thành công + " + str(res["new_level"]) + "!", Color(0.2, 0.9, 0.5))
-				else:
-					ToastMgr.show_toast("❌ " + res.get("reason", "Cường hóa thất bại!"), Color(0.9, 0.3, 0.3))
+			var cost_gold := 2
+			if GameManager.spend_currency(Constants.Currency.GOLD, cost_gold):
+				var cap: int = GameManager.game_data.get("inventory_capacity", 68)
+				GameManager.game_data["inventory_capacity"] = cap + 1
 				populate_inventory()
+				ToastMgr.show_toast("📦 Mở rộng kho thành công! (+1 ô)", Color(0.2, 0.9, 0.5))
 			else:
-				ToastMgr.show_toast("⚠️ Hãy chọn 1 trang bị để cường hóa!", Color(0.9, 0.8, 0.2))
+				ToastMgr.show_toast("❌ Không đủ Vàng!", Color(0.9, 0.3, 0.3))
 		)
 
 func populate_inventory() -> void:
@@ -47,27 +46,49 @@ func populate_inventory() -> void:
 		child.queue_free()
 		
 	var inv: Array = GameManager.get_inventory()
-	var cap: int = GameManager.game_data.get("inventory_capacity", 40)
+	var cap: int = GameManager.game_data.get("inventory_capacity", 68)
 	if lbl_capacity:
-		lbl_capacity.text = "Sức chứa kho: " + str(inv.size()) + " / " + str(cap)
+		lbl_capacity.text = "Stored items: " + str(inv.size()) + "/" + str(cap)
 		
 	for item in inv:
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(54, 54)
-		var lvl: int = item.get("upgrade_level", 0)
-		btn.text = item.get("name", "Vật phẩm") + ("\n+" + str(lvl) if lvl > 0 else "")
+		var slot_panel := PanelContainer.new()
+		slot_panel.custom_minimum_size = Vector2(58, 58)
+		slot_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		var slot_box := Control.new()
+		slot_box.custom_minimum_size = Vector2(58, 58)
+		slot_panel.add_child(slot_box)
+		
+		var spr := TextureRect.new()
+		spr.custom_minimum_size = Vector2(44, 44)
+		spr.position = Vector2(7, 7)
+		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		
 		var itype: int = item.get("type", Constants.ItemType.WEAPON)
-		var rcolor := Color(0.7, 0.7, 0.7)
-		var tex := PixelGen.create_item_icon(itype, rcolor)
-		btn.icon = tex
-		btn.expand_icon = true
+		var rcolor := Color(0.6, 0.3, 0.2)
+		if itype == Constants.ItemType.WEAPON: rcolor = Color(0.7, 0.3, 0.2)
+		elif itype == Constants.ItemType.ARMOR: rcolor = Color(0.3, 0.5, 0.3)
+		elif itype == Constants.ItemType.ACCESSORY: rcolor = Color(0.2, 0.5, 0.7)
+		else: rcolor = Color(0.7, 0.6, 0.3)
 		
+		spr.texture = PixelGen.create_item_icon(itype, rcolor)
+		slot_box.add_child(spr)
+		
+		var count: int = item.get("count", item.get("upgrade_level", 1))
+		if count > 0:
+			var count_lbl := Label.new()
+			count_lbl.text = str(count)
+			count_lbl.add_theme_font_size_override("font_size", 9)
+			count_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
+			count_lbl.position = Vector2(36, 38)
+			slot_box.add_child(count_lbl)
+			
 		var cur_item: Dictionary = item
-		btn.pressed.connect(func():
-			AnimEng.animate_button_click(btn)
-			AudioManager.play_sfx("ui_click")
-			selected_item = cur_item
-			ToastMgr.show_toast("🔍 Đã chọn: " + cur_item.get("name", ""), Color(0.3, 0.7, 1.0))
+		slot_panel.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				AnimEng.animate_button_click(slot_panel)
+				AudioManager.play_sfx("ui_click")
+				ToastMgr.show_toast("🔍 " + cur_item.get("name", "Vật phẩm"), Color(0.3, 0.7, 1.0))
 		)
-		item_grid.add_child(btn)
+		item_grid.add_child(slot_panel)

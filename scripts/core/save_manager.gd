@@ -7,7 +7,7 @@ extends Node
 const SAVE_FILE_PATH := "user://deadfrontier_save.dat"
 const SAVE_VERSION := 1
 const XOR_KEY := 0x7B
-const DISABLE_ENCRYPTION := false  # Production anti-cheat encryption ENABLED
+const DISABLE_ENCRYPTION := false
 
 # ─── Default Save Data ──────────────────────────────────────
 func default_save() -> Dictionary:
@@ -16,10 +16,10 @@ func default_save() -> Dictionary:
 		"last_online_timestamp": int(Time.get_unix_time_from_system()),
 		
 		# Currencies
-		"gold": 100,
-		"alloys": 20,
-		"energy": 50,
-		"crystals": 0,
+		"gold": 4,
+		"alloys": 16,
+		"energy": 44,
+		"crystals": 896,
 		
 		# Units
 		"survivors": _generate_starter_survivors(),
@@ -64,33 +64,49 @@ func default_save() -> Dictionary:
 		},
 	}
 
-# ─── Starter Units ─────────────────────────────────────────
+# ─── Starter Units (Matching Reference Image 5) ─────────────
 func _generate_starter_survivors() -> Array:
 	return [
-		{ "id": "surv_001", "name": "Minh", "class": Constants.SurvivorClass.SCOUT,
-		  "level": 1, "exp": 0, "traits": ["tough"],
-		  "stats": { "hp": 100, "atk": 15, "def": 8, "spd": 12, "acc": 10, "luck": 5 } },
-		{ "id": "surv_002", "name": "Hương", "class": Constants.SurvivorClass.MEDIC,
-		  "level": 1, "exp": 0, "traits": ["careful"],
-		  "stats": { "hp": 80, "atk": 8, "def": 6, "spd": 10, "acc": 12, "luck": 8 } },
-		{ "id": "surv_003", "name": "Đức", "class": Constants.SurvivorClass.BRAWLER,
-		  "level": 1, "exp": 0, "traits": ["strong"],
-		  "stats": { "hp": 130, "atk": 18, "def": 12, "spd": 7, "acc": 8, "luck": 3 } },
-		{ "id": "surv_004", "name": "Lan", "class": Constants.SurvivorClass.SNIPER,
-		  "level": 1, "exp": 0, "traits": ["eagle_eye"],
-		  "stats": { "hp": 70, "atk": 20, "def": 5, "spd": 9, "acc": 18, "luck": 6 } },
+		{ "id": "adv_1", "name": "Iron Defender", "class": Constants.SurvivorClass.BRAWLER,
+		  "level": 18, "exp": 0, "traits": "Brute, Nimble",
+		  "stats": { "hp": 140, "atk": 20, "def": 15, "spd": 8, "acc": 10, "luck": 5 } },
+		{ "id": "adv_2", "name": "Night Terror", "class": Constants.SurvivorClass.SCOUT,
+		  "level": 19, "exp": 0, "traits": "Nocturnal",
+		  "stats": { "hp": 110, "atk": 24, "def": 8, "spd": 14, "acc": 14, "luck": 8 } },
+		{ "id": "adv_3", "name": "Shadow Dancer", "class": Constants.SurvivorClass.SNIPER,
+		  "level": 19, "exp": 0, "traits": "Brute, Nocturnal",
+		  "stats": { "hp": 105, "atk": 26, "def": 7, "spd": 13, "acc": 16, "luck": 9 } },
+		{ "id": "adv_4", "name": "Tempest", "class": Constants.SurvivorClass.LEADER,
+		  "level": 23, "exp": 0, "traits": "Feral, Dragon Blood",
+		  "stats": { "hp": 130, "atk": 28, "def": 12, "spd": 11, "acc": 15, "luck": 10 } },
+		{ "id": "adv_5", "name": "Hailstorm", "class": Constants.SurvivorClass.SCOUT,
+		  "level": 24, "exp": 0, "traits": "Feral",
+		  "stats": { "hp": 120, "atk": 25, "def": 10, "spd": 12, "acc": 13, "luck": 6 } },
+		{ "id": "adv_6", "name": "King's Hand", "class": Constants.SurvivorClass.BRAWLER,
+		  "level": 26, "exp": 0, "traits": "Brute",
+		  "stats": { "hp": 180, "atk": 32, "def": 18, "spd": 9, "acc": 11, "luck": 7 } },
+		{ "id": "adv_7", "name": "Bard", "class": Constants.SurvivorClass.MEDIC,
+		  "level": 25, "exp": 0, "traits": "Feral",
+		  "stats": { "hp": 115, "atk": 16, "def": 9, "spd": 11, "acc": 12, "luck": 12 } },
+		{ "id": "adv_8", "name": "Holy Knight", "class": Constants.SurvivorClass.BRAWLER,
+		  "level": 19, "exp": 0, "traits": "Brute",
+		  "stats": { "hp": 150, "atk": 22, "def": 16, "spd": 8, "acc": 10, "luck": 6 } },
 	]
 
 func _generate_starter_items() -> Array:
 	return [
 		{ "id": "item_001", "name": "Dao rỉ sét", "type": Constants.ItemType.WEAPON,
-		  "rarity": Constants.Rarity.COMMON, "stats": { "atk": 5 }, "upgrade_level": 0, "set_id": "scout_set" },
+		  "rarity": Constants.Rarity.COMMON, "stats": { "atk": 5 }, "upgrade_level": 0, "set_id": "scout_set", "count": 5 },
 		{ "id": "item_002", "name": "Áo da cũ", "type": Constants.ItemType.ARMOR,
-		  "rarity": Constants.Rarity.COMMON, "stats": { "def": 4, "hp": 10 }, "upgrade_level": 0, "set_id": "scout_set" },
+		  "rarity": Constants.Rarity.COMMON, "stats": { "def": 4, "hp": 10 }, "upgrade_level": 0, "set_id": "scout_set", "count": 4 },
 		{ "id": "item_003", "name": "Phế liệu sắt", "type": Constants.ItemType.MATERIAL,
-		  "rarity": Constants.Rarity.COMMON, "count": 5 },
+		  "rarity": Constants.Rarity.COMMON, "count": 13 },
 		{ "id": "item_004", "name": "Mạch điện hỏng", "type": Constants.ItemType.MATERIAL,
-		  "rarity": Constants.Rarity.COMMON, "count": 3 },
+		  "rarity": Constants.Rarity.COMMON, "count": 28 },
+		{ "id": "item_005", "name": "Quặng thạch anh", "type": Constants.ItemType.MATERIAL,
+		  "rarity": Constants.Rarity.RARE, "count": 195 },
+		{ "id": "item_006", "name": "Gỗ niken cổ", "type": Constants.ItemType.MATERIAL,
+		  "rarity": Constants.Rarity.EPIC, "count": 248 },
 	]
 
 # ─── Save Game ──────────────────────────────────────────────
@@ -107,9 +123,9 @@ func save_game(data: Dictionary) -> void:
 	if file:
 		file.store_string(save_str)
 		file.close()
-		print("[SaveManager] Game saved successfully with UTF-8 PackedByteArray checksum.")
+		print("[SaveManager] Game saved successfully.")
 	else:
-		push_error("[SaveManager] Failed to save game! Error: " + str(FileAccess.get_open_error()))
+		push_error("[SaveManager] Failed to save game!")
 
 # ─── Load Game ──────────────────────────────────────────────
 func load_game() -> Dictionary:
@@ -152,7 +168,7 @@ func load_game() -> Dictionary:
 	print("[SaveManager] Game loaded securely. Save version: ", parsed.get("save_version", 0))
 	return parsed
 
-# ─── Robust UTF-8 Byte Encryption (PackedByteArray FNV-1a + XOR) ─
+# ─── Robust UTF-8 Byte Encryption ──────────────────────────
 func _fnv1a_hash(text: String) -> int:
 	var hash_val: int = 2166136261
 	var bytes := text.to_utf8_buffer()
@@ -171,7 +187,7 @@ func _encrypt(json_str: String) -> String:
 
 func _decrypt(hex_str: String) -> String:
 	if hex_str.begins_with("{"):
-		return hex_str  # Backward compat
+		return hex_str
 	
 	var encrypted_bytes := PackedByteArray()
 	var i := 0
@@ -197,7 +213,7 @@ func _decrypt(hex_str: String) -> String:
 	var expected := _fnv1a_hash(data_str)
 	
 	if saved_checksum != expected:
-		push_warning("[Anti-Cheat] Save integrity check FAILED! Tampering detected.")
+		push_warning("[Anti-Cheat] Save integrity check FAILED!")
 		return ""
 	
 	return data_str

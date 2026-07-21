@@ -12,8 +12,8 @@ grow_vertical = 2
 script = ExtResource("1_script")
 lbl_capacity = NodePath("Center/Panel/Margin/VBox/LblCapacity")
 item_grid = NodePath("Center/Panel/Margin/VBox/Scroll/ItemGrid")
-btn_upgrade = NodePath("Center/Panel/Margin/VBox/HBox/BtnUpgrade")
-btn_close = NodePath("Center/Panel/Margin/VBox/HBox/BtnClose")
+btn_upgrade = NodePath("Center/Panel/Margin/VBox/UpgradeBox/BtnUpgrade")
+btn_close = NodePath("Center/Panel/Margin/VBox/BtnClose")
 
 [node name="DimBackground" type="ColorRect" parent="."]
 layout_mode = 1
@@ -33,31 +33,64 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Center"]
-custom_minimum_size = Vector2(340, 260)
+custom_minimum_size = Vector2(320, 420)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="Center/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "🛡️ KHO VŨ KHÍ (ARMORY)"
-horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+text = "STORAGE"
+
+[node name="OptionsRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ShowLabel" type="Label" parent="Center/Panel/Margin/VBox/OptionsRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "Show: (O) All"
+
+[node name="OrderLabel" type="Label" parent="Center/Panel/Margin/VBox/OptionsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "Order by: (O) Type"
+horizontal_alignment = 2
+
+[node name="UpgradeBox" type="CenterContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="BtnUpgrade" type="Button" parent="Center/Panel/Margin/VBox/UpgradeBox"]
+custom_minimum_size = Vector2(160, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Spaces +1
+🟡 2  ⚔️ 60"
 
 [node name="LblCapacity" type="Label" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 11
-text = "Sức chứa kho: 4 / 40"
-horizontal_alignment = 1
+text = "Stored items: 58/68"
+
+[node name="SubInstruction" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "Short tap to view, long press to sell"
 
 [node name="Scroll" type="ScrollContainer" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
@@ -66,16 +99,13 @@ size_flags_vertical = 3
 [node name="ItemGrid" type="GridContainer" parent="Center/Panel/Margin/VBox/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 4
 
-[node name="HBox" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(80, 28)
 layout_mode = 2
-
-[node name="BtnUpgrade" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Mở rộng kho (100 Vàng)"
-
-[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
-layout_mode = 2
-text = "Đóng"
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 11
+text = "CLOSE"

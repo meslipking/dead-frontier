@@ -1,90 +1,104 @@
 # ═══════════════════════════════════════════════════════════════
-#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd) — FlipFight Grade
-#  Bản đồ Thám hiểm PVE Node Graph (10 Stage Nodes, Boss Skulls & Auto-Farm)
+#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd) — Reference Image 1 Match
+#  Hiển thị Thẻ Vùng Hoang Dungeons với Bìa Pixel Art Ngang & Active Looting
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-const ZoneDb = preload("res://scripts/data/zone_database.gd")
 const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
+const CBridge = preload("res://scripts/utils/c_pixel_engine_bridge.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 
-@export var zone_title_label: Label
-@export var zone_desc_label: Label
-@export var nodes_container: Control
-@export var btn_prev_zone: Button
-@export var btn_next_zone: Button
-@export var btn_start_battle: Button
-
-var selected_zone_idx: int = 0
-var current_stage_node: int = 1
-var zone_list: Array = []
+@export var list_container: VBoxContainer
 
 func _ready() -> void:
-	zone_list = ZoneDb.get_all_zones()
-	_update_zone_display()
-	
-	if btn_prev_zone:
-		btn_prev_zone.pressed.connect(func():
-			AnimEng.animate_button_click(btn_prev_zone)
-			AudioManager.play_sfx("ui_click")
-			selected_zone_idx = max(selected_zone_idx - 1, 0)
-			_update_zone_display()
-		)
-		
-	if btn_next_zone:
-		btn_next_zone.pressed.connect(func():
-			AnimEng.animate_button_click(btn_next_zone)
-			AudioManager.play_sfx("ui_click")
-			selected_zone_idx = min(selected_zone_idx + 1, zone_list.size() - 1)
-			_update_zone_display()
-		)
-		
-	if btn_start_battle:
-		btn_start_battle.pressed.connect(func():
-			AnimEng.animate_button_click(btn_start_battle)
-			AudioManager.play_sfx("ui_click")
-			_start_pve_battle()
-		)
+	populate_dungeons()
 
-func _update_zone_display() -> void:
-	if zone_list.is_empty(): return
-	var zdata: Dictionary = zone_list[selected_zone_idx]
-	
-	if zone_title_label:
-		zone_title_label.text = "🗺️ " + zdata.get("name", "Vùng hoang") + " (Cấp " + str(zdata.get("req_level", 1)) + ")"
-	if zone_desc_label:
-		zone_desc_label.text = zdata.get("desc", "Khu vực nguy hiểm tận thế.")
-		
-	_render_stage_nodes()
-
-func _render_stage_nodes() -> void:
-	if not nodes_container: return
-	for child in nodes_container.get_children():
+func populate_dungeons() -> void:
+	if not list_container: return
+	for child in list_container.get_children():
 		child.queue_free()
 		
-	# Render 10 PVE Stage Nodes (FlipFight Node Graph)
-	for i in range(1, 11):
-		var btn := Button.new()
-		btn.custom_minimum_size = Vector2(56, 44)
-		btn.text = "1-" + str(i) if i < 10 else "☠️ BOSS"
+	# 1. Active Dungeon Card (Obsidian Mines - Matching Reference Image 1)
+	var active_card := PanelContainer.new()
+	active_card.custom_minimum_size = Vector2(0, 150)
+	active_card.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	var active_margin := MarginContainer.new()
+	active_margin.add_theme_constant_override("margin_left", 12)
+	active_margin.add_theme_constant_override("margin_top", 10)
+	active_margin.add_theme_constant_override("margin_right", 12)
+	active_margin.add_theme_constant_override("margin_bottom", 10)
+	active_card.add_child(active_margin)
+	
+	var active_vbox := VBoxContainer.new()
+	active_vbox.add_theme_constant_override("separation", 6)
+	active_margin.add_child(active_vbox)
+	
+	var active_title := Label.new()
+	active_title.text = "Obsidian Mines"
+	active_title.add_theme_font_size_override("font_size", 16)
+	active_title.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
+	active_vbox.add_child(active_title)
+	
+	# 4 Active Adventurer Avatars
+	var party_hbox := HBoxContainer.new()
+	party_hbox.add_theme_constant_override("separation", 8)
+	active_vbox.add_child(party_hbox)
+	
+	for i in range(4):
+		var adv_box := VBoxContainer.new()
+		var spr := TextureRect.new()
+		spr.custom_minimum_size = Vector2(36, 36)
+		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		spr.texture = CBridge.render_c_survivor_texture(Color(0.3 + i * 0.15, 0.4, 0.6), 48, 48)
+		adv_box.add_child(spr)
 		
-		if i == 10:
-			btn.modulate = Color(1.0, 0.3, 0.3) # Boss Red
-		elif i <= current_stage_node:
-			btn.modulate = Color(0.2, 0.9, 0.5) # Cleared Green
-		else:
-			btn.modulate = Color(0.7, 0.7, 0.7) # Normal
-			
-		var node_idx := i
-		btn.pressed.connect(func():
-			AnimEng.animate_button_click(btn)
-			AudioManager.play_sfx("ui_click")
-			current_stage_node = node_idx
-			print("[WastelandsTab] Selected stage node: 1-", node_idx)
-		)
-		nodes_container.add_child(btn)
-
-func _start_pve_battle() -> void:
-	var CombatScene = preload("res://scenes/wastelands/CombatScene.tscn")
-	var combat = CombatScene.instantiate()
-	add_child(combat)
+		# HP bar under avatar
+		var hp := ProgressBar.new()
+		hp.custom_minimum_size = Vector2(36, 4)
+		hp.show_percentage = false
+		hp.value = 85.0 - i * 10
+		adv_box.add_child(hp)
+		party_hbox.add_child(adv_box)
+		
+	# Looting progress text & bar
+	var loot_lbl := Label.new()
+	loot_lbl.text = "Looting items..."
+	loot_lbl.add_theme_font_size_override("font_size", 10)
+	loot_lbl.add_theme_color_override("font_color", Color(0.7, 0.75, 0.8))
+	active_vbox.add_child(loot_lbl)
+	
+	var loot_bar := ProgressBar.new()
+	loot_bar.custom_minimum_size = Vector2(160, 6)
+	loot_bar.show_percentage = false
+	loot_bar.value = 65.0
+	active_vbox.add_child(loot_bar)
+	
+	list_container.add_child(active_card)
+	
+	# 2. Inactive Dungeon Banners (The Southern Grove & Barren Wastelands)
+	var dungeons := [
+		{ "name": "The Southern Grove", "color": Color(0.15, 0.35, 0.2) },
+		{ "name": "Barren Wastelands", "color": Color(0.4, 0.25, 0.15) }
+	]
+	
+	for d in dungeons:
+		var card := PanelContainer.new()
+		card.custom_minimum_size = Vector2(0, 110)
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		var margin := MarginContainer.new()
+		margin.add_theme_constant_override("margin_left", 12)
+		margin.add_theme_constant_override("margin_top", 10)
+		margin.add_theme_constant_override("margin_right", 12)
+		margin.add_theme_constant_override("margin_bottom", 10)
+		card.add_child(margin)
+		
+		var title := Label.new()
+		title.text = d["name"]
+		title.add_theme_font_size_override("font_size", 16)
+		title.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
+		margin.add_child(title)
+		
+		list_container.add_child(card)

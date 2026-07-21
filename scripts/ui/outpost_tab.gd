@@ -1,11 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
-#  OUTPOST TAB CONTROLLER (outpost_tab.gd)
-#  Quản lý 8/8 phòng Tiền đồn với Banner Art & Modals
+#  OUTPOST TAB CONTROLLER (outpost_tab.gd) — Reference Image 3 Match
+#  Quản lý 6 Cơ sở Căn cứ Tiền đồn dạng danh sách đứng mượt mà
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-@export var grid_container: GridContainer
-@export var banner_texture: TextureRect
+@export var grid_container: Container
 
 const RoomCardScene = preload("res://scenes/shared/RoomCard.tscn")
 
@@ -16,22 +15,12 @@ const ROOM_SCENES := {
 	Constants.RoomType.TRADING_POST: preload("res://scenes/outpost/TradingPostRoom.tscn"),
 	Constants.RoomType.WORKSHOP: preload("res://scenes/outpost/WorkshopRoom.tscn"),
 	Constants.RoomType.BEAST_PEN: preload("res://scenes/outpost/BeastPenRoom.tscn"),
-	Constants.RoomType.MECHA_HANGAR: preload("res://scenes/outpost/MechaHangarRoom.tscn"),
-	Constants.RoomType.COMMAND_CENTER: preload("res://scenes/outpost/CommandCenterRoom.tscn"),
 }
 
 func _ready() -> void:
-	_load_banner_image()
 	populate_rooms()
 	EventBus.room_opened.connect(_on_room_opened)
-
-func _load_banner_image() -> void:
-	if not banner_texture: return
-	var path := "res://assets/sprites/ui/banner.jpg"
-	if FileAccess.file_exists(path):
-		var img := Image.load_from_file(ProjectSettings.globalize_path(path))
-		if img and not img.is_empty():
-			banner_texture.texture = ImageTexture.create_from_image(img)
+	EventBus.tab_changed.connect(func(idx): if idx == 0: populate_rooms())
 
 func populate_rooms() -> void:
 	if not grid_container: return
@@ -45,8 +34,6 @@ func populate_rooms() -> void:
 		Constants.RoomType.TRADING_POST,
 		Constants.RoomType.WORKSHOP,
 		Constants.RoomType.BEAST_PEN,
-		Constants.RoomType.MECHA_HANGAR,
-		Constants.RoomType.COMMAND_CENTER,
 	]
 	
 	for rtype in rooms:

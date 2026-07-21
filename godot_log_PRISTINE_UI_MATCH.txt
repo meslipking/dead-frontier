@@ -1,0 +1,31 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "elem_name" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/data/character_animation_profiles.gd:125)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "base_col" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/data/character_animation_profiles.gd:126)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/data/survivor_database.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/ui/radio_tower_room.gd:0)
+ERROR: Failed to load script "res://scripts/ui/radio_tower_room.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:37)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:39)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:93)
+ERROR: Failed to load script "res://scripts/ui/armory_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/sieges_tab.gd:34)
+ERROR: Failed to load script "res://scripts/ui/sieges_tab.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[SaveManager] Game loaded securely. Save version: 1.0
+[GameManager] Game loaded. Gold: 0.0
+SCRIPT ERROR: Invalid assignment of property or key 'text' with value of type 'Array' on a base object of type 'Label'.
+   at: populate_adventurers (res://scripts/ui/squad_tab.gd:86)
+   GDScript backtrace (most recent call first):
+       [0] populate_adventurers (res://scripts/ui/squad_tab.gd:86)
+       [1] _ready (res://scripts/ui/squad_tab.gd:14)
