@@ -6,6 +6,7 @@ extends Control
 
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const ToastMgr = preload("res://scripts/ui/toast_manager.gd")
+const StoryModalScene = preload("res://scenes/shared/StoryEventModal.tscn")
 
 @export var btn_settings: Button
 @export var btn_save: Button
@@ -41,7 +42,8 @@ func _ready() -> void:
 		btn_events.pressed.connect(func():
 			AnimEng.animate_button_click(btn_events)
 			AudioManager.play_sfx("ui_click")
-			_trigger_random_event()
+			var modal := StoryModalScene.instantiate()
+			get_tree().root.add_child(modal)
 		)
 
 	if btn_achieve:
@@ -60,14 +62,3 @@ func _ready() -> void:
 			GameManager.game_data["prestige_level"] = prestige_lvl
 			ToastMgr.show_toast("🔄 CẤP PRESTIGE " + str(prestige_lvl) + ": +100% ATK!", Color(0.9, 0.4, 0.9))
 		)
-
-func _trigger_random_event() -> void:
-	var events := [
-		"🎁 Thương nhân hoang dã trao tặng +500 Vàng!",
-		"⚡ Cơn bão điện từ bùng nổ: Tốc độ đào mỏ 200%!",
-		"🧟 Bầy Zombie tấn công: Nhận 50 Quặng Niken!",
-		"📦 Rương tiếp tế rơi từ không trung: Nhận Ngọc Ruby!"
-	]
-	var selected_evt: String = events[randi() % events.size()]
-	GameManager.add_currency(Constants.Currency.GOLD, 500)
-	ToastMgr.show_toast(selected_evt, Color(0.95, 0.7, 0.2))
