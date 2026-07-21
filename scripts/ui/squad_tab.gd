@@ -115,5 +115,5 @@ func populate_adventurers() -> void:
 
 func _open_hero_detail_modal(adv: Dictionary) -> void:
 	var modal = HeroModalScene.instantiate()
-	add_child(modal)
+	get_tree().root.add_child(modal)
 	modal.setup(adv)

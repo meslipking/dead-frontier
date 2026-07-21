@@ -90,16 +90,14 @@ func populate_rooms() -> void:
 		room_list_container.add_child(panel)
 
 func _on_room_clicked(room_type: int) -> void:
+	var modal: Control = null
 	match room_type:
-		Constants.RoomType.RADIO_TOWER:
-			add_child(RadioTowerScene.instantiate())
-		Constants.RoomType.WORKSHOP:
-			add_child(WorkshopScene.instantiate())
-		Constants.RoomType.ARMORY:
-			add_child(ArmoryScene.instantiate())
-		Constants.RoomType.TRADING_POST:
-			add_child(MechaAssemblyScene.instantiate())
-		Constants.RoomType.BEAST_PEN:
-			add_child(MonsterBreedingScene.instantiate())
-		_:
-			add_child(WorldBossRaidScene.instantiate())
+		Constants.RoomType.RADIO_TOWER: modal = RadioTowerScene.instantiate()
+		Constants.RoomType.WORKSHOP: modal = WorkshopScene.instantiate()
+		Constants.RoomType.ARMORY: modal = ArmoryScene.instantiate()
+		Constants.RoomType.TRADING_POST: modal = MechaAssemblyScene.instantiate()
+		Constants.RoomType.BEAST_PEN: modal = MonsterBreedingScene.instantiate()
+		_: modal = WorldBossRaidScene.instantiate()
+		
+	if modal:
+		get_tree().root.add_child(modal)

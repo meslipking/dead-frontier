@@ -1,12 +1,14 @@
 # ═══════════════════════════════════════════════════════════════
 #  MAIN CONTROLLER (main_controller.gd) — Premium Edition
-#  Điều khiển Root Scene, TopBar currencies, và Tab Scene switching
+#  Điều khiển Root Scene, TopBar currencies, Side Menu, và Tab Scene switching
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const ThemeBuilder = preload("res://scripts/ui/ui_theme_builder.gd")
+const GameMenuScene = preload("res://scenes/shared/GameMenuModal.tscn")
 
 @export var top_bar: Control
+@export var btn_menu: Button
 @export var label_gold: Label
 @export var label_alloys: Label
 @export var label_energy: Label
@@ -20,6 +22,13 @@ const ThemeBuilder = preload("res://scripts/ui/ui_theme_builder.gd")
 
 func _ready() -> void:
 	ThemeBuilder.apply_commercial_theme(get_tree())
+	
+	if btn_menu:
+		btn_menu.pressed.connect(func():
+			AudioManager.play_sfx("ui_click")
+			var modal := GameMenuScene.instantiate()
+			get_tree().root.add_child(modal)
+		)
 	
 	EventBus.tab_changed.connect(_on_tab_changed)
 	EventBus.currency_changed.connect(_on_currency_changed)
