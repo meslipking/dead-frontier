@@ -1,11 +1,12 @@
 # ═══════════════════════════════════════════════════════════════
 #  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Grade
-#  Hiển thị danh sách Adventurers với 16-Bit Pixel Art Ma Trận Chấn Động 100% Sharp
+#  Hiển thị danh sách Adventurers & Cho phép Soi Chi Tiết 16-Frame Sprite Modal
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
+const HeroModalScene = preload("res://scenes/shared/HeroDetailModal.tscn")
 
 @export var list_container: VBoxContainer
 
@@ -24,10 +25,13 @@ func populate_adventurers() -> void:
 		var panel := PanelContainer.new()
 		panel.custom_minimum_size = Vector2(0, 68)
 		panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		var cur_adv: Dictionary = adv
 		panel.gui_input.connect(func(ev):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				AnimEng.animate_button_click(panel)
 				AudioManager.play_sfx("ui_click")
+				_open_hero_detail_modal(cur_adv)
 		)
 		
 		var margin := MarginContainer.new()
@@ -96,3 +100,8 @@ func populate_adventurers() -> void:
 			hbox.add_child(slot_panel)
 			
 		list_container.add_child(panel)
+
+func _open_hero_detail_modal(adv: Dictionary) -> void:
+	var modal = HeroModalScene.instantiate()
+	add_child(modal)
+	modal.setup(adv)

@@ -1,0 +1,161 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/hero_detail_modal.gd" id="1_script"]
+
+[node name="HeroDetailModal" type="Control" node_paths=PackedStringArray("anim_sprite", "lbl_name", "lbl_class", "lbl_level", "lbl_traits", "lbl_stats", "slot_weapon", "slot_armor", "slot_acc", "btn_anim_toggle", "btn_close")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+anim_sprite = NodePath("Center/Panel/Margin/VBox/Header/SpriteBox/AnimSprite")
+lbl_name = NodePath("Center/Panel/Margin/VBox/Header/Info/LblName")
+lbl_class = NodePath("Center/Panel/Margin/VBox/Header/Info/LblClass")
+lbl_level = NodePath("Center/Panel/Margin/VBox/Header/Info/LblLevel")
+lbl_traits = NodePath("Center/Panel/Margin/VBox/Header/Info/LblTraits")
+lbl_stats = NodePath("Center/Panel/Margin/VBox/StatsBox/LblStats")
+slot_weapon = NodePath("Center/Panel/Margin/VBox/GearRow/SlotWeapon")
+slot_armor = NodePath("Center/Panel/Margin/VBox/GearRow/SlotArmor")
+slot_acc = NodePath("Center/Panel/Margin/VBox/GearRow/SlotAcc")
+btn_anim_toggle = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnAnimToggle")
+btn_close = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnClose")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(340, 420)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SpriteBox" type="PanelContainer" parent="Center/Panel/Margin/VBox/Header"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AnimSprite" type="TextureRect" parent="Center/Panel/Margin/VBox/Header/SpriteBox"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Info" type="VBoxContainer" parent="Center/Panel/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="LblName" type="Label" parent="Center/Panel/Margin/VBox/Header/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_font_sizes/font_size = 16
+text = "Iron Defender"
+
+[node name="LblClass" type="Label" parent="Center/Panel/Margin/VBox/Header/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "Brawler Class"
+
+[node name="LblLevel" type="Label" parent="Center/Panel/Margin/VBox/Header/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "Level 18"
+
+[node name="LblTraits" type="Label" parent="Center/Panel/Margin/VBox/Header/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.55, 0.25, 1)
+theme_override_font_sizes/font_size = 10
+text = "Traits: Brute, Nimble"
+
+[node name="StatsBox" type="PanelContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel/Margin/VBox/StatsBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="LblStats" type="Label" parent="Center/Panel/Margin/VBox/StatsBox/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "HP: 140  |  ATK: 20  |  DEF: 15
+SPD: 8  |  ACC: 10  |  LUCK: 5"
+
+[node name="GearLabel" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 11
+text = "EQUIPPED GEAR:"
+
+[node name="GearRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="SlotWeapon" type="TextureRect" parent="Center/Panel/Margin/VBox/GearRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SlotArmor" type="TextureRect" parent="Center/Panel/Margin/VBox/GearRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SlotAcc" type="TextureRect" parent="Center/Panel/Margin/VBox/GearRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActionRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnAnimToggle" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "⚔️ ANIM: ATTACK"
+
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "CLOSE"

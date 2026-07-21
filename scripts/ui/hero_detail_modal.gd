@@ -1,0 +1,79 @@
+# ═══════════════════════════════════════════════════════════════
+#  HERO DETAIL MODAL CONTROLLER (hero_detail_modal.gd)
+#  Hiển thị Chi Tiết Nhân Vật & Hoạt Ảnh 16-Frame Spritesheet Sống Động
+# ═══════════════════════════════════════════════════════════════
+extends Control
+
+const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
+const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
+
+@export var anim_sprite: TextureRect
+@export var lbl_name: Label
+@export var lbl_class: Label
+@export var lbl_level: Label
+@export var lbl_traits: Label
+@export var lbl_stats: Label
+
+@export var slot_weapon: TextureRect
+@export var slot_armor: TextureRect
+@export var slot_acc: TextureRect
+
+@export var btn_anim_toggle: Button
+@export var btn_close: Button
+
+var hero_data: Dictionary = {}
+var anim_states: Array[String] = ["idle", "walk", "attack", "hit"]
+var current_anim_idx: int = 0
+var frame_idx: int = 0
+var anim_timer: float = 0.0
+
+func _ready() -> void:
+	if btn_close:
+		btn_close.pressed.connect(func():
+			AnimEng.animate_button_click(btn_close)
+			AudioManager.play_sfx("ui_click")
+			queue_free()
+		)
+		
+	if btn_anim_toggle:
+		btn_anim_toggle.pressed.connect(func():
+			AnimEng.animate_button_click(btn_anim_toggle)
+			AudioManager.play_sfx("ui_click")
+			current_anim_idx = (current_anim_idx + 1) % anim_states.size()
+			btn_anim_toggle.text = "⚔️ ANIM: " + anim_states[current_anim_idx].to_upper()
+		)
+
+func _process(delta: float) -> void:
+	if not anim_sprite or hero_data.is_empty(): return
+	
+	anim_timer += delta
+	if anim_timer >= 0.15: # 6.6 FPS playback
+		anim_timer -= 0.15
+		frame_idx = (frame_idx + 1) % 4
+		_update_sprite_frame()
+
+func setup(adv: Dictionary) -> void:
+	hero_data = adv
+	var cname: String = str(adv.get("name", "Iron Defender"))
+	
+	if lbl_name: lbl_name.text = cname
+	if lbl_class: lbl_class.text = "Brawler Class"
+	if lbl_level: lbl_level.text = "Level " + str(adv.get("level", 18))
+	if lbl_traits: lbl_traits.text = "Traits: " + str(adv.get("traits", "Brute, Nimble"))
+	
+	var stats: Dictionary = adv.get("stats", {})
+	if lbl_stats:
+		lbl_stats.text = "HP: " + str(stats.get("hp", 140)) + "  |  ATK: " + str(stats.get("atk", 20)) + "  |  DEF: " + str(stats.get("def", 15)) + "\n" \
+			+ "SPD: " + str(stats.get("spd", 8)) + "  |  ACC: " + str(stats.get("acc", 10)) + "  |  LUCK: " + str(stats.get("luck", 5))
+			
+	if slot_weapon: slot_weapon.texture = MasterPixel.get_item_texture(Constants.ItemType.WEAPON)
+	if slot_armor: slot_armor.texture = MasterPixel.get_item_texture(Constants.ItemType.ARMOR)
+	if slot_acc: slot_acc.texture = MasterPixel.get_item_texture(Constants.ItemType.ACCESSORY)
+	
+	_update_sprite_frame()
+
+func _update_sprite_frame() -> void:
+	if not anim_sprite: return
+	var cname: String = str(hero_data.get("name", "Iron Defender"))
+	var state_name: String = anim_states[current_anim_idx]
+	anim_sprite.texture = MasterPixel.get_unit_16frame_texture(cname, state_name, frame_idx)

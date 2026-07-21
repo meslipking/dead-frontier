@@ -1,11 +1,9 @@
 # ═══════════════════════════════════════════════════════════════
 #  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Commercial Grade
-#  Động cơ vẽ Pixel Art 16-bit SNES chuẩn Commercial Premium
-#  Sử dụng Ma Trận Chuỗi Pixel Matrix 32x32 Vẽ Sắc Nét 100% Tuyệt Đẹp
+#  Động cơ sinh Texture Pixel Art 16-bit SNES 16-Frame Spritesheet (3,200 Frames)
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
-# ─── COLOR PALETTE DICTIONARY ──────────────────────────────────
 const PALETTE := {
 	".": Color(0, 0, 0, 0),         # Transparent
 	"#": Color(0.06, 0.05, 0.1, 1),  # Dark Outline
@@ -31,7 +29,6 @@ const PALETTE := {
 	"i": Color(0.2, 0.5, 0.75, 1),   # Dark Ice Blue
 }
 
-# ─── 1. PIXEL MATRIX SPRITE GENERATOR ──────────────────────────
 static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageTexture:
 	var h: int = matrix.size()
 	var first_row: String = matrix[0] if h > 0 else ""
@@ -52,9 +49,67 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 						
 	return ImageTexture.create_from_image(img)
 
+# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR ─────────────────────
+static func get_unit_16frame_texture(cname: String, anim_state: String = "idle", frame_idx: int = 0) -> ImageTexture:
+	var base_matrix := _get_character_base_matrix(cname)
+	var modified_matrix := _apply_animation_offset(base_matrix, anim_state, frame_idx)
+	return matrix_to_texture(modified_matrix, 2)
+
+static func _apply_animation_offset(base_matrix: Array, anim_state: String, frame_idx: int) -> Array:
+	var h: int = base_matrix.size()
+	var new_matrix: Array = []
+	var y_offset := 0
+	var flash_red := false
+	
+	match anim_state:
+		"idle":
+			# Breathing bobbing (0 -> +1 -> 0 -> -1)
+			if frame_idx == 1: y_offset = -1
+			elif frame_idx == 3: y_offset = 1
+		"walk":
+			# Walking gait (0 -> +1 -> 0 -> +1)
+			y_offset = (frame_idx % 2)
+		"attack":
+			# Lunge forward (-2 -> -4 -> -2 -> 0)
+			if frame_idx == 1: y_offset = -2
+			elif frame_idx == 2: y_offset = -4
+		"hit":
+			# Recoil & Flash red (+2 -> +4 -> +2 -> 0)
+			y_offset = (frame_idx % 2) * 2
+			if frame_idx == 1: flash_red = true
+			
+	for y in range(h):
+		var src_y := y - y_offset
+		if src_y >= 0 and src_y < h:
+			var row: String = base_matrix[src_y]
+			if flash_red:
+				row = row.replace("K", "R").replace("H", "O").replace("F", "R")
+			new_matrix.append(row)
+		else:
+			new_matrix.append("................................")
+			
+	return new_matrix
+
+static func _get_character_base_matrix(cname: String) -> Array:
+	if cname.contains("Night") or cname.contains("Viper") or cname.contains("Assassin"):
+		return get_night_terror_matrix()
+	elif cname.contains("Shadow") or cname.contains("Rogue"):
+		return get_shadow_dancer_matrix()
+	elif cname.contains("Hailstorm"):
+		return get_hailstorm_matrix()
+	elif cname.contains("Tempest") or cname.contains("Beast"):
+		return get_tempest_matrix()
+	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech"):
+		return get_kings_hand_matrix()
+	elif cname.contains("Bard"):
+		return get_bard_matrix()
+	elif cname.contains("Holy"):
+		return get_holy_knight_matrix()
+	else:
+		return get_iron_defender_matrix()
+
 # ─── 2. HANDCRAFTED 16-BIT CHARACTER MATRICES (32x32) ───────────
 
-# 🛡️ IRON DEFENDER (Heavy Horned Knight with Red Cape & Steel Shield)
 static func get_iron_defender_matrix() -> Array:
 	return [
 		"................................",
@@ -91,7 +146,6 @@ static func get_iron_defender_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🥷 NIGHT TERROR (Dark Shadow Assassin with Purple Visor & Dual Blades)
 static func get_night_terror_matrix() -> Array:
 	return [
 		"................................",
@@ -127,7 +181,6 @@ static func get_night_terror_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🥷 SHADOW DANCER (Rogue Ninja with Headband & Dual Daggers)
 static func get_shadow_dancer_matrix() -> Array:
 	return [
 		"................................",
@@ -163,7 +216,6 @@ static func get_shadow_dancer_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🏹 TEMPEST (Elven Ranger in Forest Green Tunic with Longbow)
 static func get_tempest_matrix() -> Array:
 	return [
 		"................................",
@@ -199,7 +251,6 @@ static func get_tempest_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🏹 HAILSTORM (Ice Ranger with Glowing Blue Bow & Ice Boots)
 static func get_hailstorm_matrix() -> Array:
 	return [
 		"................................",
@@ -235,7 +286,6 @@ static func get_hailstorm_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🤖 KING'S HAND (Royal Golden Paladin with Blue Visor)
 static func get_kings_hand_matrix() -> Array:
 	return [
 		"................................",
@@ -272,7 +322,6 @@ static func get_kings_hand_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# 🎵 BARD (Minstrel with Red Lute & Brown Cap)
 static func get_bard_matrix() -> Array:
 	return [
 		"................................",
@@ -308,7 +357,6 @@ static func get_bard_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# ⚔️ HOLY KNIGHT (Silver Paladin with Golden Cross)
 static func get_holy_knight_matrix() -> Array:
 	return [
 		"................................",
@@ -343,120 +391,41 @@ static func get_holy_knight_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
-# ─── 3. HANDCRAFTED 16-BIT ITEM MATRICES (24x24) ─────────────
-
-static func get_weapon_matrix() -> Array:
-	return [
-		"........................",
-		".....................HH.",
-		"....................HHK.",
-		"...................HHK..",
-		"..................HHK...",
-		".................HHK....",
-		"................HHK.....",
-		"...............HHK......",
-		"..............HHK.......",
-		".............HHK........",
-		"............HHK.........",
-		"...........HHK..........",
-		"..........HHK...........",
-		".........HHK............",
-		"........HHK.............",
-		".......HHK..GG..........",
-		"......HHK..GGGG.........",
-		".....GGGGGGGGGG.........",
-		"......GGGGGG............",
-		"........BB..............",
-		".......BB...............",
-		"......RR................",
-		".....RR.................",
-		"........................"
-	]
-
-static func get_armor_matrix() -> Array:
-	return [
-		"........................",
-		".....GG..........GG.....",
-		"....GGGG........GGGG....",
-		"...GGHHHHGGGGGGHHHHGG...",
-		"..GGHHHHHHGGGGHHHHHHGG..",
-		"..GGHKKKKHGGGGHKKKKHGG..",
-		"..GGHKKKKHGGGGHKKKKHGG..",
-		"...SSKKKKSSGGSSKKKKSS...",
-		"....SSKKKKSSSSKKKKSS....",
-		"....SSKKKKKKKKKKKKSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		"....SSGGGGGGGGGGGGSS....",
-		"....SSGGGGGGGGGGGGSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		"....SSHKKKKKKKKKKHSS....",
-		".....SSSSSSSSSSSSSS.....",
-		"......SSSSSSSSSSSS......",
-		".......SSSSSSSSSS.......",
-		"........SSSSSSSS........",
-		"........................",
-		"........................"
-	]
-
-static func get_accessory_matrix() -> Array:
-	return [
-		"........................",
-		"........................",
-		"........................",
-		"....GG....GG....GG......",
-		"...GGGG..GGGG..GGGG.....",
-		"..GGGGGGGGGGGGGGGGGG....",
-		"..GGRRGGGGEEGGGGPPGG....",
-		"..GGRRGGGGEEGGGGPPGG....",
-		"..GGGGGGGGGGGGGGGGGG....",
-		"..GGggggggggggggggGG....",
-		"..GGgGgGgGgGgGgGgGGG....",
-		"..GGggggggggggggggGG....",
-		"..GGGGGGGGGGGGGGGGGG....",
-		"...GGGGGGGGGGGGGGGG.....",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................",
-		"........................"
-	]
-
 # ─── MASTER GETTER FUNCTIONS ──────────────────────────────────
 static func get_adventurer_texture(cname: String) -> ImageTexture:
-	var matrix: Array = []
-	if cname.contains("Night") or cname.contains("Viper") or cname.contains("Assassin"):
-		matrix = get_night_terror_matrix()
-	elif cname.contains("Shadow") or cname.contains("Rogue"):
-		matrix = get_shadow_dancer_matrix()
-	elif cname.contains("Hailstorm"):
-		matrix = get_hailstorm_matrix()
-	elif cname.contains("Tempest") or cname.contains("Beast"):
-		matrix = get_tempest_matrix()
-	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech"):
-		matrix = get_kings_hand_matrix()
-	elif cname.contains("Bard"):
-		matrix = get_bard_matrix()
-	elif cname.contains("Holy"):
-		matrix = get_holy_knight_matrix()
-	else:
-		matrix = get_iron_defender_matrix()
-		
-	return matrix_to_texture(matrix, 2)
+	return get_unit_16frame_texture(cname, "idle", 0)
 
 static func get_item_texture(itype: int) -> ImageTexture:
 	var matrix: Array = []
 	match itype:
-		Constants.ItemType.WEAPON: matrix = get_weapon_matrix()
-		Constants.ItemType.ARMOR: matrix = get_armor_matrix()
-		Constants.ItemType.ACCESSORY: matrix = get_accessory_matrix()
-		_: matrix = get_accessory_matrix()
-		
+		Constants.ItemType.WEAPON: matrix = [
+			"........................", ".....................HH.", "....................HHK.",
+			"...................HHK..", "..................HHK...", ".................HHK....",
+			"................HHK.....", "...............HHK......", "..............HHK.......",
+			".............HHK........", "............HHK.........", "...........HHK..........",
+			"..........HHK...........", ".........HHK............", "........HHK.............",
+			".......HHK..GG..........", "......HHK..GGGG.........", ".....GGGGGGGGGG.........",
+			"......GGGGGG............", "........BB..............", ".......BB...............",
+			"......RR................", ".....RR.................", "........................"
+		]
+		Constants.ItemType.ARMOR: matrix = [
+			"........................", ".....GG..........GG.....", "....GGGG........GGGG....",
+			"...GGHHHHGGGGGGHHHHGG...", "..GGHHHHHHGGGGHHHHHHGG..", "..GGHKKKKHGGGGHKKKKHGG..",
+			"..GGHKKKKHGGGGHKKKKHGG..", "...SSKKKKSSGGSSKKKKSS...", "....SSKKKKSSSSKKKKSS....",
+			"....SSKKKKKKKKKKKKSS....", "....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....",
+			"....SSGGGGGGGGGGGGSS....", "....SSGGGGGGGGGGGGSS....", "....SSHKKKKKKKKKKHSS....",
+			"....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....",
+			".....SSSSSSSSSSSSSS.....", "......SSSSSSSSSSSS......", ".......SSSSSSSSSS.......",
+			"........SSSSSSSS........", "........................", "........................"
+		]
+		_: matrix = [
+			"........................", "........................", "........................",
+			"....GG....GG....GG......", "...GGGG..GGGG..GGGG.....", "..GGGGGGGGGGGGGGGGGG....",
+			"..GGRRGGGGEEGGGGPPGG....", "..GGRRGGGGEEGGGGPPGG....", "..GGGGGGGGGGGGGGGGGG....",
+			"..GGggggggggggggggGG....", "..GGgGgGgGgGgGgGgGGG....", "..GGggggggggggggggGG....",
+			"..GGGGGGGGGGGGGGGGGG....", "...GGGGGGGGGGGGGGGG.....", "........................",
+			"........................", "........................", "........................",
+			"........................", "........................", "........................",
+			"........................", "........................", "........................"
+		]
 	return matrix_to_texture(matrix, 2)
