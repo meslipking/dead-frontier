@@ -1,0 +1,31 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+
+# Build outputs
+builds/
+dist/
+export/
+
+# OS generated
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Debug
+scratch/
+
+# Sensitive
+*.keystore
+*.jks
+steam_appid.txt
