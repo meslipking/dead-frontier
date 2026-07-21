@@ -1,0 +1,112 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/mecha_assembly_room.gd" id="1_script"]
+
+[node name="MechaAssemblyRoom" type="Control" node_paths=PackedStringArray("mecha_preview", "btn_arm", "btn_leg", "btn_core", "btn_armor", "btn_assemble", "btn_close")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+mecha_preview = NodePath("Center/Panel/Margin/VBox/PreviewBox/MechaPreview")
+btn_arm = NodePath("Center/Panel/Margin/VBox/PartsContainer/BtnArm")
+btn_leg = NodePath("Center/Panel/Margin/VBox/PartsContainer/BtnLeg")
+btn_core = NodePath("Center/Panel/Margin/VBox/PartsContainer/BtnCore")
+btn_armor = NodePath("Center/Panel/Margin/VBox/PartsContainer/BtnArmor")
+btn_assemble = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnAssemble")
+btn_close = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnClose")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(360, 440)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 16
+text = "🤖 XƯỞNG LẮP RÁP MECHA TITAN (MODULAR)"
+
+[node name="PreviewBox" type="PanelContainer" parent="Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="MechaPreview" type="TextureRect" parent="Center/Panel/Margin/VBox/PreviewBox"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PartsContainer" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="BtnArm" type="Button" parent="Center/Panel/Margin/VBox/PartsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "🔫 TAY PHÁO: PLASMA BLASTER MK-IV"
+
+[node name="BtnLeg" type="Button" parent="Center/Panel/Margin/VBox/PartsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "🦿 CHÂN TRỢ LỰC: TITAN HYDRAULICS"
+
+[node name="BtnCore" type="Button" parent="Center/Panel/Margin/VBox/PartsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "☢️ LÕI PHẢN ỨNG: FUSION CORE HIGH-TEMP"
+
+[node name="BtnArmor" type="Button" parent="Center/Panel/Margin/VBox/PartsContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "🛡️ GIÁP VAI: NIKEN PAULDRONS 3D"
+
+[node name="ActionRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnAssemble" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "⚡ KÍCH HOẠT LẮP RÁP MECHA (🟡 4 VÀNG)"
+
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(80, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ĐÓNG"

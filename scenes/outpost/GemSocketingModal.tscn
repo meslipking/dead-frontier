@@ -1,0 +1,105 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/gem_socketing_modal.gd" id="1_script"]
+
+[node name="GemSocketingModal" type="Control" node_paths=PackedStringArray("gear_preview", "lbl_socket_status", "btn_gem_ruby", "btn_gem_sapphire", "btn_gem_emerald", "btn_close")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+gear_preview = NodePath("Center/Panel/Margin/VBox/GearBox/GearPreview")
+lbl_socket_status = NodePath("Center/Panel/Margin/VBox/GearBox/LblSocketStatus")
+btn_gem_ruby = NodePath("Center/Panel/Margin/VBox/GemsRow/BtnRuby")
+btn_gem_sapphire = NodePath("Center/Panel/Margin/VBox/GemsRow/BtnSapphire")
+btn_gem_emerald = NodePath("Center/Panel/Margin/VBox/GemsRow/BtnEmerald")
+btn_close = NodePath("Center/Panel/Margin/VBox/BtnClose")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(360, 380)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 16
+text = "💎 KHẢM NGỌC & PHÙ PHÉP TRANG BỊ"
+
+[node name="GearBox" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="GearPreview" type="TextureRect" parent="Center/Panel/Margin/VBox/GearBox"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblSocketStatus" type="Label" parent="Center/Panel/Margin/VBox/GearBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 12
+text = "ĐÃ KHẢM: NGỌC RUBY ĐỎ (ATK +25%)"
+horizontal_alignment = 1
+
+[node name="GemsRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BtnRuby" type="Button" parent="Center/Panel/Margin/VBox/GemsRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "🔴 RUBY (ATK)"
+
+[node name="BtnSapphire" type="Button" parent="Center/Panel/Margin/VBox/GemsRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "🔵 SAPPHIRE (DEF)"
+
+[node name="BtnEmerald" type="Button" parent="Center/Panel/Margin/VBox/GemsRow"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "🟢 EMERALD (HP)"
+
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ĐÓNG"

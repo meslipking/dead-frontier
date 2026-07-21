@@ -1,7 +1,7 @@
 # ═══════════════════════════════════════════════════════════════
-#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Modular Facade
-#  Động cơ sinh Texture Pixel Art 16-bit SNES 16-Frame Spritesheet (3,200 Frames)
-#  Điều phối các module nhỏ (CharacterPixelMatrices, ModernGearMatrices)
+#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Modular Facade AAA 2.0
+#  Động cơ sinh Texture Pixel Art 16-bit/64-bit SNES 16-Frame Spritesheet (3,200 Frames)
+#  Animation Độc Bản 100% Cho 5 Hệ Lớp (Brute, Nimble, Nocturnal, Feral, Pilot)
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
@@ -54,42 +54,137 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 						
 	return ImageTexture.create_from_image(img)
 
-# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR ─────────────────────
+# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR (CLASS-SPECIFIC ANIMATIONS) ─────
 static func get_unit_16frame_texture(cname: String, anim_state: String = "idle", frame_idx: int = 0) -> ImageTexture:
 	var base_matrix := CharMatrices.get_matrix_by_name(cname)
-	var modified_matrix := _apply_animation_offset(base_matrix, anim_state, frame_idx)
+	var modified_matrix := _apply_class_specific_animation(base_matrix, cname, anim_state, frame_idx)
 	return matrix_to_texture(modified_matrix, 2)
 
-static func _apply_animation_offset(base_matrix: Array, anim_state: String, frame_idx: int) -> Array:
+static func _apply_class_specific_animation(base_matrix: Array, cname: String, anim_state: String, frame_idx: int) -> Array:
 	var h: int = base_matrix.size()
 	var new_matrix: Array = []
 	var y_offset := 0
+	var x_offset := 0
 	var flash_red := false
-	var add_plasma_fx := false
+	var add_vfx_type := ""
 	
-	match anim_state:
-		"idle":
-			if frame_idx == 1: y_offset = -1
-			elif frame_idx == 3: y_offset = 1
-		"walk":
-			y_offset = (frame_idx % 2)
-		"attack":
-			if frame_idx == 1: y_offset = -2
-			elif frame_idx == 2:
-				y_offset = -4
-				add_plasma_fx = true
-		"hit":
-			y_offset = (frame_idx % 2) * 2
-			if frame_idx == 1: flash_red = true
-			
+	# Determine Class Archetype
+	var class_type := "Brute"
+	if cname.contains("Night") or cname.contains("Viper") or cname.contains("Assassin") or cname.contains("Nocturnal"):
+		class_type = "Nocturnal"
+	elif cname.contains("Shadow") or cname.contains("Rogue") or cname.contains("Phantom") or cname.contains("Nimble"):
+		class_type = "Nimble"
+	elif cname.contains("Tempest") or cname.contains("Hailstorm") or cname.contains("Feral") or cname.contains("Beast"):
+		class_type = "Feral"
+	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech") or cname.contains("Holy"):
+		class_type = "Pilot"
+
+	match class_type:
+		"Brute": # Heavy Shield Slam Animation & Ground Fissure VFX
+			match anim_state:
+				"idle":
+					if frame_idx == 1: y_offset = -1
+					elif frame_idx == 3: y_offset = 1
+				"walk":
+					y_offset = (frame_idx % 2) * 2 # Heavy stomping gait
+				"attack":
+					if frame_idx == 1: y_offset = -3 # Raise shield high
+					elif frame_idx == 2:
+						y_offset = 4 # Slam shield down onto ground
+						add_vfx_type = "ground_slam"
+				"hit":
+					x_offset = -2
+					if frame_idx == 1: flash_red = true
+
+		"Nimble": # Acrobatic Dash & Double Cross Slash VFX
+			match anim_state:
+				"idle":
+					if frame_idx == 1: x_offset = 1
+					elif frame_idx == 3: x_offset = -1
+				"walk":
+					x_offset = (frame_idx % 2) * 3 # Fast ninja dash
+				"attack":
+					if frame_idx == 1: x_offset = 4 # Lunge forward fast
+					elif frame_idx == 2:
+						x_offset = 6
+						add_vfx_type = "cross_slash"
+				"hit":
+					x_offset = -4
+					if frame_idx == 1: flash_red = true
+
+		"Nocturnal": # Levitation Mid-Air & Purple Void Orbs VFX
+			match anim_state:
+				"idle":
+					# Continuous smooth floating loop (-2 -> -4 -> -2 -> 0)
+					if frame_idx == 0: y_offset = 0
+					elif frame_idx == 1: y_offset = -2
+					elif frame_idx == 2: y_offset = -4
+					elif frame_idx == 3: y_offset = -2
+				"walk":
+					y_offset = -3 # Floating movement
+					x_offset = (frame_idx % 2) * 2
+				"attack":
+					y_offset = -5
+					if frame_idx == 2: add_vfx_type = "void_orb"
+				"hit":
+					if frame_idx == 1: flash_red = true
+
+		"Feral": # Ranger Bow Draw (-6px) & Arrow Release VFX
+			match anim_state:
+				"idle":
+					if frame_idx == 1: y_offset = -1
+				"walk":
+					y_offset = (frame_idx % 2) * 2
+				"attack":
+					if frame_idx == 1: x_offset = -4 # Draw bowstring back
+					elif frame_idx == 2:
+						x_offset = 2 # Release arrow
+						add_vfx_type = "arrow_flight"
+				"hit":
+					x_offset = -3
+					if frame_idx == 1: flash_red = true
+
+		_: # Pilot / Dragon Blood: Jetpack Thruster Hover & Plasma Laser Barrage
+			match anim_state:
+				"idle":
+					if frame_idx % 2 == 1: y_offset = -2 # Jetpack hover
+				"walk":
+					y_offset = -3
+					x_offset = (frame_idx % 2) * 4
+				"attack":
+					if frame_idx == 1: y_offset = -4
+					elif frame_idx == 2:
+						add_vfx_type = "plasma_laser"
+				"hit":
+					x_offset = -2
+					if frame_idx == 1: flash_red = true
+
+	# Apply Offsets & VFX Overlays
 	for y in range(h):
 		var src_y := y - y_offset
 		if src_y >= 0 and src_y < h:
 			var row: String = base_matrix[src_y]
+			
+			# Apply X Offset (Horizontal Shift)
+			if x_offset > 0:
+				row = ".".repeat(x_offset) + row.substr(0, 32 - x_offset)
+			elif x_offset < 0:
+				var abs_x: int = abs(x_offset)
+				row = row.substr(abs_x) + ".".repeat(abs_x)
+				
 			if flash_red:
 				row = row.replace("K", "R").replace("H", "O").replace("F", "R")
-			elif add_plasma_fx and y == 16:
-				row = row.substr(0, 24) + "EEEEEEEE"
+			elif add_vfx_type == "plasma_laser" and y == 16:
+				row = row.substr(0, 22) + "EEEEEEEEEE"
+			elif add_vfx_type == "ground_slam" and y == 30:
+				row = "OOO" + row.substr(3, 26) + "OOO"
+			elif add_vfx_type == "cross_slash" and (y == 14 or y == 18):
+				row = row.substr(0, 20) + "EEEEEEEEEEEE"
+			elif add_vfx_type == "void_orb" and y == 15:
+				row = row.substr(0, 22) + "PPPPPPPPPP"
+			elif add_vfx_type == "arrow_flight" and y == 16:
+				row = row.substr(0, 24) + "WWWWWWWW"
+				
 			new_matrix.append(row)
 		else:
 			new_matrix.append("................................")

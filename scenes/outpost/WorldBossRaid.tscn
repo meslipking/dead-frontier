@@ -1,0 +1,107 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/world_boss_raid.gd" id="1_script"]
+
+[node name="WorldBossRaid" type="Control" node_paths=PackedStringArray("boss_avatar", "lbl_boss_name", "hp_bar", "lbl_hp", "btn_attack", "btn_close")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+boss_avatar = NodePath("Center/Panel/Margin/VBox/BossBox/BossAvatar")
+lbl_boss_name = NodePath("Center/Panel/Margin/VBox/BossBox/LblBossName")
+hp_bar = NodePath("Center/Panel/Margin/VBox/HpBox/HpBar")
+lbl_hp = NodePath("Center/Panel/Margin/VBox/HpBox/LblHp")
+btn_attack = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnAttack")
+btn_close = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnClose")
+
+[node name="DimBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.85)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(380, 440)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 16
+text = "🐉 TRẬN CHIẾN BOSS THẾ GIỚI (WORLD BOSS)"
+
+[node name="BossBox" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="BossAvatar" type="TextureRect" parent="Center/Panel/Margin/VBox/BossBox"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblBossName" type="Label" parent="Center/Panel/Margin/VBox/BossBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 14
+text = "🔥 MECHA LEVIATHAN (PHASE 1/10)"
+horizontal_alignment = 1
+
+[node name="HpBox" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="HpBar" type="ProgressBar" parent="Center/Panel/Margin/VBox/HpBox"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="LblHp" type="Label" parent="Center/Panel/Margin/VBox/HpBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "HP BOSS: 10,000,000 / 10,000,000"
+horizontal_alignment = 1
+
+[node name="ActionRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnAttack" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "⚔️ TẤN CÔNG CO-OP (🟡 1 VÀNG)"
+
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(80, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "ĐÓNG"
