@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  GAME MANAGER (game_manager.gd) — Autoload Singleton
-#  Quản lý game state, tab routing, game data
+#  GAME MANAGER (game_manager.gd) — Autoload Singleton & Permadeath System
+#  Quản lý game state, tab routing, game data, và Tử Trận Permanently (Permadeath)
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
@@ -64,9 +64,21 @@ func _currency_key(currency_type: int) -> String:
 		Constants.Currency.CRYSTALS: return "crystals"
 	return "gold"
 
-# ─── Unit Access ────────────────────────────────────────────
+# ─── Unit Access & Permadeath System ─────────────────────────
 func get_survivors() -> Array:
 	return game_data.get("survivors", [])
+
+func remove_survivor(survivor_name: String) -> bool:
+	var survivors: Array = game_data.get("survivors", [])
+	for i in range(survivors.size() - 1, -1, -1):
+		if str(survivors[i].get("name", "")) == survivor_name:
+			survivors.remove_at(i)
+			game_data["survivors"] = survivors
+			save_game()
+			EventBus.tab_changed.emit(current_tab) # Refresh UI list
+			print("[GameManager] Permanent Death: ", survivor_name, " removed from squad roster.")
+			return true
+	return false
 
 func get_monsters() -> Array:
 	return game_data.get("monsters", [])

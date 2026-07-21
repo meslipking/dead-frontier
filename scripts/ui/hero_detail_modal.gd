@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  HERO DETAIL MODAL CONTROLLER (hero_detail_modal.gd)
-#  Hiển thị Chi Tiết Kỹ Năng Độc Bản & Hoạt Ảnh 16-Frame + Đổi Trang Bị Modern Sci-Fi Live
+#  HERO DETAIL MODAL CONTROLLER (hero_detail_modal.gd) — Permadeath Handling
+#  Hiển thị Chi Tiết Kỹ Năng Độc Bản, Hoạt Ảnh 16-Frame, Đổi Trang Bị, & Tử Trận (Permadeath)
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -21,6 +21,7 @@ const CharProfiles = preload("res://scripts/data/character_animation_profiles.gd
 @export var slot_acc: TextureRect
 
 @export var btn_anim_toggle: Button
+@export var btn_dismiss: Button
 @export var btn_close: Button
 
 var hero_data: Dictionary = {}
@@ -42,6 +43,16 @@ func _ready() -> void:
 		btn_close.pressed.connect(func():
 			AnimEng.animate_button_click(btn_close)
 			AudioManager.play_sfx("ui_click")
+			queue_free()
+		)
+		
+	if btn_dismiss:
+		btn_dismiss.pressed.connect(func():
+			AnimEng.animate_button_click(btn_dismiss)
+			AudioManager.play_sfx("ui_click")
+			var cname: String = str(hero_data.get("name", ""))
+			if GameManager.remove_survivor(cname):
+				ToastMgr.show_toast("💀 Anh hùng " + cname + " đã tử trận/bị sa thải vĩnh viễn!", Color(1.0, 0.3, 0.3))
 			queue_free()
 		)
 		
