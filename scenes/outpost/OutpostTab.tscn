@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/outpost_tab.gd" id="1_script"]
 
-[node name="OutpostTab" type="Control" node_paths=PackedStringArray("grid_container")]
+[node name="OutpostTab" type="Control" node_paths=PackedStringArray("grid_container", "banner_texture")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,7 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-grid_container = NodePath("Scroll/Margin/Grid")
+grid_container = NodePath("Scroll/Margin/VBox/Grid")
+banner_texture = NodePath("Scroll/Margin/VBox/BannerTexture")
 
 [node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -28,7 +29,25 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Grid" type="GridContainer" parent="Scroll/Margin"]
+[node name="VBox" type="VBoxContainer" parent="Scroll/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="BannerTexture" type="TextureRect" parent="Scroll/Margin/VBox"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="TitleLabel" type="Label" parent="Scroll/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "🏛️ TIỀN ĐỒN CĂN CỨ TẬN THẾ"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Scroll/Margin/VBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 10

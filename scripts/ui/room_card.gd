@@ -1,9 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
-#  ROOM CARD CONTROLLER (room_card.gd)
-#  Hiển thị 1 phòng Tiền đồn trong Outpost Tab
+#  ROOM CARD CONTROLLER (room_card.gd) — Premium Visual Edition
+#  Hiển thị phòng Tiền đồn với Texture Pixel Art 16-bit & Micro-Animations
 # ═══════════════════════════════════════════════════════════════
 extends PanelContainer
 
+const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
+const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
+
+@export var icon_texture: TextureRect
 @export var icon_label: Label
 @export var name_label: Label
 @export var level_label: Label
@@ -11,6 +15,10 @@ extends PanelContainer
 @export var btn_select: Button
 
 var room_type: int = 0
+
+func _ready() -> void:
+	pivot_offset = size / 2.0
+	mouse_entered.connect(func(): AnimEng.animate_button_click(self))
 
 func setup(p_room_type: int) -> void:
 	room_type = p_room_type
@@ -21,21 +29,23 @@ func setup(p_room_type: int) -> void:
 	if name_label: name_label.text = rname
 	if level_label: level_label.text = "Cấp " + str(level)
 	if desc_label: desc_label.text = rdesc
-	if icon_label: icon_label.text = _get_room_icon()
+	
+	# Render 16-bit SNES Pixel Icon
+	if icon_texture:
+		icon_texture.texture = PixelGen.create_room_icon(room_type)
+		icon_texture.visible = true
+		if icon_label: icon_label.visible = false
+	elif icon_label:
+		icon_label.text = _get_room_icon()
 	
 	if btn_select:
-		btn_select.pressed.connect(func(): EventBus.room_opened.emit(room_type))
+		btn_select.pressed.connect(func():
+			AnimEng.animate_button_click(btn_select)
+			AudioManager.play_sfx("ui_click")
+			EventBus.room_opened.emit(room_type)
+		)
 
 func _get_room_icon() -> String:
-	match room_type:
-		Constants.RoomType.BUNKER: return "🏕️"
-		Constants.RoomType.RADIO_TOWER: return "📻"
-		Constants.RoomType.ARMORY: return "🛡️"
-		Constants.RoomType.TRADING_POST: return "⚖️"
-		Constants.RoomType.WORKSHOP: return "🔨"
-		Constants.RoomType.BEAST_PEN: return "🐉"
-		Constants.RoomType.MECHA_HANGAR: return "🤖"
-		Constants.RoomType.COMMAND_CENTER: return "🏛️"
 	return "🏠"
 
 func _room_type_key() -> String:

@@ -1,0 +1,8 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: No loader found for resource: res://assets/sprites/ui/banner.jpg (expected type: Texture2D)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: res://scenes/outpost/OutpostTab.tscn:40 - Parse Error: [ext_resource] referenced non-existent resource at: res://assets/sprites/ui/banner.jpg.
+   at: _printerr (scene/resources/resource_format_text.cpp:41)
+[SaveManager] Game loaded securely. Save version: 1.0
+[GameManager] Game loaded. Gold: 100.0
