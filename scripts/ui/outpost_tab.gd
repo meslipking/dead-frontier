@@ -27,6 +27,10 @@ func _ready() -> void:
 
 func _resolve_container() -> void:
 	if not room_list_container:
+		room_list_container = get_node_or_null("Scroll/Margin/FacilityList") as VBoxContainer
+	if not room_list_container:
+		room_list_container = find_child("FacilityList", true, false) as VBoxContainer
+	if not room_list_container:
 		room_list_container = find_child("RoomListContainer", true, false) as VBoxContainer
 	if not room_list_container:
 		room_list_container = find_child("VBoxContainer", true, false) as VBoxContainer

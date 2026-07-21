@@ -1,12 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
-#  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Grade
-#  Hiển thị danh sách Adventurers với 100% Trang Bị Độc Bản Từng Nhân Vật
+#  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Grade & Squad Alignment
+#  Hiển thị danh sách Adventurers, Trang Bị Độc Bản, & Mở Cửa Sổ Sắp Xếp Đội Hình
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const HeroModalScene = preload("res://scenes/shared/HeroDetailModal.tscn")
+const FormationModalScene = preload("res://scenes/squad/SquadFormationModal.tscn")
 const CharProfiles = preload("res://scripts/data/character_animation_profiles.gd")
 
 @export var list_container: VBoxContainer
@@ -20,6 +21,19 @@ func populate_adventurers() -> void:
 	for child in list_container.get_children():
 		child.queue_free()
 		
+	# Top Action Bar: Squad Formation Button
+	var top_btn := Button.new()
+	top_btn.custom_minimum_size = Vector2(0, 36)
+	top_btn.text = "🛡️ SẮP XẾP ĐỘI HÌNH CHIẾN ĐẤU (4 HEROES)"
+	top_btn.add_theme_font_size_override("font_size", 11)
+	top_btn.pressed.connect(func():
+		AnimEng.animate_button_click(top_btn)
+		AudioManager.play_sfx("ui_click")
+		var modal = FormationModalScene.instantiate()
+		get_tree().root.add_child(modal)
+	)
+	list_container.add_child(top_btn)
+	
 	var survivors: Array = GameManager.get_survivors()
 	
 	for adv in survivors:
@@ -60,7 +74,7 @@ func populate_adventurers() -> void:
 		spr.texture = MasterPixel.get_adventurer_texture(cname)
 		avatar_box.add_child(spr)
 		
-		# Level Badge Overlay (bottom right of avatar)
+		# Level Badge Overlay
 		var lvl_lbl := Label.new()
 		lvl_lbl.text = str(adv.get("level", 18))
 		lvl_lbl.add_theme_font_size_override("font_size", 10)
