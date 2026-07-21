@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/combat_stage_tracker.gd" id="1_script"]
+
+[node name="CombatStageTracker" type="PanelContainer" node_paths=PackedStringArray("lbl_stage_title", "lbl_modifier", "progress_bar", "party_avatar", "lbl_drop_toast")]
+custom_minimum_size = Vector2(0, 96)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 96.0
+grow_horizontal = 2
+script = ExtResource("1_script")
+lbl_stage_title = NodePath("Margin/VBox/LblStageTitle")
+lbl_modifier = NodePath("Margin/VBox/LblModifier")
+progress_bar = NodePath("Margin/VBox/ProgressBox/ProgressBar")
+party_avatar = NodePath("Margin/VBox/ProgressBox/PartyAvatar")
+lbl_drop_toast = NodePath("Margin/VBox/LblDropToast")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LblStageTitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 13
+text = "ẢI 1-1: MỎ THẠCH ANH ĐEN OBSIDIAN (STAGE 1/999)"
+
+[node name="LblModifier" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "⚙️ QUY TẮC: BỨC XẠ ĐIỆN TỪ (+50% SÁT THƯƠNG CHÍ MẠNG)"
+
+[node name="ProgressBox" type="Control" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBox/ProgressBox"]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 45.0
+show_percentage = false
+
+[node name="PartyAvatar" type="TextureRect" parent="Margin/VBox/ProgressBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_top = -6.0
+offset_right = 24.0
+offset_bottom = 18.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LblDropToast" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "🎁 VỪA RỢI: +1 LÕI MAGMA NÓNG CHẢY & 250 VÀNG"
