@@ -1,11 +1,12 @@
 # ═══════════════════════════════════════════════════════════════
 #  HERO DETAIL MODAL CONTROLLER (hero_detail_modal.gd)
-#  Hiển thị Chi Tiết Nhân Vật & Hoạt Ảnh 16-Frame Spritesheet Sống Động
+#  Hiển thị Chi Tiết Nhân Vật & Hoạt Ảnh 16-Frame + Đổi Trang Bị Modern Sci-Fi Live
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
+const ToastMgr = preload("res://scripts/ui/toast_manager.gd")
 
 @export var anim_sprite: TextureRect
 @export var lbl_name: Label
@@ -27,6 +28,14 @@ var current_anim_idx: int = 0
 var frame_idx: int = 0
 var anim_timer: float = 0.0
 
+var modern_weapons: Array[String] = ["Plasma Rifle", "Chainsaw Greatsword", "Heavy Railgun", "Laser Sniper"]
+var modern_armors: Array[String] = ["Titan Exo-Skeleton", "Kevlar Tactical Vest", "Cybernetic Armor", "Hazmat Bio-Shield"]
+var modern_accs: Array[String] = ["Cyber HUD Visor", "Plasma Core Reactor", "Anti-Virus Injector", "Energy Shield Node"]
+
+var cur_wpn_idx: int = 0
+var cur_arm_idx: int = 0
+var cur_acc_idx: int = 0
+
 func _ready() -> void:
 	if btn_close:
 		btn_close.pressed.connect(func():
@@ -41,6 +50,37 @@ func _ready() -> void:
 			AudioManager.play_sfx("ui_click")
 			current_anim_idx = (current_anim_idx + 1) % anim_states.size()
 			btn_anim_toggle.text = "⚔️ ANIM: " + anim_states[current_anim_idx].to_upper()
+		)
+
+	# Setup Interactive Gear Slot Swapping
+	if slot_weapon:
+		slot_weapon.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				cur_wpn_idx = (cur_wpn_idx + 1) % modern_weapons.size()
+				var wname: String = str(modern_weapons[cur_wpn_idx])
+				slot_weapon.texture = MasterPixel.get_modern_gear_texture(wname)
+				ToastMgr.show_toast("🔫 Đã trang bị: " + wname, Color(0.2, 0.85, 1.0))
+				AudioManager.play_sfx("ui_click")
+		)
+		
+	if slot_armor:
+		slot_armor.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				cur_arm_idx = (cur_arm_idx + 1) % modern_armors.size()
+				var aname: String = str(modern_armors[cur_arm_idx])
+				slot_armor.texture = MasterPixel.get_modern_gear_texture(aname)
+				ToastMgr.show_toast("🛡️ Đã trang bị: " + aname, Color(0.9, 0.75, 0.3))
+				AudioManager.play_sfx("ui_click")
+		)
+
+	if slot_acc:
+		slot_acc.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				cur_acc_idx = (cur_acc_idx + 1) % modern_accs.size()
+				var acname: String = str(modern_accs[cur_acc_idx])
+				slot_acc.texture = MasterPixel.get_modern_gear_texture(acname)
+				ToastMgr.show_toast("🥽 Đã trang bị: " + acname, Color(0.8, 0.4, 0.9))
+				AudioManager.play_sfx("ui_click")
 		)
 
 func _process(delta: float) -> void:
@@ -66,9 +106,9 @@ func setup(adv: Dictionary) -> void:
 		lbl_stats.text = "HP: " + str(stats.get("hp", 140)) + "  |  ATK: " + str(stats.get("atk", 20)) + "  |  DEF: " + str(stats.get("def", 15)) + "\n" \
 			+ "SPD: " + str(stats.get("spd", 8)) + "  |  ACC: " + str(stats.get("acc", 10)) + "  |  LUCK: " + str(stats.get("luck", 5))
 			
-	if slot_weapon: slot_weapon.texture = MasterPixel.get_item_texture(Constants.ItemType.WEAPON)
-	if slot_armor: slot_armor.texture = MasterPixel.get_item_texture(Constants.ItemType.ARMOR)
-	if slot_acc: slot_acc.texture = MasterPixel.get_item_texture(Constants.ItemType.ACCESSORY)
+	if slot_weapon: slot_weapon.texture = MasterPixel.get_modern_gear_texture(modern_weapons[0])
+	if slot_armor: slot_armor.texture = MasterPixel.get_modern_gear_texture(modern_armors[0])
+	if slot_acc: slot_acc.texture = MasterPixel.get_modern_gear_texture(modern_accs[0])
 	
 	_update_sprite_frame()
 

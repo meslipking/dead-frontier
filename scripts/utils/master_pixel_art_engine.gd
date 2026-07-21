@@ -1,32 +1,34 @@
 # ═══════════════════════════════════════════════════════════════
-#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Commercial Grade
+#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Sci-Fi Commercial Grade
 #  Động cơ sinh Texture Pixel Art 16-bit SNES 16-Frame Spritesheet (3,200 Frames)
+#  Bổ sung 30+ Trang bị Hiện Đại / Sci-Fi Zombie & Mecha Robot Độc Bản (No Reuse)
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
 const PALETTE := {
 	".": Color(0, 0, 0, 0),         # Transparent
 	"#": Color(0.06, 0.05, 0.1, 1),  # Dark Outline
-	"K": Color(0.65, 0.7, 0.78, 1),  # Steel Plate
+	"K": Color(0.65, 0.7, 0.78, 1),  # Steel Plate / Gun Metal
 	"H": Color(0.88, 0.92, 0.98, 1),  # Steel Highlight
 	"S": Color(0.32, 0.36, 0.44, 1),  # Steel Shadow
 	"G": Color(0.95, 0.8, 0.25, 1),  # Gold Accent
 	"g": Color(0.72, 0.58, 0.15, 1),  # Dark Gold
-	"R": Color(0.9, 0.2, 0.25, 1),   # Ruby Red
+	"R": Color(0.9, 0.2, 0.25, 1),   # Ruby Red / Laser
 	"r": Color(0.5, 0.1, 0.15, 1),   # Dark Red / Cape
 	"F": Color(0.92, 0.74, 0.62, 1), # Flesh Skin Tone
 	"f": Color(0.75, 0.55, 0.45, 1), # Skin Shadow
-	"E": Color(0.2, 0.85, 1.0, 1),   # Cyan Glow / Visor
-	"P": Color(0.7, 0.3, 0.85, 1),   # Purple Shadow Magic
+	"E": Color(0.2, 0.85, 1.0, 1),   # Cyan Plasma Glow / Visor
+	"P": Color(0.7, 0.3, 0.85, 1),   # Purple Energy / Quantum
 	"p": Color(0.4, 0.15, 0.55, 1),  # Dark Purple
-	"W": Color(0.25, 0.55, 0.3, 1),  # Forest Green
+	"W": Color(0.25, 0.55, 0.3, 1),  # Forest Green / Kevlar
 	"w": Color(0.15, 0.35, 0.2, 1),  # Dark Green
 	"B": Color(0.45, 0.28, 0.16, 1), # Oak Wood Brown
 	"b": Color(0.28, 0.16, 0.08, 1), # Dark Wood
 	"A": Color(0.95, 0.95, 0.9, 1),  # White / Silver
-	"O": Color(0.95, 0.55, 0.15, 1), # Orange Trait / Fire
+	"O": Color(0.95, 0.55, 0.15, 1), # Orange / Fire Flame
 	"I": Color(0.4, 0.75, 0.95, 1),  # Ice Blue
 	"i": Color(0.2, 0.5, 0.75, 1),   # Dark Ice Blue
+	"Y": Color(0.95, 0.95, 0.3, 1),  # Electric Yellow Shock
 }
 
 static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageTexture:
@@ -49,7 +51,7 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 						
 	return ImageTexture.create_from_image(img)
 
-# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR ─────────────────────
+# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR WITH MODERN WEAPONS ─────
 static func get_unit_16frame_texture(cname: String, anim_state: String = "idle", frame_idx: int = 0) -> ImageTexture:
 	var base_matrix := _get_character_base_matrix(cname)
 	var modified_matrix := _apply_animation_offset(base_matrix, anim_state, frame_idx)
@@ -60,21 +62,20 @@ static func _apply_animation_offset(base_matrix: Array, anim_state: String, fram
 	var new_matrix: Array = []
 	var y_offset := 0
 	var flash_red := false
+	var add_plasma_fx := false
 	
 	match anim_state:
 		"idle":
-			# Breathing bobbing (0 -> +1 -> 0 -> -1)
 			if frame_idx == 1: y_offset = -1
 			elif frame_idx == 3: y_offset = 1
 		"walk":
-			# Walking gait (0 -> +1 -> 0 -> +1)
 			y_offset = (frame_idx % 2)
 		"attack":
-			# Lunge forward (-2 -> -4 -> -2 -> 0)
 			if frame_idx == 1: y_offset = -2
-			elif frame_idx == 2: y_offset = -4
+			elif frame_idx == 2:
+				y_offset = -4
+				add_plasma_fx = true # Modern muzzle flash & laser beam VFX
 		"hit":
-			# Recoil & Flash red (+2 -> +4 -> +2 -> 0)
 			y_offset = (frame_idx % 2) * 2
 			if frame_idx == 1: flash_red = true
 			
@@ -84,6 +85,9 @@ static func _apply_animation_offset(base_matrix: Array, anim_state: String, fram
 			var row: String = base_matrix[src_y]
 			if flash_red:
 				row = row.replace("K", "R").replace("H", "O").replace("F", "R")
+			elif add_plasma_fx and y == 16:
+				# Muzzle flash beam extending to right
+				row = row.substr(0, 24) + "EEEEEEEE"
 			new_matrix.append(row)
 		else:
 			new_matrix.append("................................")
@@ -107,6 +111,138 @@ static func _get_character_base_matrix(cname: String) -> Array:
 		return get_holy_knight_matrix()
 	else:
 		return get_iron_defender_matrix()
+
+# ─── MODERN & SCI-FI ZOMBIE / MECHA EQUIPMENT MATRICES (24x24) ────
+
+# 🔫 1. PLASMA RIFLE (Súng Plasma Cyan)
+static func get_plasma_rifle_matrix() -> Array:
+	return [
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		".......KKKKKKKKKK.......",
+		"......KKEEEEEEEEKK......",
+		".....KKEEEEEEEEEEKKEE...",
+		"....KKKKKKKKKKKKKKKKEE..",
+		"....KKKKSSSKKSSSKKKK....",
+		".......SS...SS..........",
+		".......SS...SS..........",
+		".......SS...............",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................"
+	]
+
+# 🪚 2. CHAINSAW GREATSWORD (Cưa Máy Cầm Tay Diệt Zombie)
+static func get_chainsaw_matrix() -> Array:
+	return [
+		"........................",
+		"..................OOOO..",
+		".................OOKKOO.",
+		"................OOKKOO..",
+		"...............OOKKOO...",
+		"..............OOKKOO....",
+		".............OOKKOO.....",
+		"............OOKKOO......",
+		"...........OOKKOO.......",
+		"..........OOKKOO........",
+		".........OOKKOO.........",
+		"........OOKKOO..........",
+		".......OOKKOO...........",
+		"......OOKKOO............",
+		".....OOKKOO.............",
+		"....KKKKKK..RR..........",
+		"...KKKKKK..RRRR.........",
+		"..RRRRRRRRRRRR..........",
+		"...RRRRRR...............",
+		".....SS.................",
+		"....SS..................",
+		"........................",
+		"........................",
+		"........................"
+	]
+
+# 🦿 3. TITAN EXO-SKELETON (Bộ Giáp Trợ Lực Exo-Suit Mech)
+static func get_titan_exosuit_matrix() -> Array:
+	return [
+		"........................",
+		".....KK..........KK.....",
+		"....KKKK........KKKK....",
+		"...KKEEEEKKKKKKEEEEKK...",
+		"..KKEEEEEEKKKKEEEEEEKK..",
+		"..KKEEEEEEKKKKEEEEEEKK..",
+		"..KKHHKKKKGGGGHKKKKHKK..",
+		"...SSKKKKSSGGSSKKKKSS...",
+		"....SSKKKKSSSSKKKKSS....",
+		"....SSKKKKEEEEKKKKSS....",
+		"....SSHKKKEEEEKKKHSS....",
+		"....SSHKKKEEEEKKKHSS....",
+		"....SSGGGGGGGGGGGGSS....",
+		"....SSGGGGGGGGGGGGSS....",
+		"....SSHKKKKKKKKKKHSS....",
+		"....SSHKKKKKKKKKKHSS....",
+		"....SSHKKKKKKKKKKHSS....",
+		"....SSHKKKKKKKKKKHSS....",
+		".....SSSSSSSSSSSSSS.....",
+		"......SSSSSSSSSSSS......",
+		".......SSSSSSSSSS.......",
+		"........SSSSSSSS........",
+		"........................",
+		"........................"
+	]
+
+# 🥽 4. CYBER HUD VISOR (Kính HUD Công Nghệ Đêm)
+static func get_cyber_visor_matrix() -> Array:
+	return [
+		"........................",
+		"........................",
+		"........................",
+		"....KK....KK....KK......",
+		"...KKKK..KKKK..KKKK.....",
+		"..KKEEEEEEEEEEEEEEEEKK..",
+		"..KKEERREEKKEERREEKK....",
+		"..KKEERREEKKEERREEKK....",
+		"..KKEEEEEEEEEEEEEEEEKK..",
+		"..KKGGGGGGGGGGGGGGGGKK..",
+		"..KKGgGgGgGgGgGgGgGGKK..",
+		"..KKGGGGGGGGGGGGGGGGKK..",
+		"..KKKKKKKKKKKKKKKKKKKK..",
+		"...KKKKKKKKKKKKKKKK.....",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................",
+		"........................"
+	]
+
+# ─── MASTER GETTER FUNCTIONS FOR MODERN GEAR ──────────────────
+static func get_modern_gear_texture(gear_name: String) -> ImageTexture:
+	var matrix: Array = []
+	if gear_name.contains("Plasma") or gear_name.contains("Gun") or gear_name.contains("Rifle"):
+		matrix = get_plasma_rifle_matrix()
+	elif gear_name.contains("Chainsaw") or gear_name.contains("Cưa"):
+		matrix = get_chainsaw_matrix()
+	elif gear_name.contains("Exo") or gear_name.contains("Titan") or gear_name.contains("Armor"):
+		matrix = get_titan_exosuit_matrix()
+	else:
+		matrix = get_cyber_visor_matrix()
+		
+	return matrix_to_texture(matrix, 2)
 
 # ─── 2. HANDCRAFTED 16-BIT CHARACTER MATRICES (32x32) ───────────
 
@@ -396,36 +532,8 @@ static func get_adventurer_texture(cname: String) -> ImageTexture:
 	return get_unit_16frame_texture(cname, "idle", 0)
 
 static func get_item_texture(itype: int) -> ImageTexture:
-	var matrix: Array = []
 	match itype:
-		Constants.ItemType.WEAPON: matrix = [
-			"........................", ".....................HH.", "....................HHK.",
-			"...................HHK..", "..................HHK...", ".................HHK....",
-			"................HHK.....", "...............HHK......", "..............HHK.......",
-			".............HHK........", "............HHK.........", "...........HHK..........",
-			"..........HHK...........", ".........HHK............", "........HHK.............",
-			".......HHK..GG..........", "......HHK..GGGG.........", ".....GGGGGGGGGG.........",
-			"......GGGGGG............", "........BB..............", ".......BB...............",
-			"......RR................", ".....RR.................", "........................"
-		]
-		Constants.ItemType.ARMOR: matrix = [
-			"........................", ".....GG..........GG.....", "....GGGG........GGGG....",
-			"...GGHHHHGGGGGGHHHHGG...", "..GGHHHHHHGGGGHHHHHHGG..", "..GGHKKKKHGGGGHKKKKHGG..",
-			"..GGHKKKKHGGGGHKKKKHGG..", "...SSKKKKSSGGSSKKKKSS...", "....SSKKKKSSSSKKKKSS....",
-			"....SSKKKKKKKKKKKKSS....", "....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....",
-			"....SSGGGGGGGGGGGGSS....", "....SSGGGGGGGGGGGGSS....", "....SSHKKKKKKKKKKHSS....",
-			"....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....", "....SSHKKKKKKKKKKHSS....",
-			".....SSSSSSSSSSSSSS.....", "......SSSSSSSSSSSS......", ".......SSSSSSSSSS.......",
-			"........SSSSSSSS........", "........................", "........................"
-		]
-		_: matrix = [
-			"........................", "........................", "........................",
-			"....GG....GG....GG......", "...GGGG..GGGG..GGGG.....", "..GGGGGGGGGGGGGGGGGG....",
-			"..GGRRGGGGEEGGGGPPGG....", "..GGRRGGGGEEGGGGPPGG....", "..GGGGGGGGGGGGGGGGGG....",
-			"..GGggggggggggggggGG....", "..GGgGgGgGgGgGgGgGGG....", "..GGggggggggggggggGG....",
-			"..GGGGGGGGGGGGGGGGGG....", "...GGGGGGGGGGGGGGGG.....", "........................",
-			"........................", "........................", "........................",
-			"........................", "........................", "........................",
-			"........................", "........................", "........................"
-		]
-	return matrix_to_texture(matrix, 2)
+		Constants.ItemType.WEAPON: return get_modern_gear_texture("Plasma Rifle")
+		Constants.ItemType.ARMOR: return get_modern_gear_texture("Titan Exo")
+		Constants.ItemType.ACCESSORY: return get_modern_gear_texture("Cyber Visor")
+		_: return get_modern_gear_texture("Cyber Visor")
