@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/auto_battle_viewport.gd" id="1_script"]
+
+[node name="AutoBattleViewport" type="PanelContainer" node_paths=PackedStringArray("bg_texture", "hero_container", "monster_container", "vfx_container", "lbl_loot_toast")]
+custom_minimum_size = Vector2(0, 160)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 160.0
+grow_horizontal = 2
+script = ExtResource("1_script")
+bg_texture = NodePath("ClipBox/BgTexture")
+hero_container = NodePath("ClipBox/HeroContainer")
+monster_container = NodePath("ClipBox/MonsterContainer")
+vfx_container = NodePath("ClipBox/VfxContainer")
+lbl_loot_toast = NodePath("ClipBox/TopMargin/VBox/LblLootToast")
+
+[node name="ClipBox" type="Control" parent="."]
+clip_contents = true
+layout_mode = 2
+
+[node name="BgTexture" type="TextureRect" parent="ClipBox"]
+custom_minimum_size = Vector2(640, 160)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="HeroContainer" type="Control" parent="ClipBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MonsterContainer" type="Control" parent="ClipBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VfxContainer" type="Control" parent="ClipBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopMargin" type="MarginContainer" parent="ClipBox"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+
+[node name="VBox" type="VBoxContainer" parent="ClipBox/TopMargin"]
+layout_mode = 2
+
+[node name="LblLootToast" type="Label" parent="ClipBox/TopMargin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 11
+text = "⚔️ ĐỘI HÌNH DẪN ĐẦU THÁM HIỂM ẢI TỰ ĐỘNG (TASK BAR HERO ENGINE)"
+horizontal_alignment = 1

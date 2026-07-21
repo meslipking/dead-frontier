@@ -1,16 +1,31 @@
 # ═══════════════════════════════════════════════════════════════
-#  GAME MENU MODAL CONTROLLER (game_menu_modal.gd)
-#  Điều khiển Menu Hệ Thống, Cài Đặt, Lưu Cloud, Sự Kiện & Chuyển Sinh Prestige
+#  GAME MENU MODAL CONTROLLER (game_menu_modal.gd) — 12 Modules Coverage
+#  Điều khiển Menu Hệ Thống, Lối Tắt Truy Cập Nhanh Toàn Bộ 12 Module Game
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const ToastMgr = preload("res://scripts/ui/toast_manager.gd")
-const StoryModalScene = preload("res://scenes/shared/StoryEventModal.tscn")
 
+const RadioTowerScene = preload("res://scenes/outpost/RadioTowerRoom.tscn")
+const WorkshopScene = preload("res://scenes/outpost/WorkshopRoom.tscn")
+const ArmoryScene = preload("res://scenes/outpost/ArmoryRoom.tscn")
+const MarketScene = preload("res://scenes/outpost/MarketRoom.tscn")
+const MechaAssemblyScene = preload("res://scenes/outpost/MechaAssemblyRoom.tscn")
+const MonsterBreedingScene = preload("res://scenes/outpost/MonsterBreedingRoom.tscn")
+const WorldBossRaidScene = preload("res://scenes/outpost/WorldBossRaid.tscn")
+
+@export var btn_quarters: Button
+@export var btn_tavern: Button
+@export var btn_storage: Button
+@export var btn_market: Button
+@export var btn_workshop: Button
+@export var btn_shelter: Button
+@export var btn_mecha: Button
+@export var btn_fusion: Button
+@export var btn_worldboss: Button
 @export var btn_settings: Button
 @export var btn_save: Button
-@export var btn_events: Button
 @export var btn_achieve: Button
 @export var btn_prestige: Button
 @export var btn_close: Button
@@ -23,6 +38,16 @@ func _ready() -> void:
 			queue_free()
 		)
 		
+	_connect_modal_launch(btn_quarters, func(): GameManager.switch_tab(0))
+	_connect_modal_launch(btn_tavern, func(): get_tree().root.add_child(RadioTowerScene.instantiate()))
+	_connect_modal_launch(btn_storage, func(): get_tree().root.add_child(ArmoryScene.instantiate()))
+	_connect_modal_launch(btn_market, func(): get_tree().root.add_child(MarketScene.instantiate()))
+	_connect_modal_launch(btn_workshop, func(): get_tree().root.add_child(WorkshopScene.instantiate()))
+	_connect_modal_launch(btn_shelter, func(): get_tree().root.add_child(MonsterBreedingScene.instantiate()))
+	_connect_modal_launch(btn_mecha, func(): get_tree().root.add_child(MechaAssemblyScene.instantiate()))
+	_connect_modal_launch(btn_fusion, func(): get_tree().root.add_child(MonsterBreedingScene.instantiate()))
+	_connect_modal_launch(btn_worldboss, func(): get_tree().root.add_child(WorldBossRaidScene.instantiate()))
+
 	if btn_settings:
 		btn_settings.pressed.connect(func():
 			AnimEng.animate_button_click(btn_settings)
@@ -36,14 +61,6 @@ func _ready() -> void:
 			AudioManager.play_sfx("ui_click")
 			SaveManager.save_game(GameManager.game_data)
 			ToastMgr.show_toast("💾 Đã lưu game thành công!", Color(0.3, 0.9, 0.5))
-		)
-
-	if btn_events:
-		btn_events.pressed.connect(func():
-			AnimEng.animate_button_click(btn_events)
-			AudioManager.play_sfx("ui_click")
-			var modal := StoryModalScene.instantiate()
-			get_tree().root.add_child(modal)
 		)
 
 	if btn_achieve:
@@ -62,3 +79,12 @@ func _ready() -> void:
 			GameManager.game_data["prestige_level"] = prestige_lvl
 			ToastMgr.show_toast("🔄 CẤP PRESTIGE " + str(prestige_lvl) + ": +100% ATK!", Color(0.9, 0.4, 0.9))
 		)
+
+func _connect_modal_launch(btn: Button, callback: Callable) -> void:
+	if not btn: return
+	btn.pressed.connect(func():
+		AnimEng.animate_button_click(btn)
+		AudioManager.play_sfx("ui_click")
+		callback.call()
+		queue_free()
+	)

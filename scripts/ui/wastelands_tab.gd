@@ -1,11 +1,12 @@
 # ═══════════════════════════════════════════════════════════════
-#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd) — 6 Lore Chapters & CP Requirements
-#  Hiển thị Danh Sách Ải Theo Chương với Yêu Cầu Lực Chiến (Recommended CP)
+#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd)
+#  Khung Trận Chiến Task Bar Hero Side-Scrolling & Bộ Chọn Đội Hình Đi Ải
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const StageGen = preload("res://scripts/systems/procedural_stage_generator.gd")
-const TrackerScene = preload("res://scenes/shared/CombatStageTracker.tscn")
+const AutoBattleViewportScene = preload("res://scenes/wastelands/AutoBattleViewport.tscn")
+const PartySelectorScene = preload("res://scenes/wastelands/DungeonPartySelector.tscn")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 
 @export var list_container: VBoxContainer
@@ -18,11 +19,24 @@ func populate_dungeons() -> void:
 	for child in list_container.get_children():
 		child.queue_free()
 		
-	# Add Top Live Exploration Progress Tracker Bar
-	var tracker := TrackerScene.instantiate()
-	list_container.add_child(tracker)
+	# 1. Top Task Bar Hero Style Side-Scrolling Auto-Battle Viewport
+	var auto_viewport := AutoBattleViewportScene.instantiate()
+	list_container.add_child(auto_viewport)
 	
-	# Add 6 Lore Chapters & Procedural Stages
+	# 2. Party Selection Action Button
+	var party_btn := Button.new()
+	party_btn.custom_minimum_size = Vector2(0, 36)
+	party_btn.text = "🛡️ CHỌN & SẮP XẾP ĐỘI HÌNH THÁM HIỂM (4 HEROES)"
+	party_btn.add_theme_font_size_override("font_size", 11)
+	party_btn.pressed.connect(func():
+		AnimEng.animate_button_click(party_btn)
+		AudioManager.play_sfx("ui_click")
+		var modal = PartySelectorScene.instantiate()
+		get_tree().root.add_child(modal)
+	)
+	list_container.add_child(party_btn)
+	
+	# 3. Add 6 Lore Chapters & Procedural Stages
 	for stage_num in range(1, 7):
 		var stg_data: Dictionary = StageGen.generate_stage_data(stage_num)
 		
