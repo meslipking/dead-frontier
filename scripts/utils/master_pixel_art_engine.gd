@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — 2.5D HD GRAPHICS ENGINE
-#  Động cơ Render Đồ Họa 2.5D Chi Tiết Chỉn Chu với Bóng Đổ Tròn & Hiệu Ứng Ánh Sáng Dynamic
+#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — 8 ANIMATION STATES ENGINE
+#  Chứa 8 Trạng Thái Hoạt Ảnh (idle, walk, attack, hit, skill_cast, victory_pose, death_fade, block_shield)
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
@@ -42,7 +42,7 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 3) -> ImageText
 	var img := Image.create(w * scale_factor, (h + 4) * scale_factor, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0, 0, 0, 0))
 	
-	# 1. Render 2.5D Isometric Drop Shadow at Unit Feet Base
+	# Render 2.5D Isometric Drop Shadow at Unit Feet Base
 	var shadow_center_x := int(float(w * scale_factor) * 0.5)
 	var shadow_center_y := int(float((h + 2) * scale_factor))
 	var shadow_rx := float(w * scale_factor) * 0.38
@@ -57,7 +57,7 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 3) -> ImageText
 					var alpha: float = 0.45 * (1.0 - sqrt(dx * dx + dy * dy))
 					img.set_pixel(x, y, Color(0, 0, 0, alpha))
 
-	# 2. Render Character Body Sprite Matrix with Metallic Highlights & Specular Depth
+	# Render Character Body Sprite Matrix with Metallic Highlights & Specular Depth
 	for y in range(h):
 		var row: String = matrix[y]
 		for x in range(w):
@@ -66,7 +66,6 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 3) -> ImageText
 			if col.a > 0.0:
 				for dy in range(scale_factor):
 					for dx in range(scale_factor):
-						# Apply 2.5D Top-Left Rim Light Specular Enhancement
 						var final_col := col
 						if dx == 0 and dy == 0 and char_code in ["K", "G", "E", "A", "W"]:
 							final_col = col.lightened(0.2)
@@ -74,11 +73,10 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 3) -> ImageText
 						
 	return ImageTexture.create_from_image(img)
 
-# ─── 16-FRAME SPRITESHEET MATRIX GENERATOR (CLASS-SPECIFIC ANIMATIONS) ─────
+# ─── 8 ANIMATION STATES SPRITESHEET MATRIX GENERATOR ─────────────────────
 static func get_unit_16frame_texture(cname: String, anim_state: String = "idle", frame_idx: int = 0) -> ImageTexture:
 	var base_matrix := CharMatrices.get_matrix_by_name(cname)
 	
-	# Lookup Character Profile for Assigned Weapon & Gear
 	var profile: Dictionary = {}
 	for pid in CharProfiles.PROFILES:
 		if CharProfiles.PROFILES[pid].get("name") == cname:
@@ -97,87 +95,39 @@ static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, 
 	var y_offset := 0
 	var x_offset := 0
 	var flash_red := false
+	var flash_white := false
 	
 	# Determine Class Archetype
 	var class_type := "Brute"
 	if cname.contains("Night") or cname.contains("Viper") or cname.contains("Assassin") or cname.contains("Nocturnal"):
 		class_type = "Nocturnal"
-	elif cname.contains("Shadow") or cname.contains("Rogue") or cname.contains("Phantom") or cname.contains("Nimble"):
+	elif cname.contains("Shadow") or cname.contains("Rogue") or cname.contains("Phantom") or cname.contains("Nimble") or cname.contains("Templar"):
 		class_type = "Nimble"
-	elif cname.contains("Tempest") or cname.contains("Hailstorm") or cname.contains("Feral") or cname.contains("Beast"):
+	elif cname.contains("Tempest") or cname.contains("Hailstorm") or cname.contains("Feral") or cname.contains("Beast") or cname.contains("Bio") or cname.contains("Alchemist"):
 		class_type = "Feral"
-	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech") or cname.contains("Holy"):
+	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech") or cname.contains("Holy") or cname.contains("Paladin"):
 		class_type = "Pilot"
 
-	match class_type:
-		"Brute":
-			match anim_state:
-				"idle":
-					if frame_idx == 1: y_offset = -1
-					elif frame_idx == 3: y_offset = 1
-				"walk":
-					y_offset = (frame_idx % 2) * 2
-				"attack":
-					if frame_idx == 1: y_offset = -3
-					elif frame_idx == 2: y_offset = 4
-				"hit":
-					x_offset = -2
-					if frame_idx == 1: flash_red = true
-
-		"Nimble":
-			match anim_state:
-				"idle":
-					if frame_idx == 1: x_offset = 1
-					elif frame_idx == 3: x_offset = -1
-				"walk":
-					x_offset = (frame_idx % 2) * 3
-				"attack":
-					if frame_idx == 1: x_offset = 4
-					elif frame_idx == 2: x_offset = 6
-				"hit":
-					x_offset = -4
-					if frame_idx == 1: flash_red = true
-
-		"Nocturnal":
-			match anim_state:
-				"idle":
-					if frame_idx == 0: y_offset = 0
-					elif frame_idx == 1: y_offset = -2
-					elif frame_idx == 2: y_offset = -4
-					elif frame_idx == 3: y_offset = -2
-				"walk":
-					y_offset = -3
-					x_offset = (frame_idx % 2) * 2
-				"attack":
-					y_offset = -5
-				"hit":
-					if frame_idx == 1: flash_red = true
-
-		"Feral":
-			match anim_state:
-				"idle":
-					if frame_idx == 1: y_offset = -1
-				"walk":
-					y_offset = (frame_idx % 2) * 2
-				"attack":
-					if frame_idx == 1: x_offset = -4
-					elif frame_idx == 2: x_offset = 2
-				"hit":
-					x_offset = -3
-					if frame_idx == 1: flash_red = true
-
-		_:
-			match anim_state:
-				"idle":
-					if frame_idx % 2 == 1: y_offset = -2
-				"walk":
-					y_offset = -3
-					x_offset = (frame_idx % 2) * 4
-				"attack":
-					if frame_idx == 1: y_offset = -4
-				"hit":
-					x_offset = -2
-					if frame_idx == 1: flash_red = true
+	match anim_state:
+		"idle":
+			if frame_idx % 2 == 1: y_offset = -1
+		"walk":
+			y_offset = (frame_idx % 2) * 2
+			x_offset = (frame_idx % 2) * 2
+		"attack":
+			if frame_idx == 1: x_offset = 4
+			elif frame_idx == 2: x_offset = 6
+		"hit":
+			x_offset = -4
+			flash_white = true
+		"skill_cast":
+			y_offset = -6 # Levitate up
+		"victory_pose":
+			y_offset = -10 # High jump
+		"death_fade":
+			y_offset = 6 # Collapse down
+		"block_shield":
+			x_offset = -2
 
 	# Apply Offsets, Weapon Gear Overlay & Attack Particle Effects
 	for y in range(h):
@@ -192,36 +142,43 @@ static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, 
 				var abs_x: int = abs(x_offset)
 				row = row.substr(abs_x) + ".".repeat(abs_x)
 				
-			if flash_red:
+			if flash_white:
+				# 100% White Flash (#FFF) on Hit
+				row = row.replace("K", "A").replace("H", "A").replace("F", "A").replace("P", "A").replace("W", "A").replace("B", "A")
+			elif flash_red:
 				row = row.replace("K", "R").replace("H", "O").replace("F", "R")
 			else:
 				# OVERLAY WEAPON GEAR & ATTACK VFX ACCORDING TO EQUIPPED WEAPON
 				if weapon_name.contains("Plasma"):
 					if src_y in [16, 17]:
-						if anim_state == "attack":
+						if anim_state in ["attack", "skill_cast"]:
 							row = row.substr(0, 20) + "EEEEEEEEEEEE" # Cyan laser beam
 						else:
 							row = row.substr(0, 22) + "EEEEEE"
 				elif weapon_name.contains("Chainsaw") or weapon_name.contains("Sword"):
 					if src_y in [14, 15, 16, 17, 18]:
-						if anim_state == "attack":
+						if anim_state in ["attack", "skill_cast"]:
 							row = row.substr(0, 20) + "OOOOOOOOOOOO" # Orange fire arc
 						else:
 							row = row.substr(0, 22) + "RRRRRR"
 				elif weapon_name.contains("Railgun"):
 					if src_y in [16, 17, 18]:
-						if anim_state == "attack":
+						if anim_state in ["attack", "skill_cast"]:
 							row = row.substr(0, 20) + "YYYYYYYYYYYY" # Yellow shock arc
 						else:
 							row = row.substr(0, 22) + "YYYYYY"
 				elif weapon_name.contains("Sniper"):
 					if src_y == 16:
-						if anim_state == "attack":
+						if anim_state in ["attack", "skill_cast"]:
 							row = row.substr(0, 20) + "RRRRRRRRRRRR" # Red laser line
 						else:
 							row = row.substr(0, 22) + "AAAAAA"
 							
-				# OVERLAY ARMOR ACCENTS (Titan Exo Golden Shoulders)
+				# OVERLAY BLOCK SHIELD BARRIER
+				if anim_state == "block_shield" and src_y in [10, 11, 12, 13, 14, 15, 16, 17, 18]:
+					row = row.substr(0, 24) + "EEEEEE"
+					
+				# OVERLAY TITAN EXO GOLD SHOULDER PAULDRONS
 				if armor_name.contains("Titan") or armor_name.contains("Exo"):
 					if src_y in [12, 13]:
 						row = row.substr(0, 10) + "GG" + row.substr(12, 8) + "GG" + row.substr(22)

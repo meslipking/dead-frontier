@@ -1,7 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  AUTO BATTLE VIEWPORT CONTROLLER (auto_battle_viewport.gd)
-#  Động cơ Trận Chiến Tự Động Side-Scrolling 16-Bit Task Bar Hero Realtime
-#  SỬA LỖI HOẠT ẢNH: ĐỒNG BỘ CHUYỂN ĐỔI STATE (WALK -> ATTACK -> SKILL -> HIT)
+#  Động cơ Trận Chiến Tự Động Side-Scrolling 16-Bit Task Bar Hero Realtime 11.0
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -28,7 +27,7 @@ var monster_node: TextureRect = null
 var monster_anim_state: String = "walk"
 var monster_anim_duration: float = 0.0
 
-var monster_names := ["Titan Colossus", "Night Terror", "Hailstorm"]
+var monster_names := ["Titan Colossus", "Night Terror", "Hailstorm", "Leviathan Core"]
 var current_monster_idx := 0
 
 func _ready() -> void:
@@ -56,7 +55,7 @@ func _setup_party_heroes() -> void:
 		
 		var hero_name: String = str(party[i].get("name", "Iron Defender"))
 		h_spr.texture = MasterPixel.get_unit_16frame_texture(hero_name, "walk", 0)
-		h_spr.position = Vector2(spawn_x_offsets[i], 75.0)
+		h_spr.position = Vector2(spawn_x_offsets[i], 70.0)
 		
 		hero_container.add_child(h_spr)
 		hero_nodes.append(h_spr)
@@ -75,7 +74,7 @@ func _spawn_monster() -> void:
 	
 	var m_name: String = monster_names[current_monster_idx % monster_names.size()]
 	m_spr.texture = MasterPixel.get_unit_16frame_texture(m_name, "walk", 0)
-	m_spr.position = Vector2(300.0, 70.0)
+	m_spr.position = Vector2(300.0, 65.0)
 	
 	monster_container.add_child(m_spr)
 	monster_node = m_spr
@@ -134,12 +133,11 @@ func _trigger_combat_clash() -> void:
 	var party: Array = GameManager.get_survivors()
 	if party.size() == 0: return
 	
-	# Trigger ATTACK / SKILL Animation on Frontline Heroes for 0.6 seconds!
+	# Trigger ATTACK / SKILL_CAST Animation on Frontline Heroes for 0.6 seconds!
 	for i in range(min(2, hero_nodes.size())):
-		hero_anim_states[i] = "attack"
+		hero_anim_states[i] = "skill_cast" if i == 0 else "attack"
 		hero_anim_durations[i] = 0.6
 		
-		# Lunge forward visual effect
 		var spr := hero_nodes[i]
 		var orig_x := spr.position.x
 		var tween := create_tween()
@@ -155,7 +153,6 @@ func _trigger_combat_clash() -> void:
 		m_tween.tween_property(monster_node, "position:x", m_orig_x + 10.0, 0.15)
 		m_tween.tween_property(monster_node, "position:x", m_orig_x, 0.2)
 		
-	# Lookup Hero Unique Skill Name for Skill Announcement Overlay
 	var lead_hero: Dictionary = party[0]
 	var cname: String = str(lead_hero.get("name", "Iron Defender"))
 	var skill_name := "Sóng Xung Kích Thép"
@@ -164,20 +161,18 @@ func _trigger_combat_clash() -> void:
 			skill_name = str(CharProfiles.PROFILES[pid].get("skill_name", skill_name))
 			break
 			
-	# Spawn Skill Announcement Toast & Damage Numbers
-	var dmg := randi_range(450, 950)
+	var dmg := randi_range(550, 1250)
 	var is_crit := randf() < 0.4
 	
 	_spawn_skill_announcement(cname, skill_name)
 	_spawn_floating_damage(dmg, is_crit)
 	_spawn_slash_vfx()
 	
-	# Reward Gold & Respawn Monster
-	var reward_gold := randi_range(150, 350)
+	var reward_gold := randi_range(200, 450)
 	GameManager.add_currency(Constants.Currency.GOLD, reward_gold)
 	
 	if lbl_loot_toast:
-		var txt := "⚡ KỸ NĂNG [" + skill_name + "]: GÂY -" + str(dmg) + " SÁT THƯƠNG CRIT! (+ " + str(reward_gold) + "🟡 VÀNG)"
+		var txt := "⚡ KỸ NĂNG [" + skill_name + "]: GÂY -" + str(dmg) + " CRIT! (+ " + str(reward_gold) + "🟡 VÀNG)"
 		lbl_loot_toast.text = txt
 		lbl_loot_toast.add_theme_color_override("font_color", Color(0.95, 0.8, 0.25) if is_crit else Color(0.2, 0.85, 1.0))
 		
@@ -187,10 +182,10 @@ func _trigger_combat_clash() -> void:
 func _spawn_skill_announcement(hero_name: String, skill_name: String) -> void:
 	if not vfx_container: return
 	var lbl := Label.new()
-	lbl.text = "⚡ " + hero_name.to_upper() + ": " + skill_name.to_upper() + "!"
+	lbl.text = "⚡ PORTRAIT CUT-IN [" + hero_name.to_upper() + "]: " + skill_name.to_upper() + "!"
 	lbl.add_theme_font_size_override("font_size", 12)
 	lbl.add_theme_color_override("font_color", Color(0.2, 0.85, 1.0))
-	lbl.position = Vector2(40.0, 30.0)
+	lbl.position = Vector2(20.0, 25.0)
 	
 	vfx_container.add_child(lbl)
 	
@@ -211,7 +206,7 @@ func _spawn_slash_vfx() -> void:
 		".....RR..RR.....", "....RR....RR....", "...RR......RR...", "..R..........R..",
 		"................", "................"
 	], 3)
-	slash.position = Vector2(175.0, 70.0)
+	slash.position = Vector2(175.0, 65.0)
 	vfx_container.add_child(slash)
 	
 	var tween := create_tween()
@@ -225,7 +220,7 @@ func _spawn_floating_damage(amount: int, is_crit: bool) -> void:
 	dmg_lbl.text = "-" + str(amount) + (" CRIT!" if is_crit else "")
 	dmg_lbl.add_theme_font_size_override("font_size", 15 if is_crit else 12)
 	dmg_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2) if is_crit else Color(1.0, 0.3, 0.3))
-	dmg_lbl.position = Vector2(185.0 + randf_range(-10.0, 10.0), 45.0)
+	dmg_lbl.position = Vector2(185.0 + randf_range(-10.0, 10.0), 40.0)
 	
 	vfx_container.add_child(dmg_lbl)
 	
