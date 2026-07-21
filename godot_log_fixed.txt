@@ -2036,3 +2036,123 @@ SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in 
        [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
        [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
        [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'get_total_equipment_stats' in base 'Nil'.
+   at: _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _rebuild_unit_power_cache (res://scripts/core/idle_engine.gd:67)
+       [1] _idle_tick (res://scripts/core/idle_engine.gd:32)
+       [2] _process (res://scripts/core/idle_engine.gd:28)

@@ -4,7 +4,7 @@
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-@export var top_bar: HBoxContainer
+@export var top_bar: Control
 @export var label_gold: Label
 @export var label_alloys: Label
 @export var label_energy: Label
@@ -47,5 +47,4 @@ func _format_num(val: int) -> String:
 	return str(val)
 
 func _on_offline_report_ready(report: Dictionary) -> void:
-	# Show report popup when offline rewards are calculated
 	print("[MainController] Offline rewards popup triggered: ", report)
