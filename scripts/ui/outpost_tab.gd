@@ -10,7 +10,7 @@ const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const RadioTowerScene = preload("res://scenes/outpost/RadioTowerRoom.tscn")
 const WorkshopScene = preload("res://scenes/outpost/WorkshopRoom.tscn")
 const ArmoryScene = preload("res://scenes/outpost/ArmoryRoom.tscn")
-const MechaAssemblyScene = preload("res://scenes/outpost/MechaAssemblyRoom.tscn")
+const MarketScene = preload("res://scenes/outpost/MarketRoom.tscn")
 const MonsterBreedingScene = preload("res://scenes/outpost/MonsterBreedingRoom.tscn")
 const WorldBossRaidScene = preload("res://scenes/outpost/WorldBossRaid.tscn")
 
@@ -111,7 +111,7 @@ func _on_room_clicked(room_type: int) -> void:
 		Constants.RoomType.RADIO_TOWER: modal = RadioTowerScene.instantiate()
 		Constants.RoomType.WORKSHOP: modal = WorkshopScene.instantiate()
 		Constants.RoomType.ARMORY: modal = ArmoryScene.instantiate()
-		Constants.RoomType.TRADING_POST: modal = MechaAssemblyScene.instantiate()
+		Constants.RoomType.TRADING_POST: modal = MarketScene.instantiate()
 		Constants.RoomType.BEAST_PEN: modal = MonsterBreedingScene.instantiate()
 		_: modal = WorldBossRaidScene.instantiate()
 		
