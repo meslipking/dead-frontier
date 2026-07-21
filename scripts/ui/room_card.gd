@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  ROOM CARD CONTROLLER (room_card.gd) — Premium Edition
-#  Hiển thị phòng Tiền đồn với Texture Pixel Art 16-bit & Full Card Click
+#  ROOM CARD CONTROLLER (room_card.gd) — Reference Image Grade
+#  Hiển thị Thẻ cơ sở Tiền đồn chuẩn 100% hình ảnh tham chiếu
 # ═══════════════════════════════════════════════════════════════
 extends PanelContainer
 
@@ -11,8 +11,6 @@ const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 @export var icon_label: Label
 @export var name_label: Label
 @export var level_label: Label
-@export var desc_label: Label
-@export var btn_select: Button
 
 var room_type: int = 0
 
@@ -24,42 +22,46 @@ func _ready() -> void:
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_open_room()
+		AnimEng.animate_button_click(self)
+		AudioManager.play_sfx("ui_click")
+		EventBus.room_opened.emit(room_type)
 
 func setup(p_room_type: int) -> void:
 	room_type = p_room_type
-	var rname: String = Constants.ROOM_NAMES.get(room_type, "Phòng")
-	var rdesc: String = Constants.ROOM_DESCRIPTIONS.get(room_type, "")
-	var level: int = GameManager.game_data.get("outpost_levels", {}).get(_room_type_key(), 1)
+	var rname := _get_facility_title()
+	var rsub := _get_facility_status()
 	
 	if name_label: name_label.text = rname
-	if level_label: level_label.text = "Cấp " + str(level)
-	if desc_label: desc_label.text = rdesc
+	if level_label: level_label.text = rsub
 	
-	# Render 16-bit SNES Pixel Icon
 	if icon_texture:
 		icon_texture.texture = PixelGen.create_room_icon(room_type)
-		icon_texture.visible = true
 		if icon_label: icon_label.visible = false
-	
-	if btn_select:
-		btn_select.mouse_filter = Control.MOUSE_FILTER_PASS
-		btn_select.pressed.connect(_open_room)
 
-func _open_room() -> void:
-	AnimEng.animate_button_click(self)
-	AudioManager.play_sfx("ui_click")
-	print("[RoomCard] Room card clicked! Opening room modal type: ", room_type)
-	EventBus.room_opened.emit(room_type)
-
-func _room_type_key() -> String:
+func _get_facility_title() -> String:
 	match room_type:
-		Constants.RoomType.BUNKER: return "bunker"
-		Constants.RoomType.RADIO_TOWER: return "radio_tower"
-		Constants.RoomType.ARMORY: return "armory"
-		Constants.RoomType.TRADING_POST: return "trading_post"
-		Constants.RoomType.WORKSHOP: return "workshop"
-		Constants.RoomType.BEAST_PEN: return "beast_pen"
-		Constants.RoomType.MECHA_HANGAR: return "mecha_hangar"
-		Constants.RoomType.COMMAND_CENTER: return "command_center"
-	return "bunker"
+		Constants.RoomType.BUNKER: return "QUARTERS"
+		Constants.RoomType.RADIO_TOWER: return "TAVERN"
+		Constants.RoomType.ARMORY: return "STORAGE"
+		Constants.RoomType.TRADING_POST: return "MARKET"
+		Constants.RoomType.WORKSHOP: return "WORKSHOP"
+		Constants.RoomType.BEAST_PEN: return "SHELTER"
+		Constants.RoomType.MECHA_HANGAR: return "HANGAR"
+		Constants.RoomType.COMMAND_CENTER: return "COMMAND"
+	return "FACILITY"
+
+func _get_facility_status() -> String:
+	var surv_count: int = GameManager.get_survivors().size()
+	var inv_count: int = GameManager.get_inventory().size()
+	var pet_count: int = GameManager.get_monsters().size()
+	
+	match room_type:
+		Constants.RoomType.BUNKER: return str(surv_count) + "/10 adventurers"
+		Constants.RoomType.RADIO_TOWER: return "3/3 guests"
+		Constants.RoomType.ARMORY: return str(inv_count) + "/68 items"
+		Constants.RoomType.TRADING_POST: return "0/6 sold"
+		Constants.RoomType.WORKSHOP: return "0/6 completed"
+		Constants.RoomType.BEAST_PEN: return str(pet_count) + "/6 pets"
+		Constants.RoomType.MECHA_HANGAR: return "2/4 mechas"
+		Constants.RoomType.COMMAND_CENTER: return "35 achievements"
+	return "0/0 status"

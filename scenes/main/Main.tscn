@@ -16,10 +16,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_main")
 top_bar = NodePath("VBox/TopBar")
-label_gold = NodePath("VBox/TopBar/Margin/Currencies/GoldBox/GoldLabel")
-label_alloys = NodePath("VBox/TopBar/Margin/Currencies/AlloysBox/AlloysLabel")
-label_energy = NodePath("VBox/TopBar/Margin/Currencies/EnergyBox/EnergyLabel")
-label_crystals = NodePath("VBox/TopBar/Margin/Currencies/CrystalsBox/CrystalsLabel")
+label_gold = NodePath("VBox/TopBar/Margin/VBox/Currencies/GoldBox/GoldLabel")
+label_alloys = NodePath("VBox/TopBar/Margin/VBox/Currencies/AlloysBox/AlloysLabel")
+label_energy = NodePath("VBox/TopBar/Margin/VBox/Currencies/EnergyBox/EnergyLabel")
+label_crystals = NodePath("VBox/TopBar/Margin/VBox/HeaderRow/CrystalsPill/Margin/CrystalsLabel")
 tab_container = NodePath("VBox/ContentArea")
 outpost_tab = NodePath("VBox/ContentArea/OutpostTab")
 squad_tab = NodePath("VBox/ContentArea/SquadTab")
@@ -33,7 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.08, 0.11, 1)
+color = Color(0.12, 0.12, 0.12, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -42,66 +42,86 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 0
 
 [node name="TopBar" type="PanelContainer" parent="VBox"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 68)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="VBox/TopBar"]
 layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="VBox/TopBar/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderRow" type="HBoxContainer" parent="VBox/TopBar/Margin/VBox"]
+layout_mode = 2
+
+[node name="BtnMenu" type="Button" parent="VBox/TopBar/Margin/VBox/HeaderRow"]
+custom_minimum_size = Vector2(32, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "≡"
+
+[node name="TitleLabel" type="Label" parent="VBox/TopBar/Margin/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 15
+text = "Headquarters"
+
+[node name="CrystalsPill" type="PanelContainer" parent="VBox/TopBar/Margin/VBox/HeaderRow"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="VBox/TopBar/Margin/VBox/HeaderRow/CrystalsPill"]
+layout_mode = 2
 theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 4
+theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_bottom = 2
 
-[node name="Currencies" type="HBoxContainer" parent="VBox/TopBar/Margin"]
+[node name="CrystalsLabel" type="Label" parent="VBox/TopBar/Margin/VBox/HeaderRow/CrystalsPill/Margin"]
 layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 8
-
-[node name="GoldBox" type="HBoxContainer" parent="VBox/TopBar/Margin/Currencies"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
-[node name="GoldLabel" type="Label" parent="VBox/TopBar/Margin/Currencies/GoldBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.82, 0.2, 1)
+theme_override_colors/font_color = Color(0.2, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 12
-text = "100"
+text = "💎 0"
 
-[node name="AlloysBox" type="HBoxContainer" parent="VBox/TopBar/Margin/Currencies"]
+[node name="Currencies" type="HBoxContainer" parent="VBox/TopBar/Margin/VBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+alignment = 2
+theme_override_constants/separation = 12
 
-[node name="AlloysLabel" type="Label" parent="VBox/TopBar/Margin/Currencies/AlloysBox"]
+[node name="GoldBox" type="HBoxContainer" parent="VBox/TopBar/Margin/VBox/Currencies"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
-theme_override_font_sizes/font_size = 12
-text = "20"
 
-[node name="EnergyBox" type="HBoxContainer" parent="VBox/TopBar/Margin/Currencies"]
+[node name="GoldLabel" type="Label" parent="VBox/TopBar/Margin/VBox/Currencies/GoldBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+theme_override_colors/font_color = Color(0.95, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 11
+text = "🟡 100"
 
-[node name="EnergyLabel" type="Label" parent="VBox/TopBar/Margin/Currencies/EnergyBox"]
+[node name="AlloysBox" type="HBoxContainer" parent="VBox/TopBar/Margin/VBox/Currencies"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 12
-text = "50"
 
-[node name="CrystalsBox" type="HBoxContainer" parent="VBox/TopBar/Margin/Currencies"]
+[node name="AlloysLabel" type="Label" parent="VBox/TopBar/Margin/VBox/Currencies/AlloysBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
+theme_override_colors/font_color = Color(0.8, 0.8, 0.85, 1)
+theme_override_font_sizes/font_size = 11
+text = "⚔️ 20"
 
-[node name="CrystalsLabel" type="Label" parent="VBox/TopBar/Margin/Currencies/CrystalsBox"]
+[node name="EnergyBox" type="HBoxContainer" parent="VBox/TopBar/Margin/VBox/Currencies"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.4, 0.9, 1)
-theme_override_font_sizes/font_size = 12
-text = "0"
+
+[node name="EnergyLabel" type="Label" parent="VBox/TopBar/Margin/VBox/Currencies/EnergyBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.55, 0.25, 1)
+theme_override_font_sizes/font_size = 11
+text = "⛏️ 50"
 
 [node name="ContentArea" type="MarginContainer" parent="VBox"]
 layout_mode = 2

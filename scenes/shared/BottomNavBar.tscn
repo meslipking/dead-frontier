@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/bottom_nav.gd" id="1_script"]
 
 [node name="BottomNavBar" type="HBoxContainer" node_paths=PackedStringArray("btn_outpost", "btn_squad", "btn_wastelands", "btn_sieges")]
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 50)
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -11,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
+theme_override_constants/separation = 0
 script = ExtResource("1_script")
 btn_outpost = NodePath("BtnOutpost")
 btn_squad = NodePath("BtnSquad")
@@ -20,23 +21,27 @@ btn_sieges = NodePath("BtnSieges")
 [node name="BtnOutpost" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🏕️
-Tiền đồn"
+theme_override_font_sizes/font_size = 10
+text = "🏰
+Headquarters"
 
 [node name="BtnSquad" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🛡️
-Đội hình"
+theme_override_font_sizes/font_size = 10
+text = "👥
+Adventurers"
 
 [node name="BtnWastelands" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "☣️
-Vùng hoang"
+theme_override_font_sizes/font_size = 10
+text = "🏯
+Dungeons"
 
 [node name="BtnSieges" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "☠️
-Vây hãm"
+theme_override_font_sizes/font_size = 10
+text = "⚔️
+Raids"

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/squad_tab.gd" id="1_script"]
 
-[node name="SquadTab" type="Control" node_paths=PackedStringArray("btn_survivors", "btn_monsters", "btn_mechas", "list_container")]
+[node name="SquadTab" type="Control" node_paths=PackedStringArray("list_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,12 +10,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-btn_survivors = NodePath("VBox/SubTabNav/BtnSurvivors")
-btn_monsters = NodePath("VBox/SubTabNav/BtnMonsters")
-btn_mechas = NodePath("VBox/SubTabNav/BtnMechas")
-list_container = NodePath("VBox/Scroll/Margin/VBox")
+list_container = NodePath("Scroll/Margin/List")
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,31 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubTabNav" type="HBoxContainer" parent="VBox"]
-custom_minimum_size = Vector2(0, 36)
-layout_mode = 2
-alignment = 1
-
-[node name="BtnSurvivors" type="Button" parent="VBox/SubTabNav"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "👤 Người sống sót"
-
-[node name="BtnMonsters" type="Button" parent="VBox/SubTabNav"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "🐉 Quái vật"
-
-[node name="BtnMechas" type="Button" parent="VBox/SubTabNav"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "🤖 Mecha"
-
-[node name="Scroll" type="ScrollContainer" parent="VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Margin" type="MarginContainer" parent="VBox/Scroll"]
+[node name="Margin" type="MarginContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 10
@@ -55,7 +28,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBox" type="VBoxContainer" parent="VBox/Scroll/Margin"]
+[node name="List" type="VBoxContainer" parent="Scroll/Margin"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
