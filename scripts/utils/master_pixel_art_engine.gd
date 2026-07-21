@@ -1,7 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Modular Facade AAA 2.0
-#  Động cơ sinh Texture Pixel Art 16-bit/64-bit SNES 16-Frame Spritesheet
-#  TÍCH HỢP HIỆU ỨNG VŨ KHÍ & TRANG BỊ HIỆN ĐẠI TƯƠNG ỨNG TRÊN SPRITE SHEET!
+#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — 2.5D HD GRAPHICS ENGINE
+#  Động cơ Render Đồ Họa 2.5D Chi Tiết Chỉn Chu với Bóng Đổ Tròn & Hiệu Ứng Ánh Sáng Dynamic
 # ═══════════════════════════════════════════════════════════════
 class_name MasterPixelArtEngine
 
@@ -35,14 +34,30 @@ const PALETTE := {
 	"Y": Color(0.95, 0.95, 0.3, 1),  # Electric Yellow Shock
 }
 
-static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageTexture:
+static func matrix_to_texture(matrix: Array, scale_factor: int = 3) -> ImageTexture:
 	var h: int = matrix.size()
 	var first_row: String = matrix[0] if h > 0 else ""
 	var w: int = first_row.length()
 	
-	var img := Image.create(w * scale_factor, h * scale_factor, false, Image.FORMAT_RGBA8)
+	var img := Image.create(w * scale_factor, (h + 4) * scale_factor, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0, 0, 0, 0))
 	
+	# 1. Render 2.5D Isometric Drop Shadow at Unit Feet Base
+	var shadow_center_x := int(float(w * scale_factor) * 0.5)
+	var shadow_center_y := int(float((h + 2) * scale_factor))
+	var shadow_rx := float(w * scale_factor) * 0.38
+	var shadow_ry := float(scale_factor) * 2.2
+	
+	for y in range(shadow_center_y - int(shadow_ry), shadow_center_y + int(shadow_ry)):
+		for x in range(shadow_center_x - int(shadow_rx), shadow_center_x + int(shadow_rx)):
+			if x >= 0 and x < img.get_width() and y >= 0 and y < img.get_height():
+				var dx: float = (x - shadow_center_x) / shadow_rx
+				var dy: float = (y - shadow_center_y) / shadow_ry
+				if (dx * dx + dy * dy) <= 1.0:
+					var alpha: float = 0.45 * (1.0 - sqrt(dx * dx + dy * dy))
+					img.set_pixel(x, y, Color(0, 0, 0, alpha))
+
+	# 2. Render Character Body Sprite Matrix with Metallic Highlights & Specular Depth
 	for y in range(h):
 		var row: String = matrix[y]
 		for x in range(w):
@@ -51,7 +66,11 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 			if col.a > 0.0:
 				for dy in range(scale_factor):
 					for dx in range(scale_factor):
-						img.set_pixel(x * scale_factor + dx, y * scale_factor + dy, col)
+						# Apply 2.5D Top-Left Rim Light Specular Enhancement
+						var final_col := col
+						if dx == 0 and dy == 0 and char_code in ["K", "G", "E", "A", "W"]:
+							final_col = col.lightened(0.2)
+						img.set_pixel(x * scale_factor + dx, y * scale_factor + dy, final_col)
 						
 	return ImageTexture.create_from_image(img)
 
@@ -70,7 +89,7 @@ static func get_unit_16frame_texture(cname: String, anim_state: String = "idle",
 	var armor_name: String = str(profile.get("equipped_armor", "Titan Exo"))
 	
 	var modified_matrix := _apply_class_and_gear_animations(base_matrix, cname, weapon_name, armor_name, anim_state, frame_idx)
-	return matrix_to_texture(modified_matrix, 2)
+	return matrix_to_texture(modified_matrix, 3)
 
 static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, weapon_name: String, armor_name: String, anim_state: String, frame_idx: int) -> Array:
 	var h: int = base_matrix.size()
@@ -178,31 +197,27 @@ static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, 
 			else:
 				# OVERLAY WEAPON GEAR & ATTACK VFX ACCORDING TO EQUIPPED WEAPON
 				if weapon_name.contains("Plasma"):
-					# Cyan Plasma Barrel on right hand + Laser Beam during attack
 					if src_y in [16, 17]:
 						if anim_state == "attack":
-							row = row.substr(0, 20) + "EEEEEEEEEEEE" # Cyan laser beam extending 12px
+							row = row.substr(0, 20) + "EEEEEEEEEEEE" # Cyan laser beam
 						else:
 							row = row.substr(0, 22) + "EEEEEE"
 				elif weapon_name.contains("Chainsaw") or weapon_name.contains("Sword"):
-					# Red Fire Chainsaw Blade + Orange Slash Wave during attack
 					if src_y in [14, 15, 16, 17, 18]:
 						if anim_state == "attack":
 							row = row.substr(0, 20) + "OOOOOOOOOOOO" # Orange fire arc
 						else:
 							row = row.substr(0, 22) + "RRRRRR"
 				elif weapon_name.contains("Railgun"):
-					# Heavy Railgun Barrel + Electric Yellow Lightning Arc during attack
 					if src_y in [16, 17, 18]:
 						if anim_state == "attack":
 							row = row.substr(0, 20) + "YYYYYYYYYYYY" # Yellow shock arc
 						else:
 							row = row.substr(0, 22) + "YYYYYY"
 				elif weapon_name.contains("Sniper"):
-					# Silver Rifle Barrel + Thin Red Target Laser Beam during attack
 					if src_y == 16:
 						if anim_state == "attack":
-							row = row.substr(0, 20) + "RRRRRRRRRRRR" # Thin red sniper laser line
+							row = row.substr(0, 20) + "RRRRRRRRRRRR" # Red laser line
 						else:
 							row = row.substr(0, 22) + "AAAAAA"
 							
@@ -218,7 +233,7 @@ static func _apply_class_and_gear_animations(base_matrix: Array, cname: String, 
 	return new_matrix
 
 static func get_modern_gear_texture(gear_name: String) -> ImageTexture:
-	return matrix_to_texture(GearMatrices.get_gear_matrix(gear_name), 2)
+	return matrix_to_texture(GearMatrices.get_gear_matrix(gear_name), 3)
 
 static func get_adventurer_texture(cname: String) -> ImageTexture:
 	return get_unit_16frame_texture(cname, "idle", 0)
