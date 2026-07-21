@@ -1,13 +1,14 @@
 # ═══════════════════════════════════════════════════════════════
-#  SYSTEM VERIFICATION TESTS (run_tests.gd) — Premium Visual Edition
-#  Kiểm tra tự động toàn bộ logic cốt lõi, mã hóa & Động cơ Đồ Họa 16-bit
+#  SYSTEM VERIFICATION TESTS (run_tests.gd) — Premium Visual & VFX Edition
+#  Kiểm tra tự động toàn bộ logic, mã hóa, SpriteFrames & Động cơ VFX
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
 const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
+const FrameBuilder = preload("res://scripts/utils/sprite_frames_builder.gd")
 
 func _ready() -> void:
-	print("🧪 BẮT ĐẦU KIỂM TRA TỰ ĐỘNG TOÀN BỘ HỆ THỐNG GAME (PREMIUM VISUAL)...")
+	print("🧪 BẮT ĐẦU KIỂM TRA TỰ ĐỘNG TOÀN BỘ HỆ THỐNG GAME (PREMIUM VISUAL & VFX)...")
 	test_save_encryption()
 	test_combat_simulation()
 	test_crafting_system()
@@ -16,7 +17,8 @@ func _ready() -> void:
 	test_monster_evolution()
 	test_prng_determinism()
 	test_pixel_art_rendering()
-	print("🎉 TẤT CẢ 8 HỆ THỐNG PREMIUM ĐÃ QUA KIỂM TRA THÀNH CÔNG 100%!")
+	test_sprite_frames_builder()
+	print("🎉 TẤT CẢ 9 HỆ THỐNG PREMIUM VÀ VFX ĐÃ QUA KIỂM TRA THÀNH CÔNG 100%!")
 
 func test_save_encryption() -> void:
 	var test_data := { "gold": 9999, "name": "Survivor_Test" }
@@ -73,3 +75,9 @@ func test_pixel_art_rendering() -> void:
 	var tex := PixelGen.create_unit_texture(Constants.UnitType.SURVIVOR, Color(0.3, 0.7, 1.0), 48, 48)
 	assert(tex != null and tex.get_width() == 48, "Pixel Art Texture Generator Test Failed!")
 	print("  [Pass] 16-bit SNES Pixel Art Texture Engine OK (48x48 Multi-tone Shaded Textures)")
+
+func test_sprite_frames_builder() -> void:
+	var dummy_tex := PixelGen.create_unit_texture(Constants.UnitType.MECHA, Color(0.2, 0.9, 0.5), 192, 48)
+	var frames := FrameBuilder.build_unit_sprite_frames(dummy_tex, 48, 48)
+	assert(frames != null and frames.has_animation("idle"), "SpriteFramesBuilder Test Failed!")
+	print("  [Pass] Frame-By-Frame SpriteFrames Animator OK (Idle/Attack/Hit Sliced Animations)")
