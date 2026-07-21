@@ -1,0 +1,134 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/sieges_tab.gd" id="1_script"]
+
+[node name="SiegesTab" type="Control" node_paths=PackedStringArray("lbl_attempts", "lbl_reset_timer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+lbl_attempts = NodePath("Margin/VBox/Header/LblAttempts")
+lbl_reset_timer = NodePath("Margin/VBox/Header/LblResetTimer")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Header" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "☠️ TRẬN VÂY HÃM DAILY"
+horizontal_alignment = 1
+
+[node name="LblAttempts" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Lượt khiêu chiến hôm nay: 3/3"
+horizontal_alignment = 1
+
+[node name="LblResetTimer" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Làm mới sau: 23g 59p"
+horizontal_alignment = 1
+
+[node name="SiegeList" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BossCard1" type="PanelContainer" parent="Margin/VBox/SiegeList"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/SiegeList/BossCard1"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox/SiegeList/BossCard1/Margin"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="Margin/VBox/SiegeList/BossCard1/Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "🧟"
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/SiegeList/BossCard1/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="Margin/VBox/SiegeList/BossCard1/Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "1. Bầy Zombie Đột Biến"
+
+[node name="Desc" type="Label" parent="Margin/VBox/SiegeList/BossCard1/Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Sinh tồn qua 100 đợt tấn công"
+
+[node name="BtnFight" type="Button" parent="Margin/VBox/SiegeList/BossCard1/Margin/HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Khiêu chiến"
+
+[node name="BossCard2" type="PanelContainer" parent="Margin/VBox/SiegeList"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/SiegeList/BossCard2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="Margin/VBox/SiegeList/BossCard2/Margin"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="Margin/VBox/SiegeList/BossCard2/Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "🤖"
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/SiegeList/BossCard2/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Name" type="Label" parent="Margin/VBox/SiegeList/BossCard2/Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "2. Titan Mecha Cổ Đại"
+
+[node name="Desc" type="Label" parent="Margin/VBox/SiegeList/BossCard2/Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Gây tối đa sát thương trong 3 phút"
+
+[node name="BtnFight" type="Button" parent="Margin/VBox/SiegeList/BossCard2/Margin/HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Khiêu chiến"

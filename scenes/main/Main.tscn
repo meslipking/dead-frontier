@@ -1,0 +1,109 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_controller.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/shared/BottomNavBar.tscn" id="2_bottom_nav"]
+[ext_resource type="PackedScene" path="res://scenes/outpost/OutpostTab.tscn" id="3_outpost"]
+[ext_resource type="PackedScene" path="res://scenes/squad/SquadTab.tscn" id="4_squad"]
+[ext_resource type="PackedScene" path="res://scenes/wastelands/WastelandsTab.tscn" id="5_wastelands"]
+[ext_resource type="PackedScene" path="res://scenes/sieges/SiegesTab.tscn" id="6_sieges"]
+
+[node name="Main" type="Control" node_paths=PackedStringArray("top_bar", "label_gold", "label_alloys", "label_energy", "label_crystals", "tab_container", "outpost_tab", "squad_tab", "wastelands_tab", "sieges_tab")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main")
+top_bar = NodePath("VBox/TopBar")
+label_gold = NodePath("VBox/TopBar/Margin/Currencies/GoldLabel")
+label_alloys = NodePath("VBox/TopBar/Margin/Currencies/AlloysLabel")
+label_energy = NodePath("VBox/TopBar/Margin/Currencies/EnergyLabel")
+label_crystals = NodePath("VBox/TopBar/Margin/Currencies/CrystalsLabel")
+tab_container = NodePath("VBox/ContentArea")
+outpost_tab = NodePath("VBox/ContentArea/OutpostTab")
+squad_tab = NodePath("VBox/ContentArea/SquadTab")
+wastelands_tab = NodePath("VBox/ContentArea/WastelandsTab")
+sieges_tab = NodePath("VBox/ContentArea/SiegesTab")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.11, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="VBox/TopBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="Currencies" type="HBoxContainer" parent="VBox/TopBar/Margin"]
+layout_mode = 2
+alignment = 1
+
+[node name="GoldLabel" type="Label" parent="VBox/TopBar/Margin/Currencies"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "🪙 100"
+horizontal_alignment = 1
+
+[node name="AlloysLabel" type="Label" parent="VBox/TopBar/Margin/Currencies"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "⚙️ 20"
+horizontal_alignment = 1
+
+[node name="EnergyLabel" type="Label" parent="VBox/TopBar/Margin/Currencies"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "⚡ 50"
+horizontal_alignment = 1
+
+[node name="CrystalsLabel" type="Label" parent="VBox/TopBar/Margin/Currencies"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "💎 0"
+horizontal_alignment = 1
+
+[node name="ContentArea" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OutpostTab" parent="VBox/ContentArea" instance=ExtResource("3_outpost")]
+layout_mode = 2
+
+[node name="SquadTab" parent="VBox/ContentArea" instance=ExtResource("4_squad")]
+visible = false
+layout_mode = 2
+
+[node name="WastelandsTab" parent="VBox/ContentArea" instance=ExtResource("5_wastelands")]
+visible = false
+layout_mode = 2
+
+[node name="SiegesTab" parent="VBox/ContentArea" instance=ExtResource("6_sieges")]
+visible = false
+layout_mode = 2
+
+[node name="BottomNavBar" parent="VBox" instance=ExtResource("2_bottom_nav")]
+layout_mode = 2

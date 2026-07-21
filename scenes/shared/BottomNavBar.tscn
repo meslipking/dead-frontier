@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/bottom_nav.gd" id="1_script"]
+
+[node name="BottomNavBar" type="HBoxContainer" node_paths=PackedStringArray("btn_outpost", "btn_squad", "btn_wastelands", "btn_sieges")]
+custom_minimum_size = Vector2(0, 56)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+script = ExtResource("1_script")
+btn_outpost = NodePath("BtnOutpost")
+btn_squad = NodePath("BtnSquad")
+btn_wastelands = NodePath("BtnWastelands")
+btn_sieges = NodePath("BtnSieges")
+
+[node name="BtnOutpost" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🏕️
+Tiền đồn"
+
+[node name="BtnSquad" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🛡️
+Đội hình"
+
+[node name="BtnWastelands" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "☣️
+Vùng hoang"
+
+[node name="BtnSieges" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "☠️
+Vây hãm"

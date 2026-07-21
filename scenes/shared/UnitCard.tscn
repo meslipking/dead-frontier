@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/unit_card.gd" id="1_script"]
+
+[node name="UnitCard" type="PanelContainer" node_paths=PackedStringArray("icon_label", "name_label", "class_label", "level_label", "btn_select")]
+custom_minimum_size = Vector2(0, 64)
+size_flags_horizontal = 3
+script = ExtResource("1_script")
+icon_label = NodePath("Margin/HBox/IconLabel")
+name_label = NodePath("Margin/HBox/VBox/NameLabel")
+class_label = NodePath("Margin/HBox/VBox/ClassLabel")
+level_label = NodePath("Margin/HBox/LevelLabel")
+btn_select = NodePath("Margin/HBox/BtnSelect")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IconLabel" type="Label" parent="Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "👤"
+
+[node name="VBox" type="VBoxContainer" parent="Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Tên nhân vật"
+
+[node name="ClassLabel" type="Label" parent="Margin/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Class"
+
+[node name="LevelLabel" type="Label" parent="Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Lv.1"
+alignment = 1
+
+[node name="BtnSelect" type="Button" parent="Margin/HBox"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Chi tiết"
