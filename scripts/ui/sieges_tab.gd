@@ -1,17 +1,32 @@
 # ═══════════════════════════════════════════════════════════════
 #  SIEGES TAB CONTROLLER (sieges_tab.gd)
-#  Hiển thị Phụ Bản Raids Boss với Bìa Phong Cảnh Pixel Art 16-Bit Tuyệt Đẹp
+#  Hiển thị Phụ Bản Raids Boss với Bìa Phong Cảnh Pixel Art 16-Bit & SỰ KIỆN CLICK SẮC NÉT
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const BannerGen = preload("res://scripts/utils/pixel_art/landscape_banner_generator.gd")
+const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
+const WorldBossRaidScene = preload("res://scenes/outpost/WorldBossRaid.tscn")
 
 @export var list_container: VBoxContainer
 
 func _ready() -> void:
+	_resolve_container()
 	populate_raids()
+	EventBus.tab_changed.connect(func(idx):
+		if idx == 3:
+			_resolve_container()
+			populate_raids()
+	)
+
+func _resolve_container() -> void:
+	if not list_container:
+		list_container = find_child("ListContainer", true, false) as VBoxContainer
+	if not list_container:
+		list_container = find_child("VBoxContainer", true, false) as VBoxContainer
 
 func populate_raids() -> void:
+	_resolve_container()
 	if not list_container: return
 	for child in list_container.get_children():
 		child.queue_free()
@@ -26,6 +41,16 @@ func populate_raids() -> void:
 		var panel := PanelContainer.new()
 		panel.custom_minimum_size = Vector2(0, 110)
 		panel.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		# Connect mouse click event listener to open WorldBossRaidScene!
+		var cur_raid: Dictionary = raid
+		panel.gui_input.connect(func(ev):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				AnimEng.animate_button_click(panel)
+				AudioManager.play_sfx("ui_click")
+				var modal = WorldBossRaidScene.instantiate()
+				get_tree().root.add_child(modal)
+		)
 		
 		var banner_tex := BannerGen.create_landscape_banner(raid["name"], 320, 110)
 		var bg_img := TextureRect.new()
@@ -55,5 +80,17 @@ func populate_raids() -> void:
 		desc_lbl.add_theme_font_size_override("font_size", 11)
 		desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.55, 0.25))
 		vbox.add_child(desc_lbl)
+		
+		var btn_enter := Button.new()
+		btn_enter.custom_minimum_size = Vector2(100, 30)
+		btn_enter.text = "⚔️ THÁCH ĐẤU"
+		btn_enter.add_theme_font_size_override("font_size", 10)
+		btn_enter.pressed.connect(func():
+			AnimEng.animate_button_click(btn_enter)
+			AudioManager.play_sfx("ui_click")
+			var modal = WorldBossRaidScene.instantiate()
+			get_tree().root.add_child(modal)
+		)
+		vbox.add_child(btn_enter)
 		
 		list_container.add_child(panel)

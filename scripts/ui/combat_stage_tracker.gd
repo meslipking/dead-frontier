@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  COMBAT STAGE TRACKER CONTROLLER (combat_stage_tracker.gd)
-#  Điều khiển Thanh Tiến Trình Di Chuyển Thám Hiểm Ải Trực Quan Realtime
+#  Điều khiển Thanh Tiến Trình Di Chuyển Thám Hiểm Ải Realtime & SQUAD VALIDATION
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -25,6 +25,17 @@ func _ready() -> void:
 	_load_stage(cur_stage)
 
 func _process(delta: float) -> void:
+	# Squad Validation Check: Do not allow exploration with 0 heroes!
+	var survivors: Array = GameManager.get_survivors()
+	if survivors.size() == 0:
+		if lbl_drop_toast:
+			lbl_drop_toast.text = "⚠️ BẠN CHƯA CÓ ANH HÙNG! VÀO HEADQUARTERS -> TAVERN ĐỂ CHIÊU MỘ."
+			lbl_drop_toast.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+		if party_avatar: party_avatar.visible = false
+		return
+	else:
+		if party_avatar: party_avatar.visible = true
+	
 	# Advance stage progress bar smoothly
 	progress_val += delta * 15.0
 	if progress_val >= 100.0:
@@ -43,7 +54,8 @@ func _process(delta: float) -> void:
 		anim_timer -= 0.15
 		frame_idx = (frame_idx + 1) % 4
 		if party_avatar:
-			party_avatar.texture = MasterPixel.get_unit_16frame_texture("Iron Defender", "walk", frame_idx)
+			var hero_name: String = str(survivors[0].get("name", "Iron Defender"))
+			party_avatar.texture = MasterPixel.get_unit_16frame_texture(hero_name, "walk", frame_idx)
 
 func _load_stage(stg_num: int) -> void:
 	var stg_data: Dictionary = StageGen.generate_stage_data(stg_num)
@@ -56,3 +68,4 @@ func _load_stage(stg_num: int) -> void:
 	GameManager.add_currency(Constants.Currency.GOLD, int(rewards["gold"]))
 	if lbl_drop_toast:
 		lbl_drop_toast.text = "🎁 VỪA RỢI: +1 " + str(rewards["special_material"]) + " & " + str(rewards["gold"]) + " VÀNG"
+		lbl_drop_toast.add_theme_color_override("font_color", Color(0.3, 0.9, 0.4))

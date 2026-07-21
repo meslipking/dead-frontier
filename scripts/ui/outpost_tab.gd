@@ -17,9 +17,22 @@ const WorldBossRaidScene = preload("res://scenes/outpost/WorldBossRaid.tscn")
 @export var room_list_container: VBoxContainer
 
 func _ready() -> void:
+	_resolve_container()
 	populate_rooms()
+	EventBus.tab_changed.connect(func(idx):
+		if idx == 0:
+			_resolve_container()
+			populate_rooms()
+	)
+
+func _resolve_container() -> void:
+	if not room_list_container:
+		room_list_container = find_child("RoomListContainer", true, false) as VBoxContainer
+	if not room_list_container:
+		room_list_container = find_child("VBoxContainer", true, false) as VBoxContainer
 
 func populate_rooms() -> void:
+	_resolve_container()
 	if not room_list_container: return
 	for child in room_list_container.get_children():
 		child.queue_free()
