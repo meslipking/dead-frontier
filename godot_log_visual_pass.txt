@@ -1,6 +1,7 @@
 Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
-OpenGL API 3.3.0 - Build 30.0.100.9864 - Compatibility - Using Device: Intel - Intel(R) UHD Graphics 630
 
+ERROR: Script inherits from native type 'PanelContainer', so it can't be assigned to an object of type 'HBoxContainer'.
+   at: instance_create (modules/gdscript/gdscript.cpp:419)
 ERROR: Parse JSON failed. Error at line 7: Unterminated string
    at: parse_string (core/io/json.cpp:629)
    GDScript backtrace (most recent call first):
@@ -14,4 +15,3 @@ WARNING: [SaveManager] Save file tampered or corrupted. Resetting.
        [1] _ready (res://scripts/core/game_manager.gd:20)
 [SaveManager] Game saved successfully with anti-cheat checksum.
 [GameManager] Game loaded. Gold: 100
-[MechaSystem] Assembled new Mecha: Mecha Vệ Binh

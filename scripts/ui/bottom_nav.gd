@@ -1,39 +1,38 @@
 # ═══════════════════════════════════════════════════════════════
-#  BOTTOM NAV BAR (bottom_nav.gd)
-#  Quản lý 4 nút chuyển Tab ở thanh điều hướng dưới màn hình
+#  BOTTOM NAV CONTROLLER (bottom_nav.gd) — Premium Edition
+#  Điều hướng 4 Tab chính với hiệu ứng micro-animations & SFX
 # ═══════════════════════════════════════════════════════════════
 extends HBoxContainer
+
+const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 
 @export var btn_outpost: Button
 @export var btn_squad: Button
 @export var btn_wastelands: Button
 @export var btn_sieges: Button
 
-var active_tab_index: int = 0
+var buttons: Array[Button] = []
 
 func _ready() -> void:
-	if btn_outpost: btn_outpost.pressed.connect(func(): _on_tab_pressed(0))
-	if btn_squad: btn_squad.pressed.connect(func(): _on_tab_pressed(1))
-	if btn_wastelands: btn_wastelands.pressed.connect(func(): _on_tab_pressed(2))
-	if btn_sieges: btn_sieges.pressed.connect(func(): _on_tab_pressed(3))
-	
-	EventBus.tab_changed.connect(_on_external_tab_changed)
-	set_active_tab(0)
-
-func _on_tab_pressed(index: int) -> void:
-	GameManager.switch_tab(index)
-
-func _on_external_tab_changed(index: int) -> void:
-	set_active_tab(index)
-
-func set_active_tab(index: int) -> void:
-	active_tab_index = index
-	var buttons := [btn_outpost, btn_squad, btn_wastelands, btn_sieges]
+	buttons = [btn_outpost, btn_squad, btn_wastelands, btn_sieges]
 	
 	for i in buttons.size():
-		var btn: Button = buttons[i]
-		if btn:
-			if i == active_tab_index:
-				btn.modulate = Color(1.0, 0.85, 0.3)  # Highlight active
+		if buttons[i]:
+			var tab_idx := i
+			buttons[i].pressed.connect(func():
+				AnimEng.animate_button_click(buttons[tab_idx])
+				AudioManager.play_sfx("ui_click")
+				GameManager.switch_tab(tab_idx)
+			)
+			
+	EventBus.tab_changed.connect(_on_tab_changed)
+	_on_tab_changed(GameManager.current_tab)
+
+func _on_tab_changed(active_index: int) -> void:
+	for i in buttons.size():
+		if buttons[i]:
+			var btn := buttons[i]
+			if i == active_index:
+				btn.modulate = Color(1.0, 0.75, 0.2, 1.0) # Active Gold Glow
 			else:
-				btn.modulate = Color(0.7, 0.75, 0.8)  # Dim inactive
+				btn.modulate = Color(0.65, 0.7, 0.8, 0.85) # Normal Inactive
