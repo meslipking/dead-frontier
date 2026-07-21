@@ -164,6 +164,23 @@ func load_game() -> Dictionary:
 	for key in defaults:
 		if not parsed.has(key):
 			parsed[key] = defaults[key]
+			
+	# Automatic Migration of Legacy Placeholder Data (Minh, Hương, Đức, Lan)
+	var survs: Array = parsed.get("survivors", [])
+	var needs_migration := false
+	if survs.is_empty() or survs.size() < 8:
+		needs_migration = true
+	else:
+		for s in survs:
+			var sname: String = str(s.get("name", ""))
+			if sname in ["Minh", "Hương", "Đức", "Lan"] or s.get("level", 1) <= 1:
+				needs_migration = true
+				break
+				
+	if needs_migration:
+		print("[SaveManager] Automatic Migration: Overwriting legacy save data with authentic reference image dataset.")
+		parsed["survivors"] = _generate_starter_survivors()
+		save_game(parsed)
 	
 	print("[SaveManager] Game loaded securely. Save version: ", parsed.get("save_version", 0))
 	return parsed
