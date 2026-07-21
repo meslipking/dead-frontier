@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════
-#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd)
+#  MASTER PIXEL ART ENGINE (master_pixel_art_engine.gd) — Commercial Grade
 #  Động cơ vẽ Pixel Art 16-bit SNES chuẩn Commercial Premium
 #  Sử dụng Ma Trận Chuỗi Pixel Matrix 32x32 Vẽ Sắc Nét 100% Tuyệt Đẹp
 # ═══════════════════════════════════════════════════════════════
@@ -8,12 +8,12 @@ class_name MasterPixelArtEngine
 # ─── COLOR PALETTE DICTIONARY ──────────────────────────────────
 const PALETTE := {
 	".": Color(0, 0, 0, 0),         # Transparent
-	"#": Color(0.08, 0.07, 0.12, 1), # Dark Outline
+	"#": Color(0.06, 0.05, 0.1, 1),  # Dark Outline
 	"K": Color(0.65, 0.7, 0.78, 1),  # Steel Plate
 	"H": Color(0.88, 0.92, 0.98, 1),  # Steel Highlight
-	"S": Color(0.35, 0.4, 0.48, 1),  # Steel Shadow
+	"S": Color(0.32, 0.36, 0.44, 1),  # Steel Shadow
 	"G": Color(0.95, 0.8, 0.25, 1),  # Gold Accent
-	"g": Color(0.75, 0.6, 0.15, 1),  # Dark Gold
+	"g": Color(0.72, 0.58, 0.15, 1),  # Dark Gold
 	"R": Color(0.9, 0.2, 0.25, 1),   # Ruby Red
 	"r": Color(0.5, 0.1, 0.15, 1),   # Dark Red / Cape
 	"F": Color(0.92, 0.74, 0.62, 1), # Flesh Skin Tone
@@ -27,6 +27,8 @@ const PALETTE := {
 	"b": Color(0.28, 0.16, 0.08, 1), # Dark Wood
 	"A": Color(0.95, 0.95, 0.9, 1),  # White / Silver
 	"O": Color(0.95, 0.55, 0.15, 1), # Orange Trait / Fire
+	"I": Color(0.4, 0.75, 0.95, 1),  # Ice Blue
+	"i": Color(0.2, 0.5, 0.75, 1),   # Dark Ice Blue
 }
 
 # ─── 1. PIXEL MATRIX SPRITE GENERATOR ──────────────────────────
@@ -52,6 +54,7 @@ static func matrix_to_texture(matrix: Array, scale_factor: int = 2) -> ImageText
 
 # ─── 2. HANDCRAFTED 16-BIT CHARACTER MATRICES (32x32) ───────────
 
+# 🛡️ IRON DEFENDER (Heavy Horned Knight with Red Cape & Steel Shield)
 static func get_iron_defender_matrix() -> Array:
 	return [
 		"................................",
@@ -88,6 +91,7 @@ static func get_iron_defender_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
+# 🥷 NIGHT TERROR (Dark Shadow Assassin with Purple Visor & Dual Blades)
 static func get_night_terror_matrix() -> Array:
 	return [
 		"................................",
@@ -123,6 +127,7 @@ static func get_night_terror_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
+# 🥷 SHADOW DANCER (Rogue Ninja with Headband & Dual Daggers)
 static func get_shadow_dancer_matrix() -> Array:
 	return [
 		"................................",
@@ -158,6 +163,7 @@ static func get_shadow_dancer_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
+# 🏹 TEMPEST (Elven Ranger in Forest Green Tunic with Longbow)
 static func get_tempest_matrix() -> Array:
 	return [
 		"................................",
@@ -193,9 +199,43 @@ static func get_tempest_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
+# 🏹 HAILSTORM (Ice Ranger with Glowing Blue Bow & Ice Boots)
 static func get_hailstorm_matrix() -> Array:
-	return get_tempest_matrix()
+	return [
+		"................................",
+		".........##############.........",
+		"........#IIIIIIIIIIIIII#........",
+		".......#IIIIIIIIIIIIIIII#.......",
+		"......#IIIIIIIIIIIIIIIIII#......",
+		"......#IIIIFFFFFFFFFFIIII#......",
+		"......#IIIFFF####FFFFIIII#......",
+		"......#IIIFFF#EE#FFFFIIII#......",
+		"......#IIIFFF####FFFFIIII#......",
+		"......#IIFFFFFFFFFFFFFFII#......",
+		".......#IIFFFFFFFFFFFFII#.......",
+		"........#IIFFFFFFFFFFII#........",
+		".......##IIIIIIIIIIIIII##.......",
+		"......#iiIIIIIIIIIIIIIIii#......",
+		".....#iiiiIIIIIIIIIIIIiiii#.....",
+		"....#iiiiiiIIIIIIIIIIiiiiii#....",
+		"...#iiiiiiiiIIIIIIIIiiiiiiii#...",
+		"...#i#iiiiiiiIIIIIIiiiiiii#i#...",
+		"..#ii#iiiiiiIIIIIIIIiiiiii#ii#..",
+		"..#ii#iiiiiiEEEEEEEEiiiiii#ii#..",
+		"..#ii#iiiiiiEEEEEEEEiiiiii#ii#..",
+		"..#ii#iiiiiiIIIIIIIIiiiiii#ii#..",
+		"..#ii#iiiiiiIIIIIIIIiiiiii#ii#..",
+		"...#i#iiiiiiIIIIIIIIiiiiii#i#...",
+		"....##iiiiiiIIIIIIIIiiiiii##....",
+		".......#iiiii######iiiii#.......",
+		".......#iiiii#....#iiiii#.......",
+		".......#iiiii#....#iiiii#.......",
+		".......#IIIII#....#IIIII#.......",
+		".......#II#II#....#II#II#.......",
+		".......###..##....##..###......."
+	]
 
+# 🤖 KING'S HAND (Royal Golden Paladin with Blue Visor)
 static func get_kings_hand_matrix() -> Array:
 	return [
 		"................................",
@@ -232,11 +272,76 @@ static func get_kings_hand_matrix() -> Array:
 		".......###..##....##..###......."
 	]
 
+# 🎵 BARD (Minstrel with Red Lute & Brown Cap)
 static func get_bard_matrix() -> Array:
-	return get_tempest_matrix()
+	return [
+		"................................",
+		"..........############..........",
+		".........#bbbbbbbbbbbb#.........",
+		"........#bbbbbbbbbbbbbb#........",
+		".......#bbbbbbRRRRbbbbbb#.......",
+		".......#bbbbbRRRRRRbbbbb#.......",
+		"......#bbbbbFFFFFFFFbbbbb#......",
+		"......#bbbbFFF####FFFbbbb#......",
+		"......#bbbbFFF#EE#FFFbbbb#......",
+		"......#bbbbFFF####FFFbbbb#......",
+		"......#bbbFFFFFFFFFFFFbbb#......",
+		".......#bbFFFFFFFFFFFFbb#.......",
+		"........#bFFFFFFFFFFFFb#........",
+		".......##bbbbbbbbbbbbbb##.......",
+		"......#RRbbbbbbbbbbbbbbRR#......",
+		".....#RRRRbbbbbbbbbbbbRRRR#.....",
+		"....#RRRRRRbbbbbbbbbbRRRRRR#....",
+		"...#RRRRRRRRbbbbbbbbRRRRRRRR#...",
+		"...#R#RRRRRRRbbbbbbRRRRRRR#R#...",
+		"..#RR#RRRRRRRGGGGGGGRRRRRR#RR#..",
+		"..#RR#RRRRRRRGGGGGGGRRRRRR#RR#..",
+		"..#RR#RRRRRRRbbbbbbRRRRRRR#RR#..",
+		"..#RR#RRRRRRRbbbbbbRRRRRRR#RR#..",
+		"...#R#RRRRRRRbbbbbbRRRRRRR#R#...",
+		"....##RRRRRRRbbbbbbRRRRRRR##....",
+		".......#RRRRR######RRRRR#.......",
+		".......#RRRRR#....#RRRRR#.......",
+		".......#RRRRR#....#RRRRR#.......",
+		".......#rrrrr#....#rrrrr#.......",
+		".......#rr#rr#....#rr#rr#.......",
+		".......###..##....##..###......."
+	]
 
+# ⚔️ HOLY KNIGHT (Silver Paladin with Golden Cross)
 static func get_holy_knight_matrix() -> Array:
-	return get_iron_defender_matrix()
+	return [
+		"................................",
+		".........##############.........",
+		"........#AAAAAAAAAAAAAA#........",
+		".......#AAAAAAAAAAAAAAAA#.......",
+		"......#AAAAAAAAAAAAAAAAAA#......",
+		"......#AAAAAA######AAAAAA#......",
+		"......#AAAA#GGGGGGGG#AAAA#......",
+		"......#AAAA#GGGGGGGG#AAAA#......",
+		"......#AAAA###GGGG###AAAA#......",
+		"......#AAAAAAAGGGGAAAAAAA#......",
+		".......#AAAAAAGGGGAAAAAA#.......",
+		"........#AAAAAGGGGAAAAA#........",
+		".......##AAAAAAAAAAAAAA##.......",
+		"......#HHAAAAAAAAAAAAAAHH#......",
+		".....#HHHHAAAAAAAAAAAAHHHH#.....",
+		"....#HHHHHHAAAAAAAAAAHHHHHH#....",
+		"...#rrrHHHHHHGGGGGGHHHHHHrrr#...",
+		"...#rrr#HHHHHGGGGGGHHHHH#rrr#...",
+		"..#rrrrr#HHHHGGGGGGHHHH#rrrrr#..",
+		"..#rrrrr#HHHGGGGGGGGHHH#rrrrr#..",
+		"..#rrrrr#HHHGGGGGGGGHHH#rrrrr#..",
+		"..#rrrrr#SSSHGGGGGGHSSS#rrrrr#..",
+		"..#rrrrr#SSSSSSSSSSSSSS#rrrrr#..",
+		"...#rrr#SSSSSSSSSSSSSSSS#rrr#...",
+		"....##.#AAAAA######AAAAA#.##....",
+		".......#AAAAA#....#AAAAA#.......",
+		".......#AAAAA#....#AAAAA#.......",
+		".......#SSSSS#....#SSSSS#.......",
+		".......#SS#SS#....#SS#SS#.......",
+		".......###..##....##..###......."
+	]
 
 # ─── 3. HANDCRAFTED 16-BIT ITEM MATRICES (24x24) ─────────────
 
@@ -331,10 +436,10 @@ static func get_adventurer_texture(cname: String) -> ImageTexture:
 		matrix = get_night_terror_matrix()
 	elif cname.contains("Shadow") or cname.contains("Rogue"):
 		matrix = get_shadow_dancer_matrix()
-	elif cname.contains("Tempest") or cname.contains("Beast"):
-		matrix = get_tempest_matrix()
 	elif cname.contains("Hailstorm"):
 		matrix = get_hailstorm_matrix()
+	elif cname.contains("Tempest") or cname.contains("Beast"):
+		matrix = get_tempest_matrix()
 	elif cname.contains("King") or cname.contains("Pilot") or cname.contains("Mech"):
 		matrix = get_kings_hand_matrix()
 	elif cname.contains("Bard"):
