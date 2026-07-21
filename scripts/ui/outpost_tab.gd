@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  OUTPOST TAB CONTROLLER (outpost_tab.gd)
-#  Quản lý danh sách 8 phòng tiền đồn & kết nối Modal view
+#  Quản lý danh sách 8 phòng tiền đồn & kết nối Modal view (8/8 Rooms)
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -10,6 +10,8 @@ var room_card_scene = preload("res://scenes/shared/RoomCard.tscn")
 var room_scenes := {
 	Constants.RoomType.BUNKER: preload("res://scenes/outpost/BunkerRoom.tscn"),
 	Constants.RoomType.RADIO_TOWER: preload("res://scenes/outpost/RadioTowerRoom.tscn"),
+	Constants.RoomType.ARMORY: preload("res://scenes/outpost/ArmoryRoom.tscn"),
+	Constants.RoomType.TRADING_POST: preload("res://scenes/outpost/TradingPostRoom.tscn"),
 	Constants.RoomType.WORKSHOP: preload("res://scenes/outpost/WorkshopRoom.tscn"),
 	Constants.RoomType.BEAST_PEN: preload("res://scenes/outpost/BeastPenRoom.tscn"),
 	Constants.RoomType.MECHA_HANGAR: preload("res://scenes/outpost/MechaHangarRoom.tscn"),

@@ -1,13 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
 #  SAVE MANAGER (save_manager.gd) — Autoload Singleton
-#  Save/Load game data với anti-cheat encryption
+#  Save/Load game data với anti-cheat encryption (FNV-1a + XOR)
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
 const SAVE_FILE_PATH := "user://deadfrontier_save.dat"
 const SAVE_VERSION := 1
 const XOR_KEY := 0x7B
-const DISABLE_ENCRYPTION := true  # true cho dev, false cho production
+const DISABLE_ENCRYPTION := false  # Production anti-cheat encryption ENABLED
 
 # ─── Default Save Data ──────────────────────────────────────
 func default_save() -> Dictionary:
@@ -84,9 +84,9 @@ func _generate_starter_survivors() -> Array:
 func _generate_starter_items() -> Array:
 	return [
 		{ "id": "item_001", "name": "Dao rỉ sét", "type": Constants.ItemType.WEAPON,
-		  "rarity": Constants.Rarity.COMMON, "stats": { "atk": 5 }, "upgrade_level": 0 },
+		  "rarity": Constants.Rarity.COMMON, "stats": { "atk": 5 }, "upgrade_level": 0, "set_id": "scout_set" },
 		{ "id": "item_002", "name": "Áo da cũ", "type": Constants.ItemType.ARMOR,
-		  "rarity": Constants.Rarity.COMMON, "stats": { "def": 4, "hp": 10 }, "upgrade_level": 0 },
+		  "rarity": Constants.Rarity.COMMON, "stats": { "def": 4, "hp": 10 }, "upgrade_level": 0, "set_id": "scout_set" },
 		{ "id": "item_003", "name": "Phế liệu sắt", "type": Constants.ItemType.MATERIAL,
 		  "rarity": Constants.Rarity.COMMON, "count": 5 },
 		{ "id": "item_004", "name": "Mạch điện hỏng", "type": Constants.ItemType.MATERIAL,
@@ -107,7 +107,7 @@ func save_game(data: Dictionary) -> void:
 	if file:
 		file.store_string(save_str)
 		file.close()
-		print("[SaveManager] Game saved successfully.")
+		print("[SaveManager] Game saved successfully with anti-cheat checksum.")
 	else:
 		push_error("[SaveManager] Failed to save game! Error: " + str(FileAccess.get_open_error()))
 
@@ -150,7 +150,7 @@ func load_game() -> Dictionary:
 		if not parsed.has(key):
 			parsed[key] = defaults[key]
 	
-	print("[SaveManager] Game loaded. Save version: ", parsed.get("save_version", 0))
+	print("[SaveManager] Game loaded securely. Save version: ", parsed.get("save_version", 0))
 	return parsed
 
 # ─── Encryption (FNV-1a + XOR) ─────────────────────────────
