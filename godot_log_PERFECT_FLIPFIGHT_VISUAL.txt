@@ -1,0 +1,40 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot call non-static function "show_toast()" on the class "res://scripts/ui/toast_manager.gd" directly. Make an instance instead.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:36)
+SCRIPT ERROR: Parse Error: Cannot call non-static function "show_toast()" on the class "res://scripts/ui/toast_manager.gd" directly. Make an instance instead.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:38)
+SCRIPT ERROR: Parse Error: Cannot call non-static function "show_toast()" on the class "res://scripts/ui/toast_manager.gd" directly. Make an instance instead.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:41)
+SCRIPT ERROR: Parse Error: Cannot call non-static function "show_toast()" on the class "res://scripts/ui/toast_manager.gd" directly. Make an instance instead.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:71)
+ERROR: Failed to load script "res://scripts/ui/armory_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Static function "check_achievements()" not found in base "AchievementSystem".
+   at: GDScript::reload (res://scripts/ui/combat_ui.gd:31)
+ERROR: Failed to load script "res://scripts/ui/combat_ui.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "u" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:15)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "u" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:24)
+SCRIPT ERROR: Parse Error: Identifier "TurnSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:36)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ready_units" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:36)
+SCRIPT ERROR: Parse Error: Identifier "CombatAI" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:43)
+SCRIPT ERROR: Parse Error: Identifier "CombatAI" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:43)
+SCRIPT ERROR: Parse Error: Identifier "DamageCalculator" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:48)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "dmg_result" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:48)
+SCRIPT ERROR: Parse Error: Identifier "TurnSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/combat_manager.gd:66)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scripts/combat/visual_combat.gd:0)
+ERROR: Failed to load script "res://scripts/combat/visual_combat.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[SaveManager] Game loaded securely. Save version: 1.0
+[GameManager] Game loaded. Gold: 0.0

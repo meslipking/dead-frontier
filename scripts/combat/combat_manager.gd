@@ -1,88 +1,65 @@
 # ═══════════════════════════════════════════════════════════════
 #  COMBAT MANAGER (combat_manager.gd)
-#  Điều phối trận đấu 4v4 auto-battle, tính toán lượt và phần thưởng
+#  Điều khiển Giả lập Trận đấu Turn-Based 4v4 kiểu FlipFight
 # ═══════════════════════════════════════════════════════════════
 class_name CombatManager
 
-static func simulate_battle(player_team: Array, enemy_team: Array) -> Dictionary:
-	var logs := []
-	var round_count := 0
-	const MAX_ROUNDS := 50
+const TurnSys = preload("res://scripts/combat/turn_system.gd")
+const AI = preload("res://scripts/combat/combat_ai.gd")
+const DmgCalc = preload("res://scripts/combat/damage_calculator.gd")
+
+static func simulate_battle(team_a_raw: Array, team_b_raw: Array) -> Dictionary:
+	var team_a: Array = []
+	var team_b: Array = []
 	
-	# Prepare combat units
-	var p_units := []
-	for p in player_team:
-		var u := p.duplicate(true)
-		u["max_hp"] = u.get("stats", {}).get("hp", 100)
-		u["current_hp"] = u["max_hp"]
-		u["action_bar"] = randf_range(0.0, 20.0)
-		u["is_enemy"] = false
-		p_units.append(u)
+	for raw_u in team_a_raw:
+		var u: Dictionary = (raw_u as Dictionary).duplicate(true)
+		u["current_hp"] = u.get("stats", {}).get("hp", 100)
+		u["action_bar"] = 0.0
+		u["is_team_a"] = true
+		team_a.append(u)
 		
-	var e_units := []
-	for e in enemy_team:
-		var u := e.duplicate(true)
-		u["max_hp"] = u.get("stats", {}).get("hp", 80)
-		u["current_hp"] = u["max_hp"]
-		u["action_bar"] = randf_range(0.0, 20.0)
-		u["is_enemy"] = true
-		e_units.append(u)
-		
-	logs.append("⚔️ TRẬN ĐẤU BẮT ĐẦU!")
+	for raw_u in team_b_raw:
+		var u: Dictionary = (raw_u as Dictionary).duplicate(true)
+		u["current_hp"] = u.get("stats", {}).get("hp", 100)
+		u["action_bar"] = 0.0
+		u["is_team_a"] = false
+		team_b.append(u)
+
+	var rounds := 0
+	var max_rounds := 100
+	var logs: Array[String] = []
 	
-	while round_count < MAX_ROUNDS:
-		round_count += 1
-		var all_units := p_units + e_units
-		var ready_units := TurnSystem.tick_action_bars(all_units, 1.0)
+	while rounds < max_rounds:
+		rounds += 1
+		if _is_team_defeated(team_a):
+			return { "victory": false, "rounds": rounds, "logs": logs }
+		if _is_team_defeated(team_b):
+			return { "victory": true, "rounds": rounds, "logs": logs }
+
+		var all_units: Array = []
+		all_units.append_array(team_a)
+		all_units.append_array(team_b)
 		
-		for actor in ready_units:
-			if actor["current_hp"] <= 0:
-				continue
-				
-			var targets: Array = e_units if not actor["is_enemy"] else p_units
-			var target: Dictionary = CombatAI.select_target(targets, CombatAI.AIType.LOWEST_HP)
+		var ready_units: Array = TurnSys.tick_action_bars(all_units, 1.0)
+		for attacker in ready_units:
+			if attacker["current_hp"] <= 0: continue
 			
-			if target.is_empty():
-				break  # Battle over
-				
-			var dmg_result := DamageCalculator.calculate_damage(
-				actor.get("stats", {}),
-				target.get("stats", {}),
-				actor.get("element", Constants.Element.NONE),
-				target.get("element", Constants.Element.NONE)
-			)
+			var defenders: Array = team_b if attacker["is_team_a"] else team_a
+			var target: Dictionary = AI.select_target(defenders)
+			if target.is_empty(): continue
 			
-			if dmg_result["is_dodge"]:
-				logs.append("%s né tránh đòn đánh từ %s!" % [target["name"], actor["name"]])
-			else:
-				var dmg: int = dmg_result["damage"]
-				target["current_hp"] = max(target["current_hp"] - dmg, 0)
-				var crit_txt := " (CHÍ MẠNG!)" if dmg_result["is_crit"] else ""
-				logs.append("%s gây %d sát thương lên %s%s" % [actor["name"], dmg, target["name"], crit_txt])
-				
-				if target["current_hp"] <= 0:
-					logs.append("☠️ %s đã gục ngã!" % target["name"])
-					
-			TurnSystem.reset_action_bar(actor)
+			var dmg_result: Dictionary = DmgCalc.calculate_damage(attacker, target)
+			var dmg: int = dmg_result.get("damage", 10)
+			target["current_hp"] = max(target["current_hp"] - dmg, 0)
+			TurnSys.reset_action_bar(attacker)
 			
-		# Check victory condition
-		var p_alive := false
-		for p in p_units:
-			if p["current_hp"] > 0: p_alive = true; break
+			logs.append(attacker.get("name", "Unit") + " tấn công " + target.get("name", "Target") + " gây " + str(dmg) + " DMG!")
 			
-		var e_alive := false
-		for e in e_units:
-			if e["current_hp"] > 0: e_alive = true; break
-			
-		if not p_alive or not e_alive:
-			var victory: bool = p_alive
-			logs.append("🏆 CHẾT VÀ BẢO VỆ THÀNH CÔNG!" if victory else "💀 ĐỘI HÌNH ĐÃ THẤT BẠI!")
-			return {
-				"victory": victory,
-				"rounds": round_count,
-				"logs": logs,
-				"gold_reward": 50 if victory else 10,
-				"exp_reward": 80 if victory else 20
-			}
-			
-	return { "victory": false, "rounds": round_count, "logs": logs, "gold_reward": 10, "exp_reward": 10 }
+	return { "victory": true, "rounds": rounds, "logs": logs }
+
+static func _is_team_defeated(team: Array) -> bool:
+	for u in team:
+		if u.get("current_hp", 0) > 0:
+			return false
+	return true

@@ -1,0 +1,26 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:35)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:37)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:40)
+SCRIPT ERROR: Parse Error: Identifier "ToastManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:71)
+ERROR: Failed to load script "res://scripts/ui/armory_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Could not find type "VisualCombatController" in the current scope.
+   at: GDScript::reload (res://scripts/ui/combat_ui.gd:7)
+SCRIPT ERROR: Parse Error: Identifier "AchievementSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/combat_ui.gd:33)
+ERROR: Failed to load script "res://scripts/ui/combat_ui.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "CombatManager" not declared in the current scope.
+   at: GDScript::reload (res://scripts/combat/visual_combat.gd:45)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "battle_result" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/combat/visual_combat.gd:45)
+ERROR: Failed to load script "res://scripts/combat/visual_combat.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[SaveManager] Game loaded securely. Save version: 1.0
+[GameManager] Game loaded. Gold: 0.0
