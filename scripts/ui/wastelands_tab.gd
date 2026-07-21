@@ -1,11 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
-#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd) — Reference Image 1 Match
-#  Hiển thị Thẻ Vùng Hoang Dungeons với Bìa Pixel Art Ngang & Active Looting
+#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd)
+#  Hiển thị Danh Sách Dungeons với Bìa Phong Cảnh Pixel Art 16-Bit Tuyệt Đẹp
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
-const CBridge = preload("res://scripts/utils/c_pixel_engine_bridge.gd")
+const BannerGen = preload("res://scripts/utils/pixel_art/landscape_banner_generator.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 
 @export var list_container: VBoxContainer
@@ -18,102 +17,52 @@ func populate_dungeons() -> void:
 	for child in list_container.get_children():
 		child.queue_free()
 		
-	# 1. Active Dungeon Card (Obsidian Mines - Matching Reference Image 1)
-	var active_card := PanelContainer.new()
-	active_card.custom_minimum_size = Vector2(0, 150)
-	active_card.mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	# Pixel Banner Background
-	var active_bg := TextureRect.new()
-	active_bg.texture = PixelGen.create_landscape_banner("Obsidian Mines", 320, 150)
-	active_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	active_bg.stretch_mode = TextureRect.STRETCH_SCALE
-	active_bg.modulate = Color(0.65, 0.65, 0.7)
-	active_card.add_child(active_bg)
-	
-	var active_margin := MarginContainer.new()
-	active_margin.add_theme_constant_override("margin_left", 12)
-	active_margin.add_theme_constant_override("margin_top", 10)
-	active_margin.add_theme_constant_override("margin_right", 12)
-	active_margin.add_theme_constant_override("margin_bottom", 10)
-	active_card.add_child(active_margin)
-	
-	var active_vbox := VBoxContainer.new()
-	active_vbox.add_theme_constant_override("separation", 6)
-	active_margin.add_child(active_vbox)
-	
-	var active_title := Label.new()
-	active_title.text = "Obsidian Mines"
-	active_title.add_theme_font_size_override("font_size", 16)
-	active_title.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
-	active_vbox.add_child(active_title)
-	
-	# 4 Active Adventurer Avatars
-	var party_hbox := HBoxContainer.new()
-	party_hbox.add_theme_constant_override("separation", 8)
-	active_vbox.add_child(party_hbox)
-	
-	for i in range(4):
-		var adv_box := VBoxContainer.new()
-		var spr := TextureRect.new()
-		spr.custom_minimum_size = Vector2(36, 36)
-		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		spr.texture = PixelGen.create_unit_texture(Constants.UnitType.SURVIVOR, Color(0.3 + i * 0.15, 0.4, 0.6), 48, 48)
-		adv_box.add_child(spr)
-		
-		# HP bar under avatar
-		var hp := ProgressBar.new()
-		hp.custom_minimum_size = Vector2(36, 4)
-		hp.show_percentage = false
-		hp.value = 85.0 - i * 10
-		adv_box.add_child(hp)
-		party_hbox.add_child(adv_box)
-		
-	# Looting progress text & bar
-	var loot_lbl := Label.new()
-	loot_lbl.text = "Looting items..."
-	loot_lbl.add_theme_font_size_override("font_size", 10)
-	loot_lbl.add_theme_color_override("font_color", Color(0.85, 0.85, 0.9))
-	active_vbox.add_child(loot_lbl)
-	
-	var loot_bar := ProgressBar.new()
-	loot_bar.custom_minimum_size = Vector2(160, 6)
-	loot_bar.show_percentage = false
-	loot_bar.value = 65.0
-	active_vbox.add_child(loot_bar)
-	
-	list_container.add_child(active_card)
-	
-	# 2. Inactive Dungeon Banners (The Southern Grove & Barren Wastelands)
-	var dungeons := [
-		{ "name": "The Southern Grove" },
-		{ "name": "Barren Wastelands" }
+	var zones := [
+		{ "name": "Obsidian Mines", "desc": "Looting items...", "progress": 0.42 },
+		{ "name": "The Southern Grove", "desc": "Explore Zone 2", "progress": 0.0 },
+		{ "name": "Barren Wastelands", "desc": "Explore Zone 3", "progress": 0.0 }
 	]
 	
-	for d in dungeons:
-		var card := PanelContainer.new()
-		card.custom_minimum_size = Vector2(0, 110)
-		card.mouse_filter = Control.MOUSE_FILTER_STOP
+	for zone in zones:
+		var panel := PanelContainer.new()
+		panel.custom_minimum_size = Vector2(0, 110)
+		panel.mouse_filter = Control.MOUSE_FILTER_STOP
 		
-		var card_bg := TextureRect.new()
-		card_bg.texture = PixelGen.create_landscape_banner(d["name"], 320, 110)
-		card_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		card_bg.stretch_mode = TextureRect.STRETCH_SCALE
-		card_bg.modulate = Color(0.6, 0.6, 0.65)
-		card.add_child(card_bg)
+		var banner_tex := BannerGen.create_landscape_banner(zone["name"], 320, 110)
+		var bg_img := TextureRect.new()
+		bg_img.texture = banner_tex
+		bg_img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		bg_img.stretch_mode = TextureRect.STRETCH_SCALE
+		panel.add_child(bg_img)
 		
 		var margin := MarginContainer.new()
 		margin.add_theme_constant_override("margin_left", 12)
 		margin.add_theme_constant_override("margin_top", 10)
 		margin.add_theme_constant_override("margin_right", 12)
 		margin.add_theme_constant_override("margin_bottom", 10)
-		card.add_child(margin)
+		panel.add_child(margin)
 		
-		var title := Label.new()
-		title.text = d["name"]
-		title.add_theme_font_size_override("font_size", 16)
-		title.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
-		margin.add_child(title)
+		var vbox := VBoxContainer.new()
+		margin.add_child(vbox)
 		
-		list_container.add_child(card)
+		var title_lbl := Label.new()
+		title_lbl.text = zone["name"]
+		title_lbl.add_theme_font_size_override("font_size", 16)
+		title_lbl.add_theme_color_override("font_color", Color(0.98, 0.98, 0.98))
+		vbox.add_child(title_lbl)
+		
+		var desc_lbl := Label.new()
+		desc_lbl.text = zone["desc"]
+		desc_lbl.add_theme_font_size_override("font_size", 11)
+		desc_lbl.add_theme_color_override("font_color", Color(0.85, 0.75, 0.35))
+		vbox.add_child(desc_lbl)
+		
+		var prog: float = zone["progress"]
+		if prog > 0.0:
+			var pbar := ProgressBar.new()
+			pbar.custom_minimum_size = Vector2(0, 10)
+			pbar.value = prog * 100.0
+			pbar.show_percentage = false
+			vbox.add_child(pbar)
+			
+		list_container.add_child(panel)

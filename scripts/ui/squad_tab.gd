@@ -1,12 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
 #  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Grade
-#  Hiển thị danh sách Adventurers & Cho phép Soi Chi Tiết 16-Frame Sprite Modal
+#  Hiển thị danh sách Adventurers với 100% Trang Bị Độc Bản Từng Nhân Vật
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const HeroModalScene = preload("res://scenes/shared/HeroDetailModal.tscn")
+const CharProfiles = preload("res://scripts/data/character_animation_profiles.gd")
 
 @export var list_container: VBoxContainer
 
@@ -85,8 +86,19 @@ func populate_adventurers() -> void:
 		trait_lbl.add_theme_font_size_override("font_size", 10)
 		vbox.add_child(trait_lbl)
 		
-		# Right: 3 Equipment item slot boxes (Weapon, Armor, Accessory)
-		for slot_type in [Constants.ItemType.WEAPON, Constants.ItemType.ARMOR, Constants.ItemType.ACCESSORY]:
+		# Lookup Character Profile for Unique Assigned Gear
+		var profile: Dictionary = {}
+		for pid in CharProfiles.PROFILES:
+			if CharProfiles.PROFILES[pid].get("name") == cname:
+				profile = CharProfiles.PROFILES[pid]
+				break
+				
+		var eq_wpn: String = str(profile.get("equipped_weapon", "Plasma Rifle"))
+		var eq_arm: String = str(profile.get("equipped_armor", "Titan Exo"))
+		var eq_acc: String = str(profile.get("equipped_acc", "Cyber Visor"))
+		
+		# Right: 3 Equipment item slot boxes with UNIQUE GEAR PER HERO!
+		for gear_name in [eq_wpn, eq_arm, eq_acc]:
 			var slot_panel := PanelContainer.new()
 			slot_panel.custom_minimum_size = Vector2(40, 40)
 			
@@ -94,7 +106,7 @@ func populate_adventurers() -> void:
 			slot_icon.custom_minimum_size = Vector2(36, 36)
 			slot_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			slot_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			slot_icon.texture = MasterPixel.get_item_texture(slot_type)
+			slot_icon.texture = MasterPixel.get_modern_gear_texture(gear_name)
 			
 			slot_panel.add_child(slot_icon)
 			hbox.add_child(slot_panel)
