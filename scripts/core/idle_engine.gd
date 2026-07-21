@@ -4,6 +4,8 @@
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
+const EquipSys = preload("res://scripts/systems/equipment_system.gd")
+
 var _tick_timer: float = 0.0
 const TICK_INTERVAL := 1.0  # 1 giây mỗi tick
 var _unit_power_cache := {}
@@ -64,7 +66,7 @@ func _rebuild_unit_power_cache() -> void:
 	var survivors: Array = GameManager.game_data.get("survivors", [])
 	for s in survivors:
 		var stats: Dictionary = s.get("stats", {})
-		var eq_stats := EquipmentSystem.get_total_equipment_stats(s.get("id", ""))
+		var eq_stats: Dictionary = EquipSys.get_total_equipment_stats(s.get("id", ""))
 		var atk: float = stats.get("atk", 10) + eq_stats.get("atk", 0)
 		var def: float = stats.get("def", 5) + eq_stats.get("def", 0)
 		var hp: float = stats.get("hp", 50) + eq_stats.get("hp", 0)

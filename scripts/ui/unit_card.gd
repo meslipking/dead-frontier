@@ -1,8 +1,9 @@
 # ═══════════════════════════════════════════════════════════════
 #  UNIT CARD CONTROLLER (unit_card.gd)
-#  Hiển thị thông tin 1 Unit (Survivor, Monster, Mecha) trong Squad Tab
 # ═══════════════════════════════════════════════════════════════
 extends PanelContainer
+
+const SurvDb = preload("res://scripts/data/survivor_database.gd")
 
 @export var icon_label: Label
 @export var name_label: Label
@@ -27,8 +28,8 @@ func setup(p_data: Dictionary, p_unit_type: int = Constants.UnitType.SURVIVOR) -
 	match unit_type:
 		Constants.UnitType.SURVIVOR:
 			var sclass: int = unit_data.get("class", 0)
-			if class_label: class_label.text = SurvivorDatabase.CLASS_DATA[sclass]["name"]
-			if icon_label: icon_label.text = SurvivorDatabase.CLASS_DATA[sclass]["icon"]
+			if class_label: class_label.text = SurvDb.CLASS_DATA[sclass]["name"]
+			if icon_label: icon_label.text = SurvDb.CLASS_DATA[sclass]["icon"]
 		Constants.UnitType.MONSTER:
 			if class_label: class_label.text = "Quái vật"
 			if icon_label: icon_label.text = "🐉"

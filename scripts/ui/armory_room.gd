@@ -1,8 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
 #  ARMORY ROOM CONTROLLER (armory_room.gd)
-#  Quản lý Kho Vũ Khí: Danh sách vật phẩm, lọc kho & bán phế liệu
 # ═══════════════════════════════════════════════════════════════
 extends Control
+
+const ProgSys = preload("res://scripts/systems/progression_system.gd")
+const InvSys = preload("res://scripts/systems/inventory_system.gd")
 
 @export var lbl_capacity: Label
 @export var item_grid: GridContainer
@@ -13,7 +15,7 @@ func _ready() -> void:
 	if btn_close: btn_close.pressed.connect(func(): hide())
 	if btn_upgrade:
 		btn_upgrade.pressed.connect(func():
-			if ProgressionSystem.upgrade_room("armory"):
+			if ProgSys.upgrade_room("armory"):
 				update_ui()
 		)
 	update_ui()
@@ -21,7 +23,7 @@ func _ready() -> void:
 func update_ui() -> void:
 	var lvl: int = GameManager.game_data.get("outpost_levels", {}).get("armory", 1)
 	var inv: Array = GameManager.get_inventory()
-	var cap: int = InventorySystem.get_capacity()
+	var cap: int = InvSys.get_capacity()
 	
 	if lbl_capacity:
 		lbl_capacity.text = "Sức chứa kho: %d / %d (Cấp %d)" % [inv.size(), cap, lvl]

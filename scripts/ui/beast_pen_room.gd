@@ -1,25 +1,27 @@
 # ═══════════════════════════════════════════════════════════════
 #  BEAST PEN ROOM CONTROLLER (beast_pen_room.gd)
-#  Quản lý Chuồng Thú: Thu phục, Nuôi dưỡng & Tiến hóa Quái vật
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-@export var lbl_info: Label
-@export var btn_test_capture: Button
+const MonDb = preload("res://scripts/data/monster_database.gd")
+const MonSys = preload("res://scripts/systems/monster_system.gd")
+
+@export var lbl_count: Label
+@export var btn_capture: Button
 @export var btn_close: Button
 
 func _ready() -> void:
 	if btn_close: btn_close.pressed.connect(func(): hide())
-	update_info()
-	
-	if btn_test_capture:
-		btn_test_capture.pressed.connect(func():
-			var species_keys := MonsterDatabase.SPECIES.keys()
+	if btn_capture:
+		btn_capture.pressed.connect(func():
+			var species_keys := MonDb.SPECIES.keys()
 			var random_species: String = species_keys[randi() % species_keys.size()]
-			MonsterSystem.add_captured_monster(random_species)
-			update_info()
+			MonSys.add_captured_monster(random_species)
+			update_ui()
 		)
+	update_ui()
 
-func update_info() -> void:
+func update_ui() -> void:
 	var count: int = GameManager.get_monsters().size()
-	if lbl_info: lbl_info.text = "Số lượng quái vật hiện có trong chuồng: %d quái" % count
+	if lbl_count:
+		lbl_count.text = "Số quái vật thu phục: %d loài" % count

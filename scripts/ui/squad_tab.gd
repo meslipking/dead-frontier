@@ -52,4 +52,5 @@ func populate_units() -> void:
 	for u in units:
 		var card = unit_card_scene.instantiate()
 		list_container.add_child(card)
-		card.setup(u, current_sub_tab)
+		if card.has_method("setup"):
+			card.setup(u, current_sub_tab)

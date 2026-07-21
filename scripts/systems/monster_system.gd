@@ -4,8 +4,11 @@
 # ═══════════════════════════════════════════════════════════════
 class_name MonsterSystem
 
+const MonDb = preload("res://scripts/data/monster_database.gd")
+const ProgSys = preload("res://scripts/systems/progression_system.gd")
+
 static func add_captured_monster(species_id: String) -> bool:
-	var species: Dictionary = MonsterDatabase.get_species(species_id)
+	var species: Dictionary = MonDb.get_species(species_id)
 	if species.is_empty():
 		return false
 		
@@ -30,7 +33,7 @@ static func feed_monster(monster_id: String, food_exp: int = 50) -> bool:
 	for m in monsters:
 		if m.get("id") == monster_id:
 			m["exp"] = m.get("exp", 0) + food_exp
-			ProgressionSystem.check_unit_level_up(m)
+			ProgSys.check_unit_level_up(m)
 			check_monster_evolution(m)
 			return true
 	return false
@@ -65,7 +68,7 @@ static func check_monster_evolution(monster: Dictionary) -> bool:
 	return false
 
 static func breed_monsters(parent_a_id: String, parent_b_id: String) -> Dictionary:
-	var species_keys := MonsterDatabase.SPECIES.keys()
+	var species_keys := MonDb.SPECIES.keys()
 	var child_species: String = species_keys[randi() % species_keys.size()]
 	add_captured_monster(child_species)
 	var monsters: Array = GameManager.get_monsters()

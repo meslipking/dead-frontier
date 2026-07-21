@@ -63,7 +63,10 @@ const TRAITS := {
 const FIRST_NAMES := ["Minh", "Hương", "Đức", "Lan", "Hùng", "Trang", "Phong", "Vy", "Tuấn", "Linh", "Sơn", "Mai"]
 const LAST_NAMES := ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Phan", "Vũ", "Đặng", "Bùi", "Đỗ"]
 
-static func generate_random_survivor(id_suffix: String, prng: PRNG = null) -> Dictionary:
+static func generate_random_survivor(id_suffix: String = "", prng = null) -> Dictionary:
+	if id_suffix.is_empty():
+		id_suffix = str(randi() % 10000)
+		
 	var fname: String
 	var lname: String
 	var surv_class: int

@@ -4,11 +4,13 @@
 # ═══════════════════════════════════════════════════════════════
 class_name MechaSystem
 
+const MechDb = preload("res://scripts/data/mecha_database.gd")
+
 static func assemble_mecha(name: String, head_id: String, torso_id: String, arms_id: String, legs_id: String) -> Dictionary:
-	var head: Dictionary = MechaDatabase.get_part(head_id)
-	var torso: Dictionary = MechaDatabase.get_part(torso_id)
-	var arms: Dictionary = MechaDatabase.get_part(arms_id)
-	var legs: Dictionary = MechaDatabase.get_part(legs_id)
+	var head: Dictionary = MechDb.get_part(head_id)
+	var torso: Dictionary = MechDb.get_part(torso_id)
+	var arms: Dictionary = MechDb.get_part(arms_id)
+	var legs: Dictionary = MechDb.get_part(legs_id)
 	
 	var total_stats := { "hp": 100, "atk": 20, "def": 10, "spd": 10, "acc": 10, "luck": 0 }
 	var parts := [head, torso, arms, legs]

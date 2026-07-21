@@ -1,10 +1,12 @@
 # ═══════════════════════════════════════════════════════════════
 #  WORKSHOP ROOM CONTROLLER (workshop_room.gd)
-#  Quản lý Xưởng Máy Chế Tạo Trang Bị & Nguyên Liệu
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
-@export var recipe_list_container: VBoxContainer
+const CraftDb = preload("res://scripts/data/crafting_database.gd")
+const CraftSys = preload("res://scripts/systems/crafting_system.gd")
+
+@export var recipe_container: VBoxContainer
 @export var lbl_status: Label
 @export var btn_close: Button
 
@@ -13,21 +15,21 @@ func _ready() -> void:
 	populate_recipes()
 
 func populate_recipes() -> void:
-	if not recipe_list_container:
+	if not recipe_container:
 		return
 		
-	for child in recipe_list_container.get_children():
+	for child in recipe_container.get_children():
 		child.queue_free()
 		
-	var recipes := CraftingDatabase.get_all_recipes()
+	var recipes: Array = CraftDb.get_all_recipes()
 	for r in recipes:
 		var btn := Button.new()
-		btn.text = "Chế tạo %s (50 Vàng)" % r["name"]
+		var cost: int = r.get("gold_cost", 50)
+		btn.text = "Chế tạo %s (%d Vàng)" % [r.get("name", ""), cost]
 		btn.pressed.connect(func():
-			var result := CraftingSystem.craft_item(r)
-			if result["success"]:
-				if lbl_status: lbl_status.text = "✨ CHẾ TẠO THÀNH CÔNG: " + r["name"]
-			else:
-				if lbl_status: lbl_status.text = "❌ Thất bại: " + result.get("reason", "")
+			var res: Dictionary = CraftSys.craft_item(r)
+			var ok: bool = res.get("success", false)
+			if lbl_status:
+				lbl_status.text = "🛠️ ĐÃ CHẾ TẠO THÀNH CÔNG!" if ok else ("❌ " + res.get("reason", "Thất bại!"))
 		)
-		recipe_list_container.add_child(btn)
+		recipe_container.add_child(btn)

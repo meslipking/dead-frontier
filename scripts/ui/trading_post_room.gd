@@ -1,8 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
 #  TRADING POST ROOM CONTROLLER (trading_post_room.gd)
-#  Quản lý Chợ Đen: Mua bán trang bị & vật phẩm
 # ═══════════════════════════════════════════════════════════════
 extends Control
+
+const ItemDb = preload("res://scripts/data/item_database.gd")
+const InvSys = preload("res://scripts/systems/inventory_system.gd")
 
 @export var shop_container: VBoxContainer
 @export var lbl_status: Label
@@ -20,9 +22,9 @@ func populate_shop() -> void:
 		child.queue_free()
 		
 	var items := [
-		{ "id": "mat_scrap_iron", "name": "5x Phế liệu sắt", "cost": 30, "item": ItemDatabase.get_item("mat_scrap_iron") },
-		{ "id": "mat_circuit_board", "name": "3x Mạch điện hỏng", "cost": 60, "item": ItemDatabase.get_item("mat_circuit_board") },
-		{ "id": "wpn_machete", "name": "Dao rựa sinh tồn", "cost": 150, "item": ItemDatabase.get_item("wpn_machete") },
+		{ "id": "mat_scrap_iron", "name": "5x Phế liệu sắt", "cost": 30, "item": ItemDb.get_item("mat_scrap_iron") },
+		{ "id": "mat_circuit_board", "name": "3x Mạch điện hỏng", "cost": 60, "item": ItemDb.get_item("mat_circuit_board") },
+		{ "id": "wpn_machete", "name": "Dao rựa sinh tồn", "cost": 150, "item": ItemDb.get_item("wpn_machete") },
 	]
 	
 	for shop_item in items:
@@ -30,7 +32,7 @@ func populate_shop() -> void:
 		btn.text = "Mua %s (%d Vàng)" % [shop_item["name"], shop_item["cost"]]
 		btn.pressed.connect(func():
 			if GameManager.spend_currency(Constants.Currency.GOLD, shop_item["cost"]):
-				InventorySystem.add_item(shop_item["item"])
+				InvSys.add_item(shop_item["item"])
 				if lbl_status: lbl_status.text = "🛒 ĐÃ MUA: " + shop_item["name"]
 			else:
 				if lbl_status: lbl_status.text = "❌ Không đủ Vàng!"

@@ -1,0 +1,89 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+ERROR: No loader found for resource: res://locale/vi.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+ERROR: No loader found for resource: res://locale/en.csv (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:332)
+SCRIPT ERROR: Parse Error: Identifier "EquipmentSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/core/idle_engine.gd:67)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "eq_stats" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/core/idle_engine.gd:67)
+ERROR: Failed to load script "res://scripts/core/idle_engine.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+ERROR: Failed to instantiate an autoload, script 'res://scripts/core/idle_engine.gd' does not inherit from 'Node'.
+   at: start (main/main.cpp:4535)
+SCRIPT ERROR: Parse Error: Identifier "ProgressionSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/bunker_room.gd:16)
+ERROR: Failed to load script "res://scripts/ui/bunker_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "SurvivorDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/radio_tower_room.gd:16)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "new_surv" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/ui/radio_tower_room.gd:16)
+ERROR: Failed to load script "res://scripts/ui/radio_tower_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "ProgressionSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:16)
+SCRIPT ERROR: Parse Error: Identifier "InventorySystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/armory_room.gd:24)
+ERROR: Failed to load script "res://scripts/ui/armory_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "ItemDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/trading_post_room.gd:23)
+SCRIPT ERROR: Parse Error: Identifier "ItemDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/trading_post_room.gd:24)
+SCRIPT ERROR: Parse Error: Identifier "ItemDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/trading_post_room.gd:25)
+SCRIPT ERROR: Parse Error: Identifier "InventorySystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/trading_post_room.gd:33)
+ERROR: Failed to load script "res://scripts/ui/trading_post_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "CraftingDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/workshop_room.gd:22)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "recipes" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/ui/workshop_room.gd:22)
+SCRIPT ERROR: Parse Error: Identifier "CraftingSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/workshop_room.gd:27)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "result" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/ui/workshop_room.gd:27)
+ERROR: Failed to load script "res://scripts/ui/workshop_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "MonsterDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/beast_pen_room.gd:17)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "species_keys" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/ui/beast_pen_room.gd:17)
+SCRIPT ERROR: Parse Error: Identifier "MonsterSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/beast_pen_room.gd:19)
+ERROR: Failed to load script "res://scripts/ui/beast_pen_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "MechaSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/mecha_hangar_room.gd:19)
+ERROR: Failed to load script "res://scripts/ui/mecha_hangar_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "AchievementSystem" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/command_center_room.gd:20)
+ERROR: Failed to load script "res://scripts/ui/command_center_room.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "SurvivorDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/unit_card.gd:30)
+SCRIPT ERROR: Parse Error: Identifier "SurvivorDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/unit_card.gd:31)
+ERROR: Failed to load script "res://scripts/ui/unit_card.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Parse Error: Identifier "ZoneDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/wastelands_tab.gd:24)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "zones" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scripts/ui/wastelands_tab.gd:24)
+SCRIPT ERROR: Parse Error: Identifier "ZoneDatabase" not declared in the current scope.
+   at: GDScript::reload (res://scripts/ui/wastelands_tab.gd:37)
+ERROR: Failed to load script "res://scripts/ui/wastelands_tab.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+[SaveManager] No save file found. Creating default save.
+[SaveManager] Game saved successfully with anti-cheat checksum.
+[GameManager] Game loaded. Gold: 100
+SCRIPT ERROR: Invalid call. Nonexistent function 'setup' in base 'PanelContainer'.
+   at: populate_units (res://scripts/ui/squad_tab.gd:55)
+   GDScript backtrace (most recent call first):
+       [0] populate_units (res://scripts/ui/squad_tab.gd:55)
+       [1] switch_sub_tab (res://scripts/ui/squad_tab.gd:30)
+       [2] _ready (res://scripts/ui/squad_tab.gd:20)

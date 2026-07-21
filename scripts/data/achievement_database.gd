@@ -16,3 +16,9 @@ const ACHIEVEMENTS := [
 
 static func get_all() -> Array:
 	return ACHIEVEMENTS
+
+static func get_achievement(ach_id: String) -> Dictionary:
+	for a in ACHIEVEMENTS:
+		if a.get("id") == ach_id:
+			return a
+	return {}

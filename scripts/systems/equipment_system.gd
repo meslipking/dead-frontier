@@ -4,6 +4,8 @@
 # ═══════════════════════════════════════════════════════════════
 class_name EquipmentSystem
 
+const InvSys = preload("res://scripts/systems/inventory_system.gd")
+
 # ─── Set Bonus Definitions ───────────────────────────────────
 const SET_BONUSES := {
 	"scout_set": {
@@ -43,7 +45,7 @@ static func unequip_item(unit_id: String, slot: int) -> bool:
 		return false
 		
 	var item: Dictionary = equipped[unit_id][slot]
-	InventorySystem.add_item(item)
+	InvSys.add_item(item)
 	equipped[unit_id].erase(slot)
 	GameManager.game_data["equipped_items"] = equipped
 	EventBus.item_unequipped.emit(unit_id, slot)
@@ -68,7 +70,6 @@ static func get_total_equipment_stats(unit_id: String) -> Dictionary:
 		if not set_id.is_empty():
 			set_counts[set_id] = set_counts.get(set_id, 0) + 1
 			
-	# Apply 2p and 4p set bonuses
 	for set_id in set_counts:
 		if SET_BONUSES.has(set_id):
 			var count: int = set_counts[set_id]
