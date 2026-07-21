@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  OUTPOST TAB CONTROLLER (outpost_tab.gd) — 4 AAA Activities Link
-#  Liên kết 4 Hoạt động AAA: Mecha Assembly, Monster Fusion, World Boss Raid, Gem Socketing
+#  OUTPOST TAB CONTROLLER (outpost_tab.gd) — Idle Guildmaster 100% Match
+#  Quản lý 6 Cơ Sở Hội Guild (Quarters, Tavern, Storage, Market, Workshop, Shelter)
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -10,11 +10,9 @@ const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const RadioTowerScene = preload("res://scenes/outpost/RadioTowerRoom.tscn")
 const WorkshopScene = preload("res://scenes/outpost/WorkshopRoom.tscn")
 const ArmoryScene = preload("res://scenes/outpost/ArmoryRoom.tscn")
-
 const MechaAssemblyScene = preload("res://scenes/outpost/MechaAssemblyRoom.tscn")
 const MonsterBreedingScene = preload("res://scenes/outpost/MonsterBreedingRoom.tscn")
 const WorldBossRaidScene = preload("res://scenes/outpost/WorldBossRaid.tscn")
-const GemSocketingScene = preload("res://scenes/outpost/GemSocketingModal.tscn")
 
 @export var room_list_container: VBoxContainer
 
@@ -59,20 +57,21 @@ func populate_rooms() -> void:
 		hbox.add_theme_constant_override("separation", 12)
 		margin.add_child(hbox)
 		
+		# Wooden Hanging Signboard Icon matching Reference Image 1
 		var icon_rect := TextureRect.new()
-		icon_rect.custom_minimum_size = Vector2(40, 40)
+		icon_rect.custom_minimum_size = Vector2(42, 42)
 		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon_rect.texture = MasterPixel.matrix_to_texture([
-			"................", "....########....", "...#BBBBBBBB#...", "..#BBBBBBBBBB#..",
-			".#BBBBGGGGBBBB#.", ".#BBBGGGGGGBBB#.", ".#BBGGGGGGGGBB#.", ".#BBGGGGGGGGBB#.",
-			".#BBBGGGGGGBBB#.", ".#BBBBGGGGBBBB#.", "..#BBBBBBBBBB#..", "...#BBBBBBBB#...",
-			"....########....", "................"
-		], 2)
+			"..##......##..", "..##......##..", ".############.", ".#BBBBBBBBBB#.",
+			".#BBGGGGGGBB#.", ".#BBGGGGGGBB#.", ".#BBGGGGGGBB#.", ".#BBGGGGGGBB#.",
+			".#BBGGGGGGBB#.", ".#BBBBBBBBBB#.", ".############.", ".............."
+		], 3)
 		hbox.add_child(icon_rect)
 		
 		var vbox := VBoxContainer.new()
 		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		hbox.add_child(vbox)
 		
 		var name_lbl := Label.new()
