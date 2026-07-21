@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Match
-#  Hiển thị danh sách Adventurers với Avatar Pixel 16-bit, Level Badge & 3 Ô Trang Bị
+#  Hiển thị danh sách Adventurers với Avatar Pixel 16-bit Độc Bản Theo Từng Nhân Vật
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -51,13 +51,8 @@ func populate_adventurers() -> void:
 		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		
-		var cname: String = str(adv.get("name", ""))
-		var theme_col := Color(0.35, 0.45, 0.6) # Default Slate
-		if cname.contains("Night") or cname.contains("Shadow"): theme_col = Color(0.4, 0.2, 0.5) # Dark Purple
-		elif cname.contains("Tempest") or cname.contains("Hailstorm"): theme_col = Color(0.25, 0.55, 0.35) # Forest Green
-		elif cname.contains("King") or cname.contains("Holy"): theme_col = Color(0.8, 0.65, 0.25) # Gold
-		
-		spr.texture = PixelGen.create_unit_texture(Constants.UnitType.SURVIVOR, theme_col, 48, 48)
+		var cname: String = str(adv.get("name", "Iron Defender"))
+		spr.texture = PixelGen.create_unit_portrait_by_name(cname, 48, 48)
 		avatar_box.add_child(spr)
 		
 		# Level Badge Overlay (bottom right of avatar)
@@ -75,7 +70,7 @@ func populate_adventurers() -> void:
 		hbox.add_child(vbox)
 		
 		var name_lbl := Label.new()
-		name_lbl.text = str(adv.get("name", "Adventurer"))
+		name_lbl.text = cname
 		name_lbl.add_theme_font_size_override("font_size", 14)
 		name_lbl.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
 		vbox.add_child(name_lbl)
