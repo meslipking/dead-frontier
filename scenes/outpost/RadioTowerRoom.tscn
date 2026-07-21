@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/radio_tower_room.gd" id="1_script"]
 
-[node name="RadioTowerRoom" type="Control" node_paths=PackedStringArray("btn_scan", "btn_close", "lbl_status")]
+[node name="RadioTowerRoom" type="Control" node_paths=PackedStringArray("lbl_capacity", "guests_list", "btn_refresh", "btn_close")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,9 +10,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
-btn_scan = NodePath("Center/Panel/Margin/VBox/HBox/BtnScan")
-btn_close = NodePath("Center/Panel/Margin/VBox/HBox/BtnClose")
-lbl_status = NodePath("Center/Panel/Margin/VBox/LblStatus")
+lbl_capacity = NodePath("Center/Panel/Margin/VBox/LblCapacity")
+guests_list = NodePath("Center/Panel/Margin/VBox/GuestsList")
+btn_refresh = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnRefresh")
+btn_close = NodePath("Center/Panel/Margin/VBox/ActionRow/BtnClose")
 
 [node name="DimBackground" type="ColorRect" parent="."]
 layout_mode = 1
@@ -32,41 +33,50 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Center"]
-custom_minimum_size = Vector2(320, 200)
+custom_minimum_size = Vector2(320, 360)
 layout_mode = 2
 
 [node name="Margin" type="MarginContainer" parent="Center/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
 
 [node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
 theme_override_font_sizes/font_size = 16
-text = "📻 ĐÀI PHÁT SÓNG (RADIO TOWER)"
-horizontal_alignment = 1
+text = "TAVERN"
 
-[node name="LblStatus" type="Label" parent="Center/Panel/Margin/VBox"]
+[node name="LblCapacity" type="Label" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Nhấn quét tín hiệu để tìm kiếm đồng đội mới."
-horizontal_alignment = 1
-autowrap_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.7, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+text = "3/3 guests available"
 
-[node name="HBox" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+[node name="GuestsList" type="VBoxContainer" parent="Center/Panel/Margin/VBox"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
 
-[node name="BtnScan" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
+[node name="ActionRow" type="HBoxContainer" parent="Center/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnRefresh" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Quét tín hiệu (50 Vàng)"
+theme_override_font_sizes/font_size = 11
+text = "REFRESH (🟡 1)"
 
-[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/HBox"]
+[node name="BtnClose" type="Button" parent="Center/Panel/Margin/VBox/ActionRow"]
+custom_minimum_size = Vector2(80, 30)
 layout_mode = 2
-text = "Đóng"
+theme_override_font_sizes/font_size = 11
+text = "CLOSE"
