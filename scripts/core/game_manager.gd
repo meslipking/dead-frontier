@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  GAME MANAGER (game_manager.gd) — Autoload Singleton & Permadeath System
-#  Quản lý game state, tab routing, game data, và Tử Trận Permanently (Permadeath)
+#  Quản lý game state, tab routing, game data, Lực Chiến Squad CP & Tử Trận Permanently
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
@@ -16,14 +16,12 @@ const TAB_WASTELANDS := 2
 const TAB_SIEGES := 3
 
 func _ready() -> void:
-	# Load save data khi game khởi động
 	game_data = SaveManager.load_game()
 	is_loaded = true
 	EventBus.game_loaded.emit()
 	print("[GameManager] Game loaded. Gold: ", game_data.get("gold", 0))
 
 func _notification(what: int) -> void:
-	# Save khi game đóng
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save_game()
 		get_tree().quit()
@@ -64,9 +62,20 @@ func _currency_key(currency_type: int) -> String:
 		Constants.Currency.CRYSTALS: return "crystals"
 	return "gold"
 
-# ─── Unit Access & Permadeath System ─────────────────────────
+# ─── Unit Access & Squad Combat Power (CP) ─────────────────
 func get_survivors() -> Array:
 	return game_data.get("survivors", [])
+
+func calculate_squad_cp() -> int:
+	var survivors: Array = get_survivors()
+	var total_cp: int = 0
+	for adv in survivors:
+		var lvl: int = int(adv.get("level", 1))
+		var stats: Dictionary = adv.get("stats", {})
+		var atk: int = int(stats.get("atk", 20))
+		var def: int = int(stats.get("def", 15))
+		total_cp += (lvl * 15) + atk + def
+	return total_cp
 
 func remove_survivor(survivor_name: String) -> bool:
 	var survivors: Array = game_data.get("survivors", [])

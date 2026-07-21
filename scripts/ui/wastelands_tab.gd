@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
-#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd)
-#  Hiển thị Danh Sách Ải Thám Hiểm Vô Hạn Sinh Tự Động 100%
+#  WASTELANDS TAB CONTROLLER (wastelands_tab.gd) — 6 Lore Chapters & CP Requirements
+#  Hiển thị Danh Sách Ải Theo Chương với Yêu Cầu Lực Chiến (Recommended CP)
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -22,8 +22,8 @@ func populate_dungeons() -> void:
 	var tracker := TrackerScene.instantiate()
 	list_container.add_child(tracker)
 	
-	# Add Infinite Procedural Stages
-	for stage_num in range(1, 6):
+	# Add 6 Lore Chapters & Procedural Stages
+	for stage_num in range(1, 7):
 		var stg_data: Dictionary = StageGen.generate_stage_data(stage_num)
 		
 		var panel := PanelContainer.new()
@@ -48,20 +48,21 @@ func populate_dungeons() -> void:
 		
 		var title_lbl := Label.new()
 		title_lbl.text = stg_data["title"]
-		title_lbl.add_theme_font_size_override("font_size", 15)
+		title_lbl.add_theme_font_size_override("font_size", 14)
 		title_lbl.add_theme_color_override("font_color", Color(0.98, 0.98, 0.98))
 		vbox.add_child(title_lbl)
 		
+		var cp_lbl := Label.new()
+		var req_cp: int = int(stg_data["recommended_cp"])
+		cp_lbl.text = "⚔️ YÊU CẦU LỰC CHIẾN (CP): " + str(req_cp)
+		cp_lbl.add_theme_font_size_override("font_size", 11)
+		cp_lbl.add_theme_color_override("font_color", Color(0.95, 0.8, 0.25))
+		vbox.add_child(cp_lbl)
+		
 		var mod_lbl := Label.new()
 		mod_lbl.text = "⚙️ QUY TẮC: " + str(stg_data["modifier_name"]) + " (" + str(stg_data["modifier_effect"]) + ")"
-		mod_lbl.add_theme_font_size_override("font_size", 11)
+		mod_lbl.add_theme_font_size_override("font_size", 10)
 		mod_lbl.add_theme_color_override("font_color", stg_data["modifier_color"])
 		vbox.add_child(mod_lbl)
-		
-		var count_lbl := Label.new()
-		count_lbl.text = "👾 Quái vật: " + str(stg_data["monster_count"]) + " | Boss: " + ("CÓ" if stg_data["has_boss"] else "KHÔNG")
-		count_lbl.add_theme_font_size_override("font_size", 10)
-		count_lbl.add_theme_color_override("font_color", Color(0.85, 0.85, 0.85))
-		vbox.add_child(count_lbl)
 		
 		list_container.add_child(panel)
