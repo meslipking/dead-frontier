@@ -1,12 +1,13 @@
 # ═══════════════════════════════════════════════════════════════
 #  HERO DETAIL MODAL CONTROLLER (hero_detail_modal.gd)
-#  Hiển thị Chi Tiết Nhân Vật & Hoạt Ảnh 16-Frame + Đổi Trang Bị Modern Sci-Fi Live
+#  Hiển thị Chi Tiết Kỹ Năng Độc Bản & Hoạt Ảnh 16-Frame + Đổi Trang Bị Modern Sci-Fi Live
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const MasterPixel = preload("res://scripts/utils/master_pixel_art_engine.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 const ToastMgr = preload("res://scripts/ui/toast_manager.gd")
+const CharProfiles = preload("res://scripts/data/character_animation_profiles.gd")
 
 @export var anim_sprite: TextureRect
 @export var lbl_name: Label
@@ -52,7 +53,6 @@ func _ready() -> void:
 			btn_anim_toggle.text = "⚔️ ANIM: " + anim_states[current_anim_idx].to_upper()
 		)
 
-	# Setup Interactive Gear Slot Swapping
 	if slot_weapon:
 		slot_weapon.gui_input.connect(func(ev):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
@@ -96,19 +96,33 @@ func setup(adv: Dictionary) -> void:
 	hero_data = adv
 	var cname: String = str(adv.get("name", "Iron Defender"))
 	
+	# Lookup Unique Skill & Gear Data from Profiles
+	var profile: Dictionary = {}
+	for pid in CharProfiles.PROFILES:
+		if CharProfiles.PROFILES[pid].get("name") == cname:
+			profile = CharProfiles.PROFILES[pid]
+			break
+			
+	var skill_title: String = str(profile.get("skill_name", "Sóng Xung Kích Thép"))
+	var skill_desc: String = str(profile.get("skill_desc", "Vung khiên giậm nứt đất bão nổ niken"))
+	
 	if lbl_name: lbl_name.text = cname
-	if lbl_class: lbl_class.text = "Brawler Class"
+	if lbl_class: lbl_class.text = "⚡ Skill Độc Bản: " + skill_title
 	if lbl_level: lbl_level.text = "Level " + str(adv.get("level", 18))
-	if lbl_traits: lbl_traits.text = "Traits: " + str(adv.get("traits", "Brute, Nimble"))
+	if lbl_traits: lbl_traits.text = "📜 " + skill_desc
 	
 	var stats: Dictionary = adv.get("stats", {})
 	if lbl_stats:
 		lbl_stats.text = "HP: " + str(stats.get("hp", 140)) + "  |  ATK: " + str(stats.get("atk", 20)) + "  |  DEF: " + str(stats.get("def", 15)) + "\n" \
 			+ "SPD: " + str(stats.get("spd", 8)) + "  |  ACC: " + str(stats.get("acc", 10)) + "  |  LUCK: " + str(stats.get("luck", 5))
 			
-	if slot_weapon: slot_weapon.texture = MasterPixel.get_modern_gear_texture(modern_weapons[0])
-	if slot_armor: slot_armor.texture = MasterPixel.get_modern_gear_texture(modern_armors[0])
-	if slot_acc: slot_acc.texture = MasterPixel.get_modern_gear_texture(modern_accs[0])
+	var eq_wpn: String = str(profile.get("equipped_weapon", modern_weapons[0]))
+	var eq_arm: String = str(profile.get("equipped_armor", modern_armors[0]))
+	var eq_acc: String = str(profile.get("equipped_acc", modern_accs[0]))
+	
+	if slot_weapon: slot_weapon.texture = MasterPixel.get_modern_gear_texture(eq_wpn)
+	if slot_armor: slot_armor.texture = MasterPixel.get_modern_gear_texture(eq_arm)
+	if slot_acc: slot_acc.texture = MasterPixel.get_modern_gear_texture(eq_acc)
 	
 	_update_sprite_frame()
 
