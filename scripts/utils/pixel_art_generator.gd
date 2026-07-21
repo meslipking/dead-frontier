@@ -1,163 +1,300 @@
 # ═══════════════════════════════════════════════════════════════
-#  PIXEL ART GENERATOR (pixel_art_generator.gd) — Commercial Grade
+#  PIXEL ART GENERATOR (pixel_art_generator.gd) — Commercial Grade 16-Bit
 #  Động cơ sinh Texture Pixel Art 16-bit SNES chuẩn Commercial Premium
 # ═══════════════════════════════════════════════════════════════
 class_name PixelArtGenerator
 
+# ─── 1. Facility Wooden Hanging Sign Icon ──────────────────────
+static func create_room_icon(room_type: int, size: int = 40) -> ImageTexture:
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0, 0, 0, 0))
+	
+	# Draw Chain Links at Top
+	var chain_col := Color(0.65, 0.65, 0.7)
+	var chain_dark := Color(0.25, 0.25, 0.3)
+	for y in range(0, 8):
+		img.set_pixel(10, y, chain_col if y % 2 == 0 else chain_dark)
+		img.set_pixel(11, y, chain_col if y % 2 == 0 else chain_dark)
+		img.set_pixel(size - 12, y, chain_col if y % 2 == 0 else chain_dark)
+		img.set_pixel(size - 11, y, chain_col if y % 2 == 0 else chain_dark)
+
+	# Draw Oak Wooden Signboard (y from 6 to size-2)
+	var wood_base := Color(0.35, 0.22, 0.12) # Oak brown
+	var wood_light := Color(0.52, 0.34, 0.18) # Highlight grain
+	var wood_dark := Color(0.22, 0.13, 0.07) # Shadow grain
+	var border := Color(0.12, 0.07, 0.03) # Outer border
+
+	for x in range(4, size - 4):
+		for y in range(6, size - 2):
+			var c := wood_base
+			if (y % 6 == 0 or y % 6 == 1) and (x % 3 != 0):
+				c = wood_light
+			elif (y % 4 == 2) and (x % 5 == 0):
+				c = wood_dark
+			img.set_pixel(x, y, c)
+
+	# Wooden Sign Border
+	for x in range(4, size - 4):
+		img.set_pixel(x, 6, border)
+		img.set_pixel(x, size - 3, border)
+	for y in range(6, size - 2):
+		img.set_pixel(4, y, border)
+		img.set_pixel(size - 5, y, border)
+
+	# Draw 16-Bit Pixel Emblems Inside
+	var center_x := size / 2
+	var center_y := (size + 4) / 2
+	
+	match room_type:
+		Constants.RoomType.BUNKER: # QUARTERS: Gold Crescent Moon & Stars
+			var moon_col := Color(0.95, 0.82, 0.3)
+			for x in range(center_x - 5, center_x + 5):
+				for y in range(center_y - 6, center_y + 6):
+					var dist := Vector2(x - (center_x - 1), y - center_y).length()
+					var cut := Vector2(x - (center_x + 2), y - (center_y - 1)).length()
+					if dist <= 5.5 and cut >= 3.8:
+						img.set_pixel(x, y, moon_col)
+			# Small stars
+			img.set_pixel(center_x + 4, center_y - 4, Color(1, 1, 0.8))
+			img.set_pixel(center_x + 5, center_y + 3, Color(1, 1, 0.8))
+			
+		Constants.RoomType.RADIO_TOWER: # TAVERN: Frothy Beer Mug
+			var mug_col := Color(0.7, 0.45, 0.2)
+			var foam_col := Color(0.95, 0.95, 0.9)
+			var beer_col := Color(0.95, 0.75, 0.2)
+			for x in range(center_x - 5, center_x + 5):
+				for y in range(center_y - 5, center_y + 5):
+					if y in range(center_y - 5, center_y - 2):
+						img.set_pixel(x, y, foam_col)
+					elif y in range(center_y - 2, center_y + 4):
+						img.set_pixel(x, y, beer_col)
+			# Handle
+			for y in range(center_y - 2, center_y + 3):
+				img.set_pixel(center_x - 6, y, mug_col)
+				
+		Constants.RoomType.ARMORY: # STORAGE: Wooden Chest / Crate
+			var crate_wood := Color(0.45, 0.28, 0.15)
+			var crate_iron := Color(0.6, 0.65, 0.7)
+			for x in range(center_x - 6, center_x + 6):
+				for y in range(center_y - 5, center_y + 5):
+					var c := crate_wood
+					if x == center_x - 6 or x == center_x + 5 or y == center_y - 5 or y == center_y + 4 or x == center_x or y == center_y:
+						c = crate_iron
+					img.set_pixel(x, y, c)
+					
+		Constants.RoomType.TRADING_POST: # MARKET: Gold Pouch & Coins
+			var pouch_col := Color(0.85, 0.65, 0.25)
+			var tie_col := Color(0.8, 0.2, 0.2)
+			for x in range(center_x - 5, center_x + 5):
+				for y in range(center_y - 4, center_y + 5):
+					var dist := Vector2(x - center_x, y - (center_y + 1)).length()
+					if dist <= 4.5:
+						img.set_pixel(x, y, pouch_col)
+			img.set_pixel(center_x - 1, center_y - 3, tie_col)
+			img.set_pixel(center_x, center_y - 3, tie_col)
+			img.set_pixel(center_x + 1, center_y - 3, tie_col)
+			
+		Constants.RoomType.WORKSHOP: # WORKSHOP: Metal Anvil
+			var anvil_col := Color(0.4, 0.45, 0.5)
+			for x in range(center_x - 7, center_x + 7):
+				for y in range(center_y - 4, center_y + 4):
+					if y in range(center_y - 4, center_y - 1) and x in range(center_x - 6, center_x + 6):
+						img.set_pixel(x, y, anvil_col)
+					elif y in range(center_y - 1, center_y + 2) and x in range(center_x - 3, center_x + 3):
+						img.set_pixel(x, y, anvil_col)
+					elif y in range(center_y + 2, center_y + 4) and x in range(center_x - 5, center_x + 5):
+						img.set_pixel(x, y, anvil_col)
+						
+		Constants.RoomType.BEAST_PEN: # SHELTER: Pet Bone
+			var bone_col := Color(0.9, 0.9, 0.85)
+			for i in range(-5, 6):
+				img.set_pixel(center_x + i, center_y + i / 2, bone_col)
+				img.set_pixel(center_x + i, center_y + i / 2 + 1, bone_col)
+			img.set_pixel(center_x - 5, center_y - 3, bone_col)
+			img.set_pixel(center_x - 6, center_y - 2, bone_col)
+			img.set_pixel(center_x + 5, center_y + 3, bone_col)
+			img.set_pixel(center_x + 6, center_y + 2, bone_col)
+			
+		_: # Default Shield
+			var shield_col := Color(0.7, 0.3, 0.3)
+			for x in range(center_x - 5, center_x + 5):
+				for y in range(center_y - 5, center_y + 6):
+					if abs(x - center_x) + (y - (center_y - 5)) / 2 <= 5:
+						img.set_pixel(x, y, shield_col)
+
+	return ImageTexture.create_from_image(img)
+
+# ─── 2. Adventurer 16-Bit Pixel Art Portrait ─────────────────
 static func create_unit_texture(unit_type: int, color_theme: Color, width: int = 48, height: int = 48) -> ImageTexture:
 	var img := Image.create(width, height, false, Image.FORMAT_RGBA8)
 	img.fill(Color(0, 0, 0, 0))
 	
-	var border_color := Color(0.05, 0.05, 0.08, 1.0)
-	var highlight := color_theme.lightened(0.3)
-	var shadow := color_theme.darkened(0.4)
-	
-	match unit_type:
-		Constants.UnitType.SURVIVOR:
-			for x in range(12, 36):
-				for y in range(8, 44):
-					var c := color_theme
-					if y in range(8, 18):
-						c = highlight if x in range(16, 32) else color_theme
-						if y in range(12, 15) and x in range(18, 30):
-							c = Color(0.1, 0.9, 1.0)
-					elif y in range(18, 32):
-						c = color_theme if (x + y) % 2 == 0 else shadow
-						if x in range(20, 28) and y in range(20, 26):
-							c = highlight
-					elif y in range(32, 44):
-						c = shadow
-					img.set_pixel(x, y, c)
-					
-		Constants.UnitType.MONSTER:
-			for x in range(8, 40):
-				for y in range(10, 42):
-					var dist: float = Vector2(x - 24, y - 26).length()
-					if dist < 16.0:
-						var c := color_theme.darkened(dist / 20.0)
-						if y < 18 and (x in range(14, 18) or x in range(30, 34)):
-							c = Color(1.0, 0.2, 0.2)
-						if y > 34 and (x % 4 == 0):
-							c = Color(0.9, 0.9, 0.8)
-						img.set_pixel(x, y, c)
-						
-		Constants.UnitType.MECHA:
-			for x in range(6, 42):
-				for y in range(6, 44):
-					var c := Color(0.3, 0.35, 0.42)
-					if x in range(10, 38) and y in range(10, 38):
-						c = color_theme
-						if x in range(20, 28) and y in range(20, 28):
-							c = Color(0.2, 1.0, 0.5)
-					if (x + y) % 4 == 0:
-						c = c.lightened(0.25)
-					img.set_pixel(x, y, c)
+	var skin_color := Color(0.9, 0.72, 0.6)
+	var hair_color := color_theme.darkened(0.3)
+	var armor_base := color_theme
+	var armor_highlight := color_theme.lightened(0.3)
+	var armor_shadow := color_theme.darkened(0.4)
+	var visor_glow := Color(0.2, 0.85, 1.0)
+	var border := Color(0.1, 0.1, 0.15)
 
+	# 1. Head Base (x from 16 to 31, y from 8 to 22)
+	for x in range(16, 32):
+		for y in range(8, 23):
+			img.set_pixel(x, y, skin_color)
+
+	# 2. Helmet / Hair Top
+	for x in range(14, 34):
+		for y in range(4, 14):
+			img.set_pixel(x, y, hair_color)
+
+	# 3. Visor / Eyes (x from 18 to 30, y from 14 to 17)
+	for x in range(18, 30):
+		for y in range(14, 18):
+			img.set_pixel(x, y, visor_glow if (x + y) % 2 == 0 else Color(0.1, 0.6, 0.8))
+
+	# 4. Shoulders & Chest Armor (x from 10 to 37, y from 22 to 44)
+	for x in range(10, 38):
+		for y in range(22, 44):
+			var c := armor_base
+			if x in range(14, 34) and y in range(24, 36):
+				c = armor_highlight if (x + y) % 3 == 0 else armor_base
+			elif y > 36:
+				c = armor_shadow
+			img.set_pixel(x, y, c)
+
+	# 5. Shoulder Pads / Pauldrons
+	for x in range(8, 14):
+		for y in range(22, 34):
+			img.set_pixel(x, y, armor_highlight)
+	for x in range(34, 40):
+		for y in range(22, 34):
+			img.set_pixel(x, y, armor_highlight)
+
+	# Outer Outline Border
 	for x in range(1, width - 1):
 		for y in range(1, height - 1):
 			if img.get_pixel(x, y).a > 0.0:
 				for dx in [-1, 0, 1]:
 					for dy in [-1, 0, 1]:
 						if img.get_pixel(x + dx, y + dy).a == 0.0:
-							img.set_pixel(x + dx, y + dy, border_color)
-							
-	return ImageTexture.create_from_image(img)
-
-static func create_room_icon(room_type: int) -> ImageTexture:
-	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
-	img.fill(Color(0, 0, 0, 0))
-	
-	var base_col := Color(0.2, 0.6, 0.9)
-	match room_type:
-		Constants.RoomType.BUNKER: base_col = Color(0.3, 0.7, 0.4)
-		Constants.RoomType.RADIO_TOWER: base_col = Color(0.9, 0.7, 0.2)
-		Constants.RoomType.ARMORY: base_col = Color(0.8, 0.3, 0.3)
-		Constants.RoomType.TRADING_POST: base_col = Color(0.9, 0.8, 0.3)
-		Constants.RoomType.WORKSHOP: base_col = Color(0.7, 0.5, 0.3)
-		Constants.RoomType.BEAST_PEN: base_col = Color(0.8, 0.2, 0.6)
-		Constants.RoomType.MECHA_HANGAR: base_col = Color(0.2, 0.8, 0.8)
-		Constants.RoomType.COMMAND_CENTER: base_col = Color(0.9, 0.4, 0.2)
-		
-	# Draw detailed 16-bit room badge icon
-	for x in range(4, 28):
-		for y in range(4, 28):
-			var dist := Vector2(x - 16, y - 16).length()
-			if dist < 12.0:
-				var c := base_col.darkened(dist / 24.0)
-				if x in range(14, 18) or y in range(14, 18):
-					c = c.lightened(0.4)
-				img.set_pixel(x, y, c)
-				
-	# Border
-	for x in range(32):
-		for y in range(32):
-			if img.get_pixel(x, y).a > 0.0:
-				if x == 0 or x == 31 or y == 0 or y == 31:
-					img.set_pixel(x, y, Color(0.1, 0.1, 0.1, 1.0))
-					
-	return ImageTexture.create_from_image(img)
-
-static func create_currency_icon(currency_type: int) -> ImageTexture:
-	var img := Image.create(16, 16, false, Image.FORMAT_RGBA8)
-	img.fill(Color(0, 0, 0, 0))
-	
-	var col := Color(1.0, 0.8, 0.2)
-	match currency_type:
-		Constants.Currency.GOLD: col = Color(1.0, 0.8, 0.2)
-		Constants.Currency.ALLOYS: col = Color(0.6, 0.7, 0.8)
-		Constants.Currency.ENERGY: col = Color(0.2, 0.9, 1.0)
-		Constants.Currency.CRYSTALS: col = Color(0.9, 0.3, 0.9)
-		
-	for x in range(2, 14):
-		for y in range(2, 14):
-			if Vector2(x - 8, y - 8).length() < 6.0:
-				img.set_pixel(x, y, col)
-				
-	return ImageTexture.create_from_image(img)
-
-static func create_item_icon(item_type: int, rarity_color: Color) -> ImageTexture:
-	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
-	img.fill(Color(0, 0, 0, 0))
-	
-	for x in range(2, 30):
-		for y in range(2, 30):
-			img.set_pixel(x, y, rarity_color.darkened(0.65))
-			
-	match item_type:
-		Constants.ItemType.WEAPON:
-			for i in range(6, 26):
-				img.set_pixel(i, 31 - i, Color(0.95, 0.95, 1.0))
-				img.set_pixel(i + 1, 31 - i, Color(0.7, 0.75, 0.8))
-			for x in range(6, 12):
-				img.set_pixel(x, 31 - x + 4, Color(0.6, 0.4, 0.2))
-				
-		Constants.ItemType.ARMOR:
-			for x in range(8, 24):
-				for y in range(8, 24):
-					var col := rarity_color.lightened(0.2) if y < 14 else rarity_color.darkened(0.2)
-					img.set_pixel(x, y, col)
-					
-		Constants.ItemType.ACCESSORY:
-			for x in range(10, 22):
-				for y in range(10, 22):
-					if Vector2(x - 16, y - 16).length() < 6.0:
-						img.set_pixel(x, y, Color(0.2, 0.9, 1.0))
-						
-		Constants.ItemType.MATERIAL:
-			for x in range(8, 24):
-				for y in range(8, 24):
-					if (x * y) % 3 == 0:
-						img.set_pixel(x, y, Color(0.8, 0.85, 0.9))
+							img.set_pixel(x + dx, y + dy, border)
 
 	return ImageTexture.create_from_image(img)
 
-static func create_zone_bg(bg_color: Color, width: int = 360, height: int = 200) -> ImageTexture:
+# ─── 3. Landscape Pixel Art Banner Header ─────────────────────
+static func create_landscape_banner(banner_name: String, width: int = 320, height: int = 110) -> ImageTexture:
 	var img := Image.create(width, height, false, Image.FORMAT_RGBA8)
-	for x in range(width):
+	img.fill(Color(0.12, 0.12, 0.14))
+	
+	if banner_name.contains("Obsidian") or banner_name.contains("Digging"): # Dark Gothic Catacomb Mines
+		var sky_col := Color(0.15, 0.15, 0.2)
+		var pillar_col := Color(0.25, 0.28, 0.35)
+		var arch_col := Color(0.35, 0.38, 0.45)
+		var torch_col := Color(0.95, 0.55, 0.1)
+		
+		img.fill(sky_col)
+		# Draw Stone Pillars & Gothic Arches
+		for p in range(0, width, 40):
+			for x in range(p, p + 12):
+				for y in range(0, height):
+					img.set_pixel(x, y, pillar_col if x % 2 == 0 else arch_col)
+		# Torches
+		for t in range(20, width, 40):
+			for y in range(height - 40, height - 20):
+				img.set_pixel(t, y, torch_col if y % 2 == 0 else Color(1, 0.8, 0.2))
+
+	elif banner_name.contains("Grove") or banner_name.contains("Rebels"): # Lush Pixel Forest Grove
+		var sky_col := Color(0.18, 0.3, 0.25)
+		var leaf_col := Color(0.2, 0.55, 0.3)
+		var leaf_light := Color(0.35, 0.7, 0.4)
+		var trunk_col := Color(0.4, 0.25, 0.15)
+		
+		img.fill(sky_col)
+		# Pixel Canopy
+		for x in range(width):
+			for y in range(0, 60):
+				if (x + y) % 4 != 0:
+					img.set_pixel(x, y, leaf_col if y % 2 == 0 else leaf_light)
+		# Tree Trunks
+		for t in range(30, width, 60):
+			for x in range(t, t + 10):
+				for y in range(40, height):
+					img.set_pixel(x, y, trunk_col)
+
+	else: # Post-Apocalyptic Barren Wastelands Sunset Sky
 		for y in range(height):
-			var dist := float(y) / float(height)
-			var col := bg_color.darkened(dist * 0.5)
-			if (x * 17 + y * 31) % 109 == 0:
-				col = col.lightened(0.2)
-			img.set_pixel(x, y, col)
+			var ratio := float(y) / float(height)
+			var sky_col := Color(0.45, 0.2, 0.15).lerp(Color(0.1, 0.08, 0.12), ratio)
+			for x in range(width):
+				img.set_pixel(x, y, sky_col)
+		# Ruined Concrete Walls
+		var wall_col := Color(0.22, 0.2, 0.25)
+		for x in range(width):
+			var wall_h := int(30.0 + sin(x * 0.05) * 15.0)
+			for y in range(height - wall_h, height):
+				img.set_pixel(x, y, wall_col if (x + y) % 3 == 0 else Color(0.15, 0.14, 0.18))
+
+	return ImageTexture.create_from_image(img)
+
+# ─── 4. Item 16-Bit Pixel Art Icon ────────────────────────────
+static func create_item_icon(item_type: int, color_theme: Color, size: int = 36) -> ImageTexture:
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0, 0, 0, 0))
+	
+	var center := size / 2
+	var metal := Color(0.8, 0.8, 0.85)
+	var gold := Color(0.95, 0.8, 0.25)
+	var shadow := Color(0.15, 0.15, 0.2)
+
+	match item_type:
+		Constants.ItemType.WEAPON: # 16-Bit Sword
+			for i in range(-10, 11):
+				img.set_pixel(center + i, center - i, metal)
+				img.set_pixel(center + i + 1, center - i, metal)
+			# Golden Hilt & Guard
+			img.set_pixel(center - 6, center + 7, gold)
+			img.set_pixel(center - 7, center + 6, gold)
+			img.set_pixel(center - 5, center + 8, gold)
+			
+		Constants.ItemType.ARMOR: # 16-Bit Plate Armor
+			for x in range(center - 8, center + 9):
+				for y in range(center - 8, center + 9):
+					if abs(x - center) + abs(y - center) <= 12:
+						img.set_pixel(x, y, color_theme)
+			# Pauldrons
+			for x in range(center - 10, center - 6):
+				for y in range(center - 8, center - 3):
+					img.set_pixel(x, y, gold)
+			for x in range(center + 7, center + 11):
+				for y in range(center - 8, center - 3):
+					img.set_pixel(x, y, gold)
+
+		Constants.ItemType.ACCESSORY: # 16-Bit Crown / Ring
+			for x in range(center - 8, center + 9):
+				for y in range(center - 4, center + 5):
+					if y == center - 4 and (x % 4 == 0):
+						img.set_pixel(x, y, gold)
+					elif y > center - 4:
+						img.set_pixel(x, y, gold if (x + y) % 2 == 0 else Color(0.8, 0.6, 0.1))
+
+		_: # Material / Elixir Potion Bottle
+			for x in range(center - 6, center + 7):
+				for y in range(center - 7, center + 8):
+					var dist := Vector2(x - center, y - (center + 1)).length()
+					if dist <= 5.5:
+						img.set_pixel(x, y, color_theme)
+			# Cork top
+			img.set_pixel(center - 1, center - 6, Color(0.5, 0.3, 0.1))
+			img.set_pixel(center, center - 6, Color(0.5, 0.3, 0.1))
+			img.set_pixel(center + 1, center - 6, Color(0.5, 0.3, 0.1))
+
+	# Border
+	for x in range(1, size - 1):
+		for y in range(1, size - 1):
+			if img.get_pixel(x, y).a > 0.0:
+				for dx in [-1, 0, 1]:
+					for dy in [-1, 0, 1]:
+						if img.get_pixel(x + dx, y + dy).a == 0.0:
+							img.set_pixel(x + dx, y + dy, shadow)
+
 	return ImageTexture.create_from_image(img)

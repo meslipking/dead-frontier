@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  SIEGES TAB CONTROLLER (sieges_tab.gd) — Reference Image 4 Match
-#  Hiển thị Thẻ Raids Boss Phụ Bản & Thanh Đếm Giờ Reset 23h 21m
+#  Hiển thị Thẻ Raids Boss Phụ Bản với Bìa Pixel Art Ngang & Timer 23h 21m
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
@@ -19,15 +19,24 @@ func populate_raids() -> void:
 		child.queue_free()
 		
 	var raids := [
-		{ "name": "Ancient Grave Digging", "color": Color(0.2, 0.25, 0.35) },
-		{ "name": "The Cultist Rebels", "color": Color(0.25, 0.35, 0.3) },
-		{ "name": "The Lost Expedition", "color": Color(0.35, 0.3, 0.25) }
+		{ "name": "Ancient Grave Digging" },
+		{ "name": "The Cultist Rebels" },
+		{ "name": "The Lost Expedition" }
 	]
 	
 	for r in raids:
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 110)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		# Pixel Banner Background Header
+		var card_bg := TextureRect.new()
+		card_bg.texture = PixelGen.create_landscape_banner(r["name"], 320, 110)
+		card_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		card_bg.stretch_mode = TextureRect.STRETCH_SCALE
+		card_bg.modulate = Color(0.65, 0.65, 0.7)
+		card.add_child(card_bg)
+		
 		card.gui_input.connect(func(ev):
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				AnimEng.animate_button_click(card)

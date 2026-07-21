@@ -1,11 +1,10 @@
 # ═══════════════════════════════════════════════════════════════
 #  SQUAD TAB CONTROLLER (squad_tab.gd) — Reference Image 5 Match
-#  Hiển thị danh sách Adventurers với 16-Bit Avatar, Level Badge & 3 Ô Trang Bị
+#  Hiển thị danh sách Adventurers với Avatar Pixel 16-bit, Level Badge & 3 Ô Trang Bị
 # ═══════════════════════════════════════════════════════════════
 extends Control
 
 const PixelGen = preload("res://scripts/utils/pixel_art_generator.gd")
-const CBridge = preload("res://scripts/utils/c_pixel_engine_bridge.gd")
 const AnimEng = preload("res://scripts/utils/sprite_animation_engine.gd")
 
 @export var list_container: VBoxContainer
@@ -42,7 +41,7 @@ func populate_adventurers() -> void:
 		hbox.add_theme_constant_override("separation", 10)
 		margin.add_child(hbox)
 		
-		# Left: Character Pixel Avatar Container with Level Badge
+		# Left: Character 16-Bit Pixel Avatar Container with Level Badge
 		var avatar_box := Control.new()
 		avatar_box.custom_minimum_size = Vector2(44, 44)
 		hbox.add_child(avatar_box)
@@ -53,12 +52,12 @@ func populate_adventurers() -> void:
 		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		
 		var cname: String = str(adv.get("name", ""))
-		var theme_col := Color(0.3, 0.5, 0.7)
-		if cname.contains("Night") or cname.contains("Shadow"): theme_col = Color(0.2, 0.15, 0.25)
-		elif cname.contains("Tempest") or cname.contains("Hailstorm"): theme_col = Color(0.2, 0.6, 0.3)
-		elif cname.contains("King") or cname.contains("Holy"): theme_col = Color(0.8, 0.7, 0.3)
+		var theme_col := Color(0.35, 0.45, 0.6) # Default Slate
+		if cname.contains("Night") or cname.contains("Shadow"): theme_col = Color(0.4, 0.2, 0.5) # Dark Purple
+		elif cname.contains("Tempest") or cname.contains("Hailstorm"): theme_col = Color(0.25, 0.55, 0.35) # Forest Green
+		elif cname.contains("King") or cname.contains("Holy"): theme_col = Color(0.8, 0.65, 0.25) # Gold
 		
-		spr.texture = CBridge.render_c_survivor_texture(theme_col, 48, 48)
+		spr.texture = PixelGen.create_unit_texture(Constants.UnitType.SURVIVOR, theme_col, 48, 48)
 		avatar_box.add_child(spr)
 		
 		# Level Badge Overlay (bottom right of avatar)

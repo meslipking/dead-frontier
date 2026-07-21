@@ -23,6 +23,14 @@ func populate_dungeons() -> void:
 	active_card.custom_minimum_size = Vector2(0, 150)
 	active_card.mouse_filter = Control.MOUSE_FILTER_STOP
 	
+	# Pixel Banner Background
+	var active_bg := TextureRect.new()
+	active_bg.texture = PixelGen.create_landscape_banner("Obsidian Mines", 320, 150)
+	active_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	active_bg.stretch_mode = TextureRect.STRETCH_SCALE
+	active_bg.modulate = Color(0.65, 0.65, 0.7)
+	active_card.add_child(active_bg)
+	
 	var active_margin := MarginContainer.new()
 	active_margin.add_theme_constant_override("margin_left", 12)
 	active_margin.add_theme_constant_override("margin_top", 10)
@@ -51,7 +59,7 @@ func populate_dungeons() -> void:
 		spr.custom_minimum_size = Vector2(36, 36)
 		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		spr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		spr.texture = CBridge.render_c_survivor_texture(Color(0.3 + i * 0.15, 0.4, 0.6), 48, 48)
+		spr.texture = PixelGen.create_unit_texture(Constants.UnitType.SURVIVOR, Color(0.3 + i * 0.15, 0.4, 0.6), 48, 48)
 		adv_box.add_child(spr)
 		
 		# HP bar under avatar
@@ -66,7 +74,7 @@ func populate_dungeons() -> void:
 	var loot_lbl := Label.new()
 	loot_lbl.text = "Looting items..."
 	loot_lbl.add_theme_font_size_override("font_size", 10)
-	loot_lbl.add_theme_color_override("font_color", Color(0.7, 0.75, 0.8))
+	loot_lbl.add_theme_color_override("font_color", Color(0.85, 0.85, 0.9))
 	active_vbox.add_child(loot_lbl)
 	
 	var loot_bar := ProgressBar.new()
@@ -79,14 +87,21 @@ func populate_dungeons() -> void:
 	
 	# 2. Inactive Dungeon Banners (The Southern Grove & Barren Wastelands)
 	var dungeons := [
-		{ "name": "The Southern Grove", "color": Color(0.15, 0.35, 0.2) },
-		{ "name": "Barren Wastelands", "color": Color(0.4, 0.25, 0.15) }
+		{ "name": "The Southern Grove" },
+		{ "name": "Barren Wastelands" }
 	]
 	
 	for d in dungeons:
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 110)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		
+		var card_bg := TextureRect.new()
+		card_bg.texture = PixelGen.create_landscape_banner(d["name"], 320, 110)
+		card_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		card_bg.stretch_mode = TextureRect.STRETCH_SCALE
+		card_bg.modulate = Color(0.6, 0.6, 0.65)
+		card.add_child(card_bg)
 		
 		var margin := MarginContainer.new()
 		margin.add_theme_constant_override("margin_left", 12)
