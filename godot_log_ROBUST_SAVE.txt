@@ -1,0 +1,14 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot find member "to_hex_string" in base "PackedByteArray".
+   at: GDScript::reload (res://scripts/core/save_manager.gd:170)
+SCRIPT ERROR: Parse Error: Function "to_hex_string()" not found in base PackedByteArray.
+   at: GDScript::reload (res://scripts/core/save_manager.gd:170)
+ERROR: Failed to load script "res://scripts/core/save_manager.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+ERROR: Failed to instantiate an autoload, script 'res://scripts/core/save_manager.gd' does not inherit from 'Node'.
+   at: start (main/main.cpp:4535)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_game' in base 'Nil'.
+   at: _ready (res://scripts/core/game_manager.gd:20)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://scripts/core/game_manager.gd:20)

@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════
 #  SAVE MANAGER (save_manager.gd) — Autoload Singleton
-#  Save/Load game data với anti-cheat encryption (FNV-1a + XOR)
+#  Save/Load game data với anti-cheat encryption (PackedByteArray FNV-1a + XOR)
 # ═══════════════════════════════════════════════════════════════
 extends Node
 
@@ -28,7 +28,7 @@ func default_save() -> Dictionary:
 		
 		# Inventory
 		"inventory": _generate_starter_items(),
-		"equipped_items": {},  # unit_id -> { weapon: item_id, armor: item_id, accessory: item_id }
+		"equipped_items": {},
 		
 		# Outpost
 		"outpost_levels": {
@@ -39,7 +39,7 @@ func default_save() -> Dictionary:
 		
 		# Exploration
 		"zone_progress": { "ruined_suburbs": 0.0 },
-		"zone_teams": {},  # zone_id -> [unit_ids]
+		"zone_teams": {},
 		"unlocked_zones": ["ruined_suburbs"],
 		
 		# Progression
@@ -107,7 +107,7 @@ func save_game(data: Dictionary) -> void:
 	if file:
 		file.store_string(save_str)
 		file.close()
-		print("[SaveManager] Game saved successfully with anti-cheat checksum.")
+		print("[SaveManager] Game saved successfully with UTF-8 PackedByteArray checksum.")
 	else:
 		push_error("[SaveManager] Failed to save game! Error: " + str(FileAccess.get_open_error()))
 
@@ -133,7 +133,7 @@ func load_game() -> Dictionary:
 	else:
 		json_str = _decrypt(raw)
 		if json_str.is_empty():
-			push_warning("[SaveManager] Save file tampered or corrupted. Resetting.")
+			push_warning("[SaveManager] Save file corrupted or format invalid. Resetting.")
 			EventBus.save_corrupted.emit()
 			var data := default_save()
 			save_game(data)
@@ -144,7 +144,6 @@ func load_game() -> Dictionary:
 		push_error("[SaveManager] Failed to parse save JSON!")
 		return default_save()
 	
-	# Migration: add missing keys from default
 	var defaults := default_save()
 	for key in defaults:
 		if not parsed.has(key):
@@ -153,35 +152,42 @@ func load_game() -> Dictionary:
 	print("[SaveManager] Game loaded securely. Save version: ", parsed.get("save_version", 0))
 	return parsed
 
-# ─── Encryption (FNV-1a + XOR) ─────────────────────────────
+# ─── Robust UTF-8 Byte Encryption (PackedByteArray FNV-1a + XOR) ─
 func _fnv1a_hash(text: String) -> int:
 	var hash_val: int = 2166136261
-	for i in text.length():
-		hash_val ^= text.unicode_at(i)
+	var bytes := text.to_utf8_buffer()
+	for i in bytes.size():
+		hash_val ^= bytes[i]
 		hash_val = (hash_val * 16777619) & 0xFFFFFFFF
 	return hash_val
 
 func _encrypt(json_str: String) -> String:
 	var checksum := _fnv1a_hash(json_str)
 	var payload := JSON.stringify({ "d": json_str, "c": checksum })
-	var result := ""
-	for i in payload.length():
-		var code: int = payload.unicode_at(i) ^ XOR_KEY
-		result += "%02x" % code
-	return result
+	var bytes := payload.to_utf8_buffer()
+	for i in bytes.size():
+		bytes[i] = bytes[i] ^ XOR_KEY
+	return bytes.hex_encode()
 
 func _decrypt(hex_str: String) -> String:
 	if hex_str.begins_with("{"):
-		return hex_str  # Old unencrypted save — backward compat
+		return hex_str  # Backward compat
 	
-	var payload_str := ""
+	var encrypted_bytes := PackedByteArray()
 	var i := 0
 	while i < hex_str.length():
 		var hex_byte := hex_str.substr(i, 2)
-		var code: int = ("0x" + hex_byte).hex_to_int() ^ XOR_KEY
-		payload_str += char(code)
+		encrypted_bytes.append(("0x" + hex_byte).hex_to_int())
 		i += 2
+		
+	var decrypted_bytes := PackedByteArray()
+	for b in encrypted_bytes:
+		decrypted_bytes.append(b ^ XOR_KEY)
 	
+	var payload_str := decrypted_bytes.get_string_from_utf8()
+	if payload_str.is_empty():
+		return ""
+		
 	var parsed = JSON.parse_string(payload_str)
 	if parsed == null or not (parsed is Dictionary):
 		return ""
